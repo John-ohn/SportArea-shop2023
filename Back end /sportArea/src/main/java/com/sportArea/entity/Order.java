@@ -8,42 +8,45 @@ import javax.persistence.*;
 import java.time.LocalDate;
 
 @Entity
-@Table(name = "order")
+@Table(name = "Order")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "order_id")
+    @Column(name = "orderId")
     private Long orderId;
 
-    @Column(name = "first_name")
+    @Column(name = "firstName")
     private String firstName;
 
-    @Column(name = "last_name")
+    @Column(name = "lastName")
     private String lastName;
 
-    @Column(name = "payment_method")
+    @Column(name = "email")
+    private String email;
+
+    @Column(name = "phoneNumber")
+    private Long phoneNumber;
+
+    @Column(name = "paymentMethod")
     private String paymentMethod;
 
     @Column(name = "delivery")
     private String delivery;
 
     @Column(name = "amount")
-    private String amount;
+    private Integer amount;
 
-    @Column(name = "phone_number")
-    private Integer phoneNumber;
-
-    @Column(name = "order_date")
+    @Column(name = "orderDate")
     private LocalDate orderDate;
 
     @ManyToOne
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "userId")
     private User user;
 
     @ManyToOne
-    @JoinColumn(name = "product_id")
-    private ProductUA productId;
+    @JoinColumn(name = "productId")
+    private ProductUA product;
 }
