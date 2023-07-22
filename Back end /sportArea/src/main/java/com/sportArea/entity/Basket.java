@@ -5,9 +5,10 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
-@Table(name = "basket")
+@Table(name = "Basket")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -15,9 +16,10 @@ public class Basket {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "basket_id")
+    @Column(name = "basketId")
     private Long basketId;
 
-    @Column(name = "order_id")
-    private Long orderId;
+    @OneToMany
+    @Column(name = "orderId")
+    private List<Order> order;
 }

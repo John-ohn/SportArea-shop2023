@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "product_us")
+@Table(name = "ProductUS")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -17,7 +17,7 @@ public class ProductUS {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long productId;
 
-    @Column(name = "product_name")
+    @Column(name = "productName")
     private String productName;
 
     @Column(name = "brands")
@@ -29,10 +29,10 @@ public class ProductUS {
     @Column(name = "subtype")
     private String subtype;
 
-    @Column(name = "form_of_issue")
+    @Column(name = "formOfIssue")
     private String formOfIssue;
 
-    @Column(name = "producing_country")
+    @Column(name = "producingCountry")
     private String producingCountry;
 
     @Column(name = "taste")
@@ -44,13 +44,13 @@ public class ProductUS {
     @Column(name = "article")
     private long article;
 
-    @Column(name = "product_amount")
+    @Column(name = "productAmount")
     private int productAmount;
 
     @Column(name = "description")
     private String description;
 
-    @Column(name = "product_consist")
+    @Column(name = "productConsist")
     private String productConsist;
 
     @Column(name = "rating")
@@ -60,10 +60,10 @@ public class ProductUS {
     private String status;
 
     @ManyToOne
-    @JoinColumn(name = "language_id")
+    @JoinColumn(name = "languageId")
     private Language language;
 
     @OneToOne
-    @JoinColumn(name = "product_ua_id")
+    @JoinColumn(name = "productUAId")
     private ProductUA productUA;
 }

@@ -3,13 +3,12 @@ package com.sportArea.controller;
 import com.sportArea.entity.User;
 import com.sportArea.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 
-@Controller
+@RestController
 @RequestMapping("/user")
 public class UserController {
 
@@ -36,8 +35,8 @@ public class UserController {
     }
 
     @DeleteMapping("/delete/{userId}")
-    public void deleteUser(@PathVariable long userId) {
-        userService.delete(userId);
+    public String deleteUser(@PathVariable long userId) {
+      return  userService.delete(userId);
     }
 
 
