@@ -7,20 +7,20 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "language")
+@Table(name = "Language")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class Language {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "language_id")
+    @Column(name = "languageId")
     private Long languageId;
 
-    @Column(name = "language_code")
+    @Column(name = "languageCode")
     private String languageCode;
 
-    @Column(name = "language_name")
+    @Column(name = "languageName")
     private String languageName;
 
 }

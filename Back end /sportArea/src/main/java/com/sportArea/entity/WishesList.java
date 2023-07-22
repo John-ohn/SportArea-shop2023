@@ -4,25 +4,24 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Entity
-@Table(name = "Wishes_List")
+@Table(name = "WishesList")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class WishesList {
 
     @Id
-    @Column(name = "wishes_id")
+    @Column(name = "wishesId")
     private Long wishesId;
 
-    @Column(name = "user_id")
-    private Long userId;
+    @ManyToOne
+    @JoinColumn(name = "userId")
+    private User user;
 
-    @Column(name = "product_id")
-    private Long productId;
+    @ManyToOne
+    @JoinColumn(name = "productId")
+    private ProductUA product;
 }
