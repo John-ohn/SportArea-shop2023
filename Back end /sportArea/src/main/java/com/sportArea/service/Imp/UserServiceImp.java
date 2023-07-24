@@ -34,6 +34,11 @@ public class UserServiceImp implements UserService {
         return userRepository.findAll();
     }
 
+    @Override
+    public Optional<User> findByEmail(String email){
+        return userRepository.findByEmail(email);
+    }
+
     public User save(User user) {
         if (user != null) {
             userRepository.save(user);

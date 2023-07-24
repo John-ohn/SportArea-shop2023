@@ -36,10 +36,12 @@ public class User {
     @Column(name = "password")
     private String password;
 
+    @Enumerated(value = EnumType.STRING)
     @Column(name = "role")
-    private String role;
+    private Role role;
 
+    @Enumerated(value = EnumType.STRING)
     @Column(name = "status")
-    private String status;
+    private Status status;
 
 }
