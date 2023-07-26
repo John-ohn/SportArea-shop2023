@@ -29,7 +29,7 @@ public class UserController {
         return userService.findById(userId);
     }
 
-    @PostMapping("/save")
+    @PostMapping("/registration")
     public User addUser(@RequestBody User user) {
         return userService.save(user);
     }

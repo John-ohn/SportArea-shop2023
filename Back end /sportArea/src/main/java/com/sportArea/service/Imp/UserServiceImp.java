@@ -1,9 +1,12 @@
 package com.sportArea.service.Imp;
 
 import com.sportArea.dao.UserRepository;
+import com.sportArea.entity.Role;
+import com.sportArea.entity.Status;
 import com.sportArea.entity.User;
 import com.sportArea.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -15,12 +18,12 @@ public class UserServiceImp implements UserService {
 
 
     private final UserRepository userRepository;
-//    private final  PasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public UserServiceImp(UserRepository userRepository) {
+    public UserServiceImp(UserRepository userRepository,PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
-//        this.passwordEncoder=passwordEncoder;
+        this.passwordEncoder=passwordEncoder;
     }
 
     @Override
@@ -45,9 +48,12 @@ public class UserServiceImp implements UserService {
 
     public User save(User user) {
         if (user != null) {
-//            String encodedPassword = passwordEncoder.encode(user.getPassword());
-//            user.setPassword(encodedPassword);
+            String encodedPassword = passwordEncoder.encode(user.getPassword());
+            user.setPassword(encodedPassword);
+            user.setRole(Role.USER);
+            user.setStatus(Status.ACTIVE);
             userRepository.save(user);
+
             return user;
         } else {
             throw new RuntimeException("User is not available or his is empty. ");
