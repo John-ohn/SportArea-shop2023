@@ -3,13 +3,19 @@ package com.sportArea.controller;
 import com.sportArea.entity.User;
 import com.sportArea.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
 
 
 @RestController
 @RequestMapping("/user")
+@Validated
 public class UserController {
 
     private final UserService userService;
@@ -30,8 +36,11 @@ public class UserController {
     }
 
     @PostMapping("/registration")
-    public User addUser(@RequestBody User user) {
-        return userService.save(user);
+    public ResponseEntity<User> addUser(@Valid @RequestBody User user) {
+        User saveUser = userService.save(user);
+            return new ResponseEntity<User>(saveUser, HttpStatus.CREATED);
+
+
     }
 
     @DeleteMapping("/delete/{userId}")
