@@ -4,6 +4,7 @@ import com.sportArea.dao.UserRepository;
 import com.sportArea.entity.User;
 import com.sportArea.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -12,11 +13,14 @@ import java.util.Optional;
 @Service
 public class UserServiceImp implements UserService {
 
+
     private final UserRepository userRepository;
+//    private final  PasswordEncoder passwordEncoder;
 
     @Autowired
-    UserServiceImp(UserRepository userRepository) {
+    public UserServiceImp(UserRepository userRepository) {
         this.userRepository = userRepository;
+//        this.passwordEncoder=passwordEncoder;
     }
 
     @Override
@@ -41,6 +45,8 @@ public class UserServiceImp implements UserService {
 
     public User save(User user) {
         if (user != null) {
+//            String encodedPassword = passwordEncoder.encode(user.getPassword());
+//            user.setPassword(encodedPassword);
             userRepository.save(user);
             return user;
         } else {
