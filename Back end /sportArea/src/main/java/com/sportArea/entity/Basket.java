@@ -20,6 +20,6 @@ public class Basket {
     private Long basketId;
 
     @OneToMany
-    @Column(name = "orderId")
+    @JoinColumn(name = "orderId")
     private List<Order> order;
 }

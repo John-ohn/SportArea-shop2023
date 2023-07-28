@@ -7,6 +7,7 @@ import com.sportArea.entity.User;
 import com.sportArea.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -47,7 +48,13 @@ public class UserServiceImp implements UserService {
     }
 
     public User save(User user) {
+
         if (user != null) {
+            Optional<User> optionalUser=userRepository.findByEmail(user.getEmail());
+            if(optionalUser.isPresent()){
+//                throw new RuntimeException("Login already exists", HttpStatus.BAD_REQUEST);
+                throw new RuntimeException("Email already exists");
+            }
             String encodedPassword = passwordEncoder.encode(user.getPassword());
             user.setPassword(encodedPassword);
             user.setRole(Role.USER);

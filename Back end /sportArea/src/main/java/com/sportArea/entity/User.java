@@ -35,7 +35,7 @@ public class User {
     private String userName;
 
     @NotEmpty(message = "is required")
-    @Email(message = "Please enter a valid email", regexp = "^[a-zA-Z0-9._-]+@[a-zA-Z0-9-]+\\.[a-zA-Z.]{2,5}")
+    @Email(message = "Please enter a valid email", regexp = "^[a-zA-Z0-9._-]+@[a-zA-Z]+\\.[a-zA-Z.]{2,5}")
     @Column(name = "email")
     private String email;
 
