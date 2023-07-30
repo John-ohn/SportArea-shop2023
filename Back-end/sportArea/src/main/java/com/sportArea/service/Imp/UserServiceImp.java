@@ -4,6 +4,7 @@ import com.sportArea.dao.UserRepository;
 import com.sportArea.entity.Role;
 import com.sportArea.entity.Status;
 import com.sportArea.entity.User;
+import com.sportArea.exception.UserException;
 import com.sportArea.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -22,9 +23,9 @@ public class UserServiceImp implements UserService {
     private final PasswordEncoder passwordEncoder;
 
     @Autowired
-    public UserServiceImp(UserRepository userRepository,PasswordEncoder passwordEncoder) {
+    public UserServiceImp(UserRepository userRepository, PasswordEncoder passwordEncoder) {
         this.userRepository = userRepository;
-        this.passwordEncoder=passwordEncoder;
+        this.passwordEncoder = passwordEncoder;
     }
 
     @Override
@@ -33,7 +34,7 @@ public class UserServiceImp implements UserService {
         if (user.isPresent()) {
             return user.get();
         } else {
-            throw new RuntimeException("User with userId: " + userId + " is not available.");
+            throw new UserException("User with userId: " + userId + " is not available.", HttpStatus.NOT_FOUND);
         }
     }
 
@@ -43,17 +44,21 @@ public class UserServiceImp implements UserService {
     }
 
     @Override
-    public Optional<User> findByEmail(String email){
-        return userRepository.findByEmail(email);
+    public Optional<User> findByEmail(String email) {
+        Optional<User> user = userRepository.findByEmail(email);
+        if (user.isPresent()) {
+            return user;
+        } else {
+            throw new UserException("User with email: " + email + " is not available.", HttpStatus.NOT_FOUND);
+        }
     }
 
     public User save(User user) {
 
         if (user != null) {
-            Optional<User> optionalUser=userRepository.findByEmail(user.getEmail());
-            if(optionalUser.isPresent()){
-//                throw new RuntimeException("Login already exists", HttpStatus.BAD_REQUEST);
-                throw new RuntimeException("Email already exists");
+            Optional<User> optionalUser = userRepository.findByEmail(user.getEmail());
+            if (optionalUser.isPresent()) {
+                throw new UserException("Email already exists", HttpStatus.BAD_REQUEST);
             }
             String encodedPassword = passwordEncoder.encode(user.getPassword());
             user.setPassword(encodedPassword);
@@ -63,7 +68,7 @@ public class UserServiceImp implements UserService {
 
             return user;
         } else {
-            throw new RuntimeException("User is not available or his is empty. ");
+            throw new UserException("User is not available or his is empty. ", HttpStatus.NO_CONTENT);
         }
     }
 
@@ -74,7 +79,7 @@ public class UserServiceImp implements UserService {
             userRepository.delete(user.get());
             return "User with userId: " + userId + " was deleted.";
         } else {
-            throw new RuntimeException("User with userId: " + userId + " is not available.");
+            throw new UserException("User with userId: " + userId + " is not available.", HttpStatus.NOT_FOUND);
         }
     }
 }

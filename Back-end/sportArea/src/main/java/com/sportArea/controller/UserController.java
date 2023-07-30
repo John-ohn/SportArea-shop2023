@@ -38,16 +38,13 @@ public class UserController {
     @PostMapping("/registration")
     public ResponseEntity<User> addUser(@Valid @RequestBody User user) {
         User saveUser = userService.save(user);
-            return new ResponseEntity<User>(saveUser, HttpStatus.CREATED);
-
-
+        return new ResponseEntity<User>(saveUser, HttpStatus.CREATED);
     }
 
     @DeleteMapping("/delete/{userId}")
     public String deleteUser(@PathVariable long userId) {
-      return  userService.delete(userId);
+        return userService.delete(userId);
     }
-
 
     @GetMapping("/welcome")
     @ResponseBody

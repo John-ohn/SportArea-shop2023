@@ -21,7 +21,7 @@ public class UserDetailsServiceImp implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         User user = userService.findByEmail(username).orElseThrow(
-                () -> new UsernameNotFoundException("User doesn't exists")
+                () -> new UsernameNotFoundException("User with this email doesn't exists, you can't get Authentication ")
         );
 
         return SecurityUser.fromUser(user);
