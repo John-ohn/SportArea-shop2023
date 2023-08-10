@@ -13,7 +13,7 @@ public interface UserService {
 
     Optional<User> findByEmail(String email);
 
-    String delete(Long userId);
+    void delete(Long userId);
 
     User save(User user);
 

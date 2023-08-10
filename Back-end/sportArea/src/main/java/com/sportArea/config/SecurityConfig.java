@@ -1,5 +1,6 @@
 package com.sportArea.config;
 
+
 import com.sportArea.entity.Permission;
 import com.sportArea.security.JwtConfigurer;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,14 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
+//import org.springframework.security.oauth2.client.endpoint.NimbusAuthorizationCodeTokenResponseClient;
+//import org.springframework.security.oauth2.client.endpoint.OAuth2AccessTokenResponseClient;
+//import org.springframework.security.oauth2.client.endpoint.OAuth2AuthorizationCodeGrantRequest;
+//import org.springframework.security.oauth2.client.web.AuthorizationRequestRepository;
+//import org.springframework.security.oauth2.client.web.HttpSessionOAuth2AuthorizationRequestRepository;
+//import org.springframework.security.oauth2.core.endpoint.OAuth2AuthorizationRequest;
+//
+//import static org.springframework.security.config.Customizer.withDefaults;
 
 @Configuration
 @EnableWebSecurity
@@ -18,22 +27,46 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final JwtConfigurer jwtConfigurer;
 
+
     @Autowired
     public SecurityConfig(JwtConfigurer jwtConfigurer) {
         this.jwtConfigurer = jwtConfigurer;
     }
 
+//    @Override
+//    protected void configure(HttpSecurity http) throws Exception {
+//        http
+//                .authorizeHttpRequests(authorize -> authorize
+//                        .anyRequest().authenticated()
+//                )
+//                .oauth2Login(withDefaults());
+//    }
+
+//    @Bean
+//    public AuthorizationRequestRepository<OAuth2AuthorizationRequest>
+//    authorizationRequestRepository() {
+//
+//        return new HttpSessionOAuth2AuthorizationRequestRepository();
+//    }
+
+//    @Bean
+//    public OAuth2AccessTokenResponseClient<OAuth2AuthorizationCodeGrantRequest>
+//    accessTokenResponseClient() {
+//
+//        return new NimbusAuthorizationCodeTokenResponseClient();
+//    }
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .csrf().disable()
-                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and()
                 .authorizeRequests()
                 .antMatchers("/").permitAll()
                 .antMatchers( "/user/auth/loqin").permitAll()
                 .antMatchers(HttpMethod.POST, "/user/registration").permitAll()
-                .antMatchers(HttpMethod.GET, "/user/**").permitAll()
+                .antMatchers(HttpMethod.GET, "/user/list").permitAll()
                 .antMatchers(HttpMethod.POST, "/user/**").permitAll()
                 .antMatchers(HttpMethod.DELETE, "/user/**").permitAll()
 //                .antMatchers(HttpMethod.GET, "/user/**").hasAnyAuthority(Permission.DEVELOPERS_READ.getPermission())
@@ -42,7 +75,23 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .anyRequest()
                 .authenticated()
                 .and()
-                .apply(jwtConfigurer);
+                .apply(jwtConfigurer)
+//                .and()
+//                .oauth2Login()
+//                tokenEndpoint()
+//                .accessTokenResponseClient(accessTokenResponseClient())
+//                .and()
+//                .authorizationEndpoint()
+//                .baseUri("/oauth2/authorize-client")
+//                .authorizationRequestRepository(authorizationRequestRepository())
+
+//                .authorizationEndpoint()
+//                .baseUri("/oauth2/authorize")
+//                .and()
+//                .redirectionEndpoint()
+//                .baseUri("/login/oauth2/code/google")
+
+                ;
     }
 
 //    @Bean
@@ -82,6 +131,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     public AuthenticationManager authenticationManagerBean() throws  Exception{
         return super.authenticationManagerBean();
     }
+
+
 
 //    @Bean
 //    protected DaoAuthenticationProvider daoAuthenticationProvider() {

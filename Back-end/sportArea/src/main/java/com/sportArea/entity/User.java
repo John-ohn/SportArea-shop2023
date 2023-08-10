@@ -25,23 +25,17 @@ public class User {
     private String firstName;
 
     @NotEmpty(message = "is required")
-    @Pattern(regexp = "^[a-zA-Z]{3,30}", message = "Write a correct First Name. Use only chars. Not more than 30.")
+    @Pattern(regexp = "^[a-zA-Z]{3,30}", message = "Write a correct Last Name. Use only chars. Not more than 30.")
     @Column(name = "lastName")
     private String lastName;
-
-    @NotEmpty(message = "is required")
-    @Pattern(regexp = "^[a-zA-Z0-9._-]{3,30}", message = "Write a correct User Name. You can use chars, numbers, symbols ( . _ - ). Not more than 30.")
-    @Column(name = "userName")
-    private String userName;
 
     @NotEmpty(message = "is required")
     @Email(message = "Please enter a valid email", regexp = "^[a-zA-Z0-9._-]+@[a-zA-Z]+\\.[a-zA-Z.]{2,5}")
     @Column(name = "email")
     private String email;
 
-
     @NotEmpty(message = "is required")
-    @Pattern(regexp = "^[0-9]{10,13}", message = "Write a correct First Name. Use only numbers. Not more than 13.")
+    @Pattern(regexp = "^[0-9]{10,13}", message = "Write a correct phone number. Use only numbers. Not more than 12.")
     @Column(name = "phoneNumber")
     private String phoneNumber;
 

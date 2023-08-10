@@ -5,7 +5,6 @@ import com.sportArea.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -27,6 +26,7 @@ public class UserController {
 
     @GetMapping("/list")
     public List<User> showAllUser() {
+
         return userService.findAll();
     }
 
@@ -42,8 +42,9 @@ public class UserController {
     }
 
     @DeleteMapping("/delete/{userId}")
-    public String deleteUser(@PathVariable long userId) {
-        return userService.delete(userId);
+    public ResponseEntity<String> deleteUser(@PathVariable long userId) {
+        userService.delete(userId);
+        return new ResponseEntity<String>( "User with userId: " + userId + " was deleted.", HttpStatus.CREATED);
     }
 
     @GetMapping("/welcome")
