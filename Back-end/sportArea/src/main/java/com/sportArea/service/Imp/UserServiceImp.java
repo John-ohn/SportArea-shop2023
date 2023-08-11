@@ -35,7 +35,7 @@ public class UserServiceImp implements UserService {
     public User findById(Long userId) {
         Optional<User> userOptional = userRepository.findById(userId);
         if (userOptional.isPresent()) {
-            User user=userOptional.get();
+            User user = userOptional.get();
             logger.info("From UserController method -getUserFromIdFind- return User by id: {} ", userId);
             return user;
         } else {
@@ -88,6 +88,19 @@ public class UserServiceImp implements UserService {
             logger.info("From UserController method -deleteUser- return message (User with userId: {} was deleted.).", userId);
         } else {
             throw new UserException("User with userId: " + userId + " is not available.", HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @Override
+    public void deleteUsersBetweenIds(Long startId, Long endId) {
+
+        if (startId >= 0 && endId > startId + 1) {
+            userRepository.deleteBetweenIds(startId, endId);
+            logger.info(
+                    "From UserController method -deleteUsersBetweenIds- return message (UserS between userId: " +
+                            "{} and {} was deleted.).", startId, endId);
+        } else {
+            throw new UserException("Users with userIdS: " + startId + "and " + endId + " is not available.", HttpStatus.NOT_FOUND);
         }
     }
 }

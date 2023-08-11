@@ -15,6 +15,8 @@ public interface UserService {
 
     void delete(Long userId);
 
+    void deleteUsersBetweenIds(Long startId, Long endId);
+
     User save(User user);
 
 }

@@ -44,7 +44,15 @@ public class UserController {
     @DeleteMapping("/delete/{userId}")
     public ResponseEntity<String> deleteUser(@PathVariable long userId) {
         userService.delete(userId);
-        return new ResponseEntity<String>( "User with userId: " + userId + " was deleted.", HttpStatus.CREATED);
+        return new ResponseEntity<String>("User with userId: " + userId + " was deleted.", HttpStatus.CREATED);
+    }
+    @DeleteMapping("/delete/between")
+    public ResponseEntity<String> deleteUsersBetweenIds(
+            @RequestParam("startId") Long startId,
+            @RequestParam("endId") Long endId) {
+        userService.deleteUsersBetweenIds(startId,endId);
+        return new ResponseEntity<String>(
+                "Users between userIds: "+startId + " and "+ endId +" was deleted.", HttpStatus.CREATED);
     }
 
     @GetMapping("/welcome")
