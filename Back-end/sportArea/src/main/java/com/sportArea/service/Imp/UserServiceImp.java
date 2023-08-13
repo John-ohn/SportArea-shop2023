@@ -97,7 +97,7 @@ public class UserServiceImp implements UserService {
         if (startId >= 0 && endId > startId + 1) {
             userRepository.deleteBetweenIds(startId, endId);
             logger.info(
-                    "From UserController method -deleteUsersBetweenIds- return message (UserS between userId: " +
+                    "From UserController method -deleteUsersBetweenIds- return message (Users between userId: " +
                             "{} and {} was deleted.).", startId, endId);
         } else {
             throw new UserException("Users with userIdS: " + startId + "and " + endId + " is not available.", HttpStatus.NOT_FOUND);
