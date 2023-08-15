@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import javax.swing.*;
 
 @Entity
 @Table(name = "ProductUA")
@@ -42,6 +43,9 @@ public class ProductUA {
     @Column(name = "price")
     private Long price;
 
+    @Column(name="currency")
+    private String currency;
+
     @Column(name = "article")
     private Long article;
 
@@ -60,11 +64,14 @@ public class ProductUA {
     @Column(name = "status")
     private String status;
 
-    @ManyToOne
-    @JoinColumn(name = "languageId")
-    private Language language;
+    @Column(name = "promotion", columnDefinition = "INT default 0")
+    private Integer promotion;
 
-    @OneToOne(mappedBy = "productUA")
-    private ProductUS productUS;
+//    @ManyToOne
+//    @JoinColumn(name = "languageId")
+//    private Language language;
+//
+//    @OneToOne(mappedBy = "productUA")
+//    private ProductUS productUS;
 
 }

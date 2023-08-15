@@ -36,9 +36,11 @@ public class UserServiceImp implements UserService {
         Optional<User> userOptional = userRepository.findById(userId);
         if (userOptional.isPresent()) {
             User user = userOptional.get();
-            logger.info("From UserController method -getUserFromIdFind- return User by id: {} ", userId);
+            logger.info("From UserServiceImp method -findById- return User by id: {} ", userId);
             return user;
         } else {
+            logger.warn("From UserServiceImp method -findById- send war message " +
+                    "( User with userId: {} is not available. ({}))", userId, HttpStatus.NOT_FOUND);
             throw new UserException("User with userId: " + userId + " is not available.", HttpStatus.NOT_FOUND);
         }
     }
@@ -46,7 +48,7 @@ public class UserServiceImp implements UserService {
     @Override
     public List<User> findAll() {
         List<User> userList = userRepository.findAll();
-        logger.info("From UserController method -showAllUser- return List<User>.");
+        logger.info("From UserServiceImp method -findAll- return List<User>.");
         return userList;
     }
 
@@ -57,6 +59,9 @@ public class UserServiceImp implements UserService {
             logger.info("From UserServiceImp method -findByEmail- return User by email: {} ", email);
             return user;
         } else {
+            logger.warn("From UserServiceImp method -findByEmail- send war message " +
+                    "( User with email: {} is not available. ({}))", email, HttpStatus.NOT_FOUND);
+
             throw new UserException("User with email: " + email + " is not available.", HttpStatus.NOT_FOUND);
         }
     }
@@ -73,9 +78,12 @@ public class UserServiceImp implements UserService {
             user.setRole(Role.USER);
             user.setStatus(Status.ACTIVE);
             userRepository.save(user);
-            logger.info("From UserController method -addUser- return new save User from DATA BASE.");
+            logger.info("From UserServiceImp method -save- return new save User from Data Base.");
             return user;
         } else {
+            logger.warn("From UserServiceImp method -save- send war message " +
+                    "( User is not available or his is empty. ({})))", HttpStatus.NO_CONTENT);
+
             throw new UserException("User is not available or his is empty. ", HttpStatus.NO_CONTENT);
         }
     }
@@ -85,8 +93,10 @@ public class UserServiceImp implements UserService {
         Optional<User> user = userRepository.findById(userId);
         if (user.isPresent()) {
             userRepository.delete(user.get());
-            logger.info("From UserController method -deleteUser- return message (User with userId: {} was deleted.).", userId);
+            logger.info("From UserServiceImp method -delete- return message (User with userId: {} was deleted.).", userId);
         } else {
+            logger.warn("From UserServiceImp method -delete- send war message " +
+                    "(User with userId: {} is not available. ({}) )", userId, HttpStatus.NOT_FOUND);
             throw new UserException("User with userId: " + userId + " is not available.", HttpStatus.NOT_FOUND);
         }
     }
@@ -97,10 +107,12 @@ public class UserServiceImp implements UserService {
         if (startId >= 0 && endId > startId + 1) {
             userRepository.deleteBetweenIds(startId, endId);
             logger.info(
-                    "From UserController method -deleteUsersBetweenIds- return message (Users between userId: " +
+                    "From UserServiceImp method -deleteUsersBetweenIds- return message (Users between userIds: " +
                             "{} and {} was deleted.).", startId, endId);
         } else {
-            throw new UserException("Users with userIdS: " + startId + "and " + endId + " is not available.", HttpStatus.NOT_FOUND);
+            logger.warn("From UserServiceImp method -deleteUsersBetweenIds- send war message " +
+                    "(Users with userIds: {} and {} is not available. {}", startId, endId, HttpStatus.NOT_FOUND);
+            throw new UserException("Users with userIds: " + startId + "and " + endId + " is not available.", HttpStatus.NOT_FOUND);
         }
     }
 }
