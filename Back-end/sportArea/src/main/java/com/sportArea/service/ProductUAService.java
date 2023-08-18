@@ -2,11 +2,8 @@ package com.sportArea.service;
 
 
 import com.sportArea.entity.ProductUA;
-import com.sportArea.entity.User;
-import org.springframework.data.repository.query.Param;
 
 import java.util.List;
-import java.util.Optional;
 
 public interface ProductUAService {
 
@@ -14,7 +11,11 @@ public interface ProductUAService {
 
     List<ProductUA> findAll();
 
-    List<ProductUA> searchByKeyWord( String keyWord);
+    List<ProductUA> searchByKeyWordInDescription(String keyWord);
+
+    List<ProductUA> searchByKeyWordInTypeSubtype(String keyWord);
+
+    List<ProductUA> searchByPromotionPrice();
 
     ProductUA save(ProductUA product);
 

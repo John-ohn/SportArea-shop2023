@@ -8,6 +8,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import java.sql.Timestamp;
+import java.util.Date;
+
 
 @ControllerAdvice
 public class UserRestExceptionHandler {
@@ -19,7 +22,7 @@ public class UserRestExceptionHandler {
         UserErrorResponse userErrorResponse = new UserErrorResponse();
         userErrorResponse.setStatus(exc.getHttpStatus().value());
         userErrorResponse.setMessage(exc.getMessage());
-        userErrorResponse.setTimeStamp(System.currentTimeMillis());
+        userErrorResponse.setTimeStamp(new Date());
         logger.warn("From UserRestExceptionHandler method -handlerException- send message error ({})",
                 userErrorResponse.getMessage());
 

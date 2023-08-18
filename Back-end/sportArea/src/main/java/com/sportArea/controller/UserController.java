@@ -1,12 +1,14 @@
 package com.sportArea.controller;
 
 import com.sportArea.entity.User;
+import com.sportArea.entity.UserRegistration;
 import com.sportArea.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
 import javax.validation.Valid;
 import java.util.List;
 
@@ -35,7 +37,7 @@ public class UserController {
     }
 
     @PostMapping("/registration")
-    public ResponseEntity<User> addUser(@Valid @RequestBody User user) {
+    public ResponseEntity<User> addUser(@Valid @RequestBody UserRegistration user) {
         User saveUser = userService.save(user);
         return new ResponseEntity<User>(saveUser, HttpStatus.CREATED);
     }
@@ -50,9 +52,9 @@ public class UserController {
     public ResponseEntity<String> deleteUsersBetweenIds(
             @RequestParam("startId") Long startId,
             @RequestParam("endId") Long endId) {
-        userService.deleteUsersBetweenIds(startId,endId);
+        userService.deleteUsersBetweenIds(startId, endId);
         return new ResponseEntity<String>(
-                "Users between userIds: "+startId + " and "+ endId +" was deleted.", HttpStatus.CREATED);
+                "Users between userIds: " + startId + " and " + endId + " was deleted.", HttpStatus.CREATED);
     }
 
     @GetMapping("/welcome")

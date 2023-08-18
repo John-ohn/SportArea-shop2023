@@ -4,6 +4,7 @@ import com.sportArea.dao.UserRepository;
 import com.sportArea.entity.Role;
 import com.sportArea.entity.Status;
 import com.sportArea.entity.User;
+import com.sportArea.entity.UserRegistration;
 import com.sportArea.exception.UserException;
 import com.sportArea.service.UserService;
 import org.slf4j.Logger;
@@ -66,14 +67,15 @@ public class UserServiceImp implements UserService {
         }
     }
 
-    public User save(User user) {
+    public User save(UserRegistration userRegistration) {
 
-        if (user != null) {
-            Optional<User> optionalUser = userRepository.findByEmail(user.getEmail());
+        if (userRegistration != null) {
+            Optional<User> optionalUser = userRepository.findByEmail(userRegistration.getEmail());
             if (optionalUser.isPresent()) {
                 throw new UserException("Email already exists", HttpStatus.BAD_REQUEST);
             }
-            String encodedPassword = passwordEncoder.encode(user.getPassword());
+            String encodedPassword = passwordEncoder.encode(userRegistration.getPassword());
+            User user = createUser(userRegistration);
             user.setPassword(encodedPassword);
             user.setRole(Role.USER);
             user.setStatus(Status.ACTIVE);
@@ -114,5 +116,15 @@ public class UserServiceImp implements UserService {
                     "(Users with userIds: {} and {} is not available. {}", startId, endId, HttpStatus.NOT_FOUND);
             throw new UserException("Users with userIds: " + startId + "and " + endId + " is not available.", HttpStatus.NOT_FOUND);
         }
+    }
+
+    public User createUser(UserRegistration userRegistration){
+        User user= new User();
+        user.setFirstName(userRegistration.getFirstName());
+        user.setLastName(userRegistration.getLastName());
+        user.setEmail(userRegistration.getEmail());
+        user.setPhoneNumber(userRegistration.getPhoneNumber());
+        user.setPassword(userRegistration.getPassword());
+        return  user;
     }
 }

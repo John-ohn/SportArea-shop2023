@@ -1,6 +1,7 @@
 package com.sportArea.service;
 
 import com.sportArea.entity.User;
+import com.sportArea.entity.UserRegistration;
 
 import java.util.List;
 import java.util.Optional;
@@ -17,6 +18,6 @@ public interface UserService {
 
     void deleteUsersBetweenIds(Long startId, Long endId);
 
-    User save(User user);
+    User save(UserRegistration user);
 
 }

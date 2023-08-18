@@ -9,6 +9,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import java.sql.Timestamp;
 import java.util.Objects;
 
 @ControllerAdvice
@@ -21,7 +22,7 @@ public class ValidExceptionHandler {
         UserErrorResponse userErrorResponse = new UserErrorResponse();
         userErrorResponse.setStatus(HttpStatus.BAD_REQUEST.value());
         userErrorResponse.setMessage(Objects.requireNonNull(exc.getFieldError()).getDefaultMessage());
-        userErrorResponse.setTimeStamp(System.currentTimeMillis());
+        userErrorResponse.setTimeStamp(new Timestamp(System.currentTimeMillis()));
         logger.warn("From ValidExceptionHandler method -handlerException- send message error ({})",
                 userErrorResponse.getMessage());
 
