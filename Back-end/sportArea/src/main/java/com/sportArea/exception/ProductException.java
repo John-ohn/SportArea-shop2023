@@ -4,9 +4,9 @@ import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
 @Getter
-public class UserException extends AbstractGeneralException {
+public class ProductException extends AbstractGeneralException {
 
-    public UserException(String message, HttpStatus httpStatus) {
+    public ProductException(String message, HttpStatus httpStatus) {
         super(message, httpStatus);
     }
 

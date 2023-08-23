@@ -1,16 +1,16 @@
 package com.sportArea.service;
 
 import com.sportArea.entity.User;
-import com.sportArea.entity.UserRegistration;
+import com.sportArea.entity.dto.UserDTO;
 
 import java.util.List;
 import java.util.Optional;
 
 public interface UserService {
 
-    User findById(Long userId);
+    UserDTO findById(Long userId);
 
-    List<User> findAll();
+    List<UserDTO> findAll();
 
     Optional<User> findByEmail(String email);
 
@@ -18,6 +18,6 @@ public interface UserService {
 
     void deleteUsersBetweenIds(Long startId, Long endId);
 
-    User save(UserRegistration user);
+    void save(UserDTO user);
 
 }

@@ -4,7 +4,7 @@ import com.sportArea.dao.UserRepository;
 import com.sportArea.entity.Role;
 import com.sportArea.entity.Status;
 import com.sportArea.entity.User;
-import com.sportArea.entity.UserRegistration;
+import com.sportArea.entity.dto.UserDTO;
 import com.sportArea.exception.UserException;
 import com.sportArea.service.UserService;
 import org.slf4j.Logger;
@@ -14,13 +14,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
 
 @Service
+@Transactional
 public class UserServiceImp implements UserService {
-
 
     Logger logger = LoggerFactory.getLogger(UserServiceImp.class);
     private final UserRepository userRepository;
@@ -33,12 +34,13 @@ public class UserServiceImp implements UserService {
     }
 
     @Override
-    public User findById(Long userId) {
+    public UserDTO findById(Long userId) {
         Optional<User> userOptional = userRepository.findById(userId);
         if (userOptional.isPresent()) {
             User user = userOptional.get();
+            UserDTO userDTO = createUserDTOFromUser(user);
             logger.info("From UserServiceImp method -findById- return User by id: {} ", userId);
-            return user;
+            return userDTO;
         } else {
             logger.warn("From UserServiceImp method -findById- send war message " +
                     "( User with userId: {} is not available. ({}))", userId, HttpStatus.NOT_FOUND);
@@ -47,10 +49,12 @@ public class UserServiceImp implements UserService {
     }
 
     @Override
-    public List<User> findAll() {
+    public List<UserDTO> findAll() {
         List<User> userList = userRepository.findAll();
-        logger.info("From UserServiceImp method -findAll- return List<User>.");
-        return userList;
+        List<UserDTO> userDTOList = userList.stream().map(this::createUserDTOFromUser).toList();
+
+        logger.info("From UserServiceImp method -findAll- return List of User .");
+        return userDTOList;
     }
 
     @Override
@@ -67,21 +71,24 @@ public class UserServiceImp implements UserService {
         }
     }
 
-    public User save(UserRegistration userRegistration) {
+    public void save(UserDTO userDTO) {
 
-        if (userRegistration != null) {
-            Optional<User> optionalUser = userRepository.findByEmail(userRegistration.getEmail());
+        if (userDTO != null) {
+            Optional<User> optionalUser = userRepository.findByEmail(userDTO.getEmail());
             if (optionalUser.isPresent()) {
+                logger.warn("From UserServiceImp method -save- send war message " +
+                        "( Email already exists. ({})))", HttpStatus.NO_CONTENT.name());
                 throw new UserException("Email already exists", HttpStatus.BAD_REQUEST);
             }
-            String encodedPassword = passwordEncoder.encode(userRegistration.getPassword());
-            User user = createUser(userRegistration);
+            String encodedPassword = passwordEncoder.encode(userDTO.getPassword());
+            User user = createUserFromRegistration(userDTO);
             user.setPassword(encodedPassword);
             user.setRole(Role.USER);
             user.setStatus(Status.ACTIVE);
             userRepository.save(user);
+
             logger.info("From UserServiceImp method -save- return new save User from Data Base.");
-            return user;
+
         } else {
             logger.warn("From UserServiceImp method -save- send war message " +
                     "( User is not available or his is empty. ({})))", HttpStatus.NO_CONTENT);
@@ -98,7 +105,7 @@ public class UserServiceImp implements UserService {
             logger.info("From UserServiceImp method -delete- return message (User with userId: {} was deleted.).", userId);
         } else {
             logger.warn("From UserServiceImp method -delete- send war message " +
-                    "(User with userId: {} is not available. ({}) )", userId, HttpStatus.NOT_FOUND);
+                    "(User with userId: {} is not available. ({}) )", userId, HttpStatus.NOT_FOUND.name());
             throw new UserException("User with userId: " + userId + " is not available.", HttpStatus.NOT_FOUND);
         }
     }
@@ -113,18 +120,33 @@ public class UserServiceImp implements UserService {
                             "{} and {} was deleted.).", startId, endId);
         } else {
             logger.warn("From UserServiceImp method -deleteUsersBetweenIds- send war message " +
-                    "(Users with userIds: {} and {} is not available. {}", startId, endId, HttpStatus.NOT_FOUND);
+                    "(Users with userIds: {} and {} is not available. {}", startId, endId, HttpStatus.NOT_FOUND.name());
             throw new UserException("Users with userIds: " + startId + "and " + endId + " is not available.", HttpStatus.NOT_FOUND);
         }
     }
 
-    public User createUser(UserRegistration userRegistration){
-        User user= new User();
-        user.setFirstName(userRegistration.getFirstName());
-        user.setLastName(userRegistration.getLastName());
-        user.setEmail(userRegistration.getEmail());
-        user.setPhoneNumber(userRegistration.getPhoneNumber());
-        user.setPassword(userRegistration.getPassword());
-        return  user;
+    public User createUserFromRegistration(UserDTO userDTO) {
+        User user = new User();
+        user.setFirstName(userDTO.getFirstName());
+        user.setLastName(userDTO.getLastName());
+        user.setEmail(userDTO.getEmail());
+        user.setPhoneNumber(userDTO.getPhoneNumber());
+        user.setPassword(userDTO.getPassword());
+        return user;
     }
+
+    public UserDTO createUserDTOFromUser(User user) {
+        return UserDTO
+                .builder()
+                .userId(user.getUserId())
+                .firstName(user.getFirstName())
+                .lastName(user.getLastName())
+                .email(user.getEmail())
+                .phoneNumber(user.getPhoneNumber())
+                .password(null)
+                .role(user.getRole())
+                .status(user.getStatus())
+                .build();
+    }
+
 }

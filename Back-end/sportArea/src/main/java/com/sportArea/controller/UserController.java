@@ -1,7 +1,7 @@
 package com.sportArea.controller;
 
 import com.sportArea.entity.User;
-import com.sportArea.entity.UserRegistration;
+import com.sportArea.entity.dto.UserDTO;
 import com.sportArea.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -26,20 +26,20 @@ public class UserController {
     }
 
     @GetMapping("/list")
-    public List<User> showAllUser() {
+    public List<UserDTO> showAllUser() {
 
         return userService.findAll();
     }
 
     @GetMapping("/{userId}")
-    public User getUserFromId(@PathVariable long userId) {
+    public UserDTO getUserFromId(@PathVariable long userId) {
         return userService.findById(userId);
     }
 
     @PostMapping("/registration")
-    public ResponseEntity<User> addUser(@Valid @RequestBody UserRegistration user) {
-        User saveUser = userService.save(user);
-        return new ResponseEntity<User>(saveUser, HttpStatus.CREATED);
+    public ResponseEntity<String> addUser(@Valid @RequestBody UserDTO user) {
+        userService.save(user);
+        return new ResponseEntity<>("Registration was Successful.", HttpStatus.CREATED);
     }
 
     @DeleteMapping("/delete/{userId}")

@@ -1,15 +1,16 @@
 package com.sportArea.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import javax.swing.*;
+import java.util.List;
 
 @Entity
 @Table(name = "ProductUA")
-@Data
+@ToString(exclude ="response" )
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 public class ProductUA {
@@ -66,12 +67,8 @@ public class ProductUA {
 
     @Column(name = "promotion", columnDefinition = "INT default 0")
     private Integer promotion;
-
-//    @ManyToOne
-//    @JoinColumn(name = "languageId")
-//    private Language language;
 //
-//    @OneToOne(mappedBy = "productUA")
-//    private ProductUS productUS;
+//    @OneToMany(mappedBy = "productId")
+//    private List<Response> response;
 
 }

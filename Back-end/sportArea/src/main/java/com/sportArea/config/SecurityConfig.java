@@ -45,7 +45,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/").permitAll()
                 .antMatchers( "/user/auth/loqin").permitAll()
                 .antMatchers(HttpMethod.POST, "/user/registration").permitAll()
-                .antMatchers(HttpMethod.GET, "/user/list","/user/custom-callback","/user/**").permitAll()
+                .antMatchers(HttpMethod.GET, "/user/list","/user/custom-callback","/user/**", "/response/**").permitAll()
                 .antMatchers(HttpMethod.POST, "/user/**").permitAll()
                 .antMatchers(HttpMethod.DELETE, "/user/**").permitAll()
                 .antMatchers(HttpMethod.POST, "/product/**").permitAll()

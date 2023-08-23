@@ -19,10 +19,13 @@ public class UserRestExceptionHandler {
 
     @ExceptionHandler
     public ResponseEntity<UserErrorResponse> handlerException(UserException exc) {
-        UserErrorResponse userErrorResponse = new UserErrorResponse();
-        userErrorResponse.setStatus(exc.getHttpStatus().value());
-        userErrorResponse.setMessage(exc.getMessage());
-        userErrorResponse.setTimeStamp(new Date());
+        UserErrorResponse userErrorResponse = new UserErrorResponse(
+                exc.getHttpStatus().value(),
+                exc.getMessage(),
+                new Timestamp(System.currentTimeMillis()));
+//        userErrorResponse.setStatus(exc.getHttpStatus().value());
+//        userErrorResponse.setMessage(exc.getMessage());
+//        userErrorResponse.setTimeStamp(new Timestamp(System.currentTimeMillis()));
         logger.warn("From UserRestExceptionHandler method -handlerException- send message error ({})",
                 userErrorResponse.getMessage());
 

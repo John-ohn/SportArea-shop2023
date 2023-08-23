@@ -7,16 +7,13 @@ import lombok.Setter;
 
 import java.sql.Timestamp;
 
-
 @Getter
 @Setter
 @NoArgsConstructor
-public class UserErrorResponse extends AbstractErrorResponse{
+@AllArgsConstructor
+public class ProductExceptionResponse extends AbstractErrorResponse {
 
-    public UserErrorResponse(int status, String message, Timestamp timeStamp){
+    public ProductExceptionResponse(int status, String message, Timestamp timeStamp){
         super(status, message, timeStamp);
     }
-
-
-
 }
