@@ -11,7 +11,7 @@ import java.sql.Timestamp;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class AbstractErrorResponse {
+public abstract class AbstractErrorResponse {
     private int status;
     private String message;
     private Timestamp timeStamp;

@@ -70,6 +70,20 @@ public class UserServiceImp implements UserService {
             throw new UserException("User with email: " + email + " is not available.", HttpStatus.NOT_FOUND);
         }
     }
+    @Override
+    public  User findByEmailAndFirstName(String keyWord){
+        Optional<User> user = Optional.ofNullable(userRepository.findByEmailAndFirstName(keyWord));
+        if (user.isPresent()) {
+            logger.info("From UserServiceImp method -findByEmailAndFirstName- return User by keyWord: {} ", keyWord);
+            return user.get();
+        } else {
+            logger.warn("From UserServiceImp method -findByEmail- send war message " +
+                    "( User with keyWord: {} is not available. ({}))", keyWord, HttpStatus.NOT_FOUND);
+
+            throw new UserException("User with keyWord: " + keyWord + " is not available.", HttpStatus.NOT_FOUND);
+        }
+
+    }
 
     public void save(UserDTO userDTO) {
 
@@ -83,7 +97,7 @@ public class UserServiceImp implements UserService {
             String encodedPassword = passwordEncoder.encode(userDTO.getPassword());
             User user = createUserFromRegistration(userDTO);
             user.setPassword(encodedPassword);
-            user.setRole(Role.USER);
+            user.setRole(Role.ROLE_USER);
             user.setStatus(Status.ACTIVE);
             userRepository.save(user);
 

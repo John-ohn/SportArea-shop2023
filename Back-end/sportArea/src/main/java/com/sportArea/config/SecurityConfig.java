@@ -10,7 +10,9 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
+import org.springframework.security.oauth2.client.web.HttpSessionOAuth2AuthorizedClientRepository;
+import org.springframework.security.oauth2.client.web.OAuth2AuthorizedClientRepository;
 
 
 @Configuration
@@ -22,30 +24,21 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Autowired
     public SecurityConfig(JwtConfigurer jwtConfigurer) {
         this.jwtConfigurer = jwtConfigurer;
+
     }
-
-//    @Override
-//    protected void configure(HttpSecurity http) throws Exception {
-//        http
-//                .authorizeHttpRequests(authorize -> authorize
-//                        .anyRequest().authenticated()
-//                )
-//                .oauth2Login(withDefaults());
-//    }
-
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .csrf().disable()
-                .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and()
+//                .sessionManagement()
+//                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+//                .and()
                 .authorizeRequests()
                 .antMatchers("/").permitAll()
-                .antMatchers( "/user/auth/loqin").permitAll()
+                .antMatchers("/user/auth/loqin").permitAll()
                 .antMatchers(HttpMethod.POST, "/user/registration").permitAll()
-                .antMatchers(HttpMethod.GET, "/user/list","/user/custom-callback","/user/**", "/response/**").permitAll()
+                .antMatchers(HttpMethod.GET, "/user/list", "/user/custom-callback", "/user/**", "/response/**", "/oauth2").permitAll()
                 .antMatchers(HttpMethod.POST, "/user/**").permitAll()
                 .antMatchers(HttpMethod.DELETE, "/user/**").permitAll()
                 .antMatchers(HttpMethod.POST, "/product/**").permitAll()
@@ -62,76 +55,27 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .oauth2Login()
                 .authorizationEndpoint()
-                .baseUri("/login/oauth2/authorization")
+                .baseUri("/oauth2/authorization/google")
                 .and()
                 .redirectionEndpoint()
-                .baseUri("/login/oauth2/code/*")
+                .baseUri("{baseUrl}/login/oauth2/code/google")
 
-//                tokenEndpoint()
-//                .accessTokenResponseClient(accessTokenResponseClient())
-//                .and()
-//                .authorizationEndpoint()
-//                .baseUri("/oauth2/authorize-client")
-//                .authorizationRequestRepository(authorizationRequestRepository())
-
-//                .authorizationEndpoint()
-//                .baseUri("/oauth2/authorize")
-//                .and()
-//                .redirectionEndpoint()
-//                .baseUri("/login/oauth2/code/google")
-
-                ;
+        ;
     }
-
-
-
-//    @Bean
-//    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-//
-//        http
-//                .csrf().disable()
-//                .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-//                .and()
-//                .authorizeRequests()
-//                .antMatchers("/").permitAll()
-//                .antMatchers(HttpMethod.GET, "/user/**").hasAnyAuthority(Permission.DEVELOPERS_READ.getPermission())
-//                .antMatchers(HttpMethod.POST, "/user/**").hasAuthority(Permission.DEVELOPERS_WRITE.getPermission())
-//                .antMatchers(HttpMethod.DELETE, "/user/**").hasAuthority(Permission.DEVELOPERS_WRITE.getPermission())
-//                .antMatchers( "/user/auth/loqin").permitAll()
-//                .anyRequest()
-//                .authenticated()
-//                .and()
-//                .apply(jwtConfigurer);
-////                .formLogin()
-////                .loginPage("/showMyLoginPage")
-////                .loginProcessingUrl("/authenticateTheUser").permitAll()
-////                .and()
-////                .logout()
-////                .logoutRequestMatcher(new AntPathRequestMatcher("/api/logout", "POST"))
-////                .invalidateHttpSession(true)
-////                .clearAuthentication(true)
-////                .deleteCookies("JSESSIONID")
-////                .logoutSuccessUrl("/").permitAll();
-//
-//        return http.build();
-//    }
 
 
     @Override
     @Bean
-    public AuthenticationManager authenticationManagerBean() throws  Exception{
+    public AuthenticationManager authenticationManagerBean() throws Exception {
         return super.authenticationManagerBean();
     }
 
 
-
-//    @Bean
-//    protected DaoAuthenticationProvider daoAuthenticationProvider() {
-//        DaoAuthenticationProvider daoAuthenticationProvider = new DaoAuthenticationProvider();
-//        daoAuthenticationProvider.setPasswordEncoder(passwordEncoder());
-//        daoAuthenticationProvider.setUserDetailsService(userDetailsService);
-//        return daoAuthenticationProvider;
-//    }
+    @Bean
+    public OAuth2AuthorizedClientRepository authorizedClientRepository(
+            ClientRegistrationRepository clientRegistrationRepository) {
+        return new HttpSessionOAuth2AuthorizedClientRepository();
+    }
 
 
 }

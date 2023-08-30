@@ -10,7 +10,6 @@ import java.sql.Timestamp;
 @Getter
 @Setter
 @NoArgsConstructor
-@AllArgsConstructor
 public class ProductExceptionResponse extends AbstractErrorResponse {
 
     public ProductExceptionResponse(int status, String message, Timestamp timeStamp){

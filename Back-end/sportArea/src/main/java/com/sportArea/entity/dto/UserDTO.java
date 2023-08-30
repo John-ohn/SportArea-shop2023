@@ -22,11 +22,11 @@ public class UserDTO {
     private Long userId;
 
     @NotEmpty(message = "First Name can't be empty.")
-    @Pattern(regexp = "^[\\p{L}]{3,30}", message = "Write a correct First Name. Use only chars. Not more than 30.")
+    @Pattern(regexp = "^[\\p{L}]{3,30}", message = "Write a correct First Name. Use only chars. Min 3 not more than 30.")
     private String firstName;
 
     @NotEmpty(message = "Last Name can't be empty.")
-    @Pattern(regexp = "^[\\p{L}]{3,30}", message = "Write a correct Last Name. Use only chars. Not more than 30.")
+    @Pattern(regexp = "^[\\p{L}]{3,30}", message = "Write a correct Last Name. Use only chars. Min 3 not more than 30.")
     private String lastName;
 
     @NotEmpty(message = "Email can't be empty.")
@@ -34,7 +34,7 @@ public class UserDTO {
     private String email;
 
     @NotEmpty(message = "Phone number can't be empty.")
-    @Pattern(regexp = "^[0-9]{10,12}", message = "Write a correct phone number. Use only numbers. Not more than 12.")
+    @Pattern(regexp = "^[0-9]{10,12}", message = "Write a correct phone number. Use only numbers. Min 10 not more than 12.")
     private String phoneNumber;
 
     @NotBlank(message = "Password must not be blank")
