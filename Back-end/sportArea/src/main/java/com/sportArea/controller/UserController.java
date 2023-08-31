@@ -65,4 +65,10 @@ public class UserController {
                 "<body>\n" + "Hellow get all user :  <a  href=\"http://onlinestore.eu-central-1.elasticbeanstalk.com/user/list\">All User Page</a>\"\n" + "</body>\n" + "</html>";
     }
 
+
+    @GetMapping("/testAuth")
+    public ResponseEntity<?> testAuth() {
+      UserDTO userDTO = userService.findById(1L);
+        return  ResponseEntity.ok(userDTO);
+    }
 }

@@ -1,6 +1,7 @@
 package com.sportArea.service;
 
 import com.sportArea.entity.User;
+import com.sportArea.entity.dto.GoogleUserDTO;
 import com.sportArea.entity.dto.UserDTO;
 import org.springframework.data.repository.query.Param;
 

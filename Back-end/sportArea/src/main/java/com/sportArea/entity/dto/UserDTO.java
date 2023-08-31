@@ -2,11 +2,15 @@ package com.sportArea.entity.dto;
 
 import com.sportArea.entity.Role;
 import com.sportArea.entity.Status;
+import com.sportArea.entity.TypeRegistration;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.persistence.Column;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
@@ -47,4 +51,6 @@ public class UserDTO {
 
 
     private Status status;
+
+    private TypeRegistration typeRegistration;
 }

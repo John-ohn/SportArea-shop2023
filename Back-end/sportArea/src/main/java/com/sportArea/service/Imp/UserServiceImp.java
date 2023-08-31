@@ -3,7 +3,9 @@ package com.sportArea.service.Imp;
 import com.sportArea.dao.UserRepository;
 import com.sportArea.entity.Role;
 import com.sportArea.entity.Status;
+import com.sportArea.entity.TypeRegistration;
 import com.sportArea.entity.User;
+import com.sportArea.entity.dto.GoogleUserDTO;
 import com.sportArea.entity.dto.UserDTO;
 import com.sportArea.exception.UserException;
 import com.sportArea.service.UserService;
@@ -70,8 +72,9 @@ public class UserServiceImp implements UserService {
             throw new UserException("User with email: " + email + " is not available.", HttpStatus.NOT_FOUND);
         }
     }
+
     @Override
-    public  User findByEmailAndFirstName(String keyWord){
+    public User findByEmailAndFirstName(String keyWord) {
         Optional<User> user = Optional.ofNullable(userRepository.findByEmailAndFirstName(keyWord));
         if (user.isPresent()) {
             logger.info("From UserServiceImp method -findByEmailAndFirstName- return User by keyWord: {} ", keyWord);
@@ -99,6 +102,7 @@ public class UserServiceImp implements UserService {
             user.setPassword(encodedPassword);
             user.setRole(Role.ROLE_USER);
             user.setStatus(Status.ACTIVE);
+            user.setTypeRegistration(TypeRegistration.FORM_REGISTRATION);
             userRepository.save(user);
 
             logger.info("From UserServiceImp method -save- return new save User from Data Base.");
@@ -160,6 +164,7 @@ public class UserServiceImp implements UserService {
                 .password(null)
                 .role(user.getRole())
                 .status(user.getStatus())
+                .typeRegistration(TypeRegistration.FORM_REGISTRATION)
                 .build();
     }
 

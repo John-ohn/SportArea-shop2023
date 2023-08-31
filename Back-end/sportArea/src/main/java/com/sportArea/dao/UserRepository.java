@@ -28,4 +28,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Modifying
     @Query("DELETE  FROM User  WHERE userId BETWEEN :startId AND :endId")
     void deleteBetweenIds(@Param("startId") Long startId, @Param("endId") Long endId);
+
+
 }

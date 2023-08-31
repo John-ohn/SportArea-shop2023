@@ -1,6 +1,7 @@
 package com.sportArea.config;
 
 
+import com.sportArea.entity.Permission;
 import com.sportArea.security.JwtConfigurer;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -36,15 +37,19 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 //                .and()
                 .authorizeRequests()
                 .antMatchers("/").permitAll()
-                .antMatchers("/user/auth/loqin").permitAll()
+                .antMatchers("/user/auth/login").permitAll()
                 .antMatchers(HttpMethod.POST, "/user/registration").permitAll()
-                .antMatchers(HttpMethod.GET, "/user/list", "/user/custom-callback", "/user/**", "/response/**", "/oauth2").permitAll()
-                .antMatchers(HttpMethod.POST, "/user/**").permitAll()
-                .antMatchers(HttpMethod.DELETE, "/user/**").permitAll()
-                .antMatchers(HttpMethod.POST, "/product/**").permitAll()
-                .antMatchers(HttpMethod.GET, "/product/**").permitAll()
-                .antMatchers(HttpMethod.POST, "/product/**").permitAll()
-                .antMatchers(HttpMethod.DELETE, "/product/**").permitAll()
+                .antMatchers(HttpMethod.GET, "/user/testAuth").hasAnyAuthority(Permission.DEVELOPERS_READ.getPermission())
+                .antMatchers(HttpMethod.GET, "/response/**", "/oauth2",
+                        "/user/list",
+                        "/user/{userId}",
+                        "/user/registration",
+                        "/user/delete/{userId}",
+                        "/user/delete/between",
+                        "/user/welcome",
+                        "/product/**").permitAll()
+                .antMatchers(HttpMethod.POST, "/user/**", "/product/**").permitAll()
+                .antMatchers(HttpMethod.DELETE, "/user/**", "/product/**").permitAll()
 //                .antMatchers(HttpMethod.GET, "/user/**").hasAnyAuthority(Permission.DEVELOPERS_READ.getPermission())
 //                .antMatchers(HttpMethod.POST, "/user/**").hasAuthority(Permission.DEVELOPERS_WRITE.getPermission())
 //                .antMatchers(HttpMethod.DELETE, "/user/**").hasAuthority(Permission.DEVELOPERS_WRITE.getPermission())
@@ -58,7 +63,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .baseUri("/oauth2/authorization/google")
                 .and()
                 .redirectionEndpoint()
-                .baseUri("{baseUrl}/login/oauth2/code/google")
+                .baseUri("/login/oauth2/code/google")
 
         ;
     }
@@ -70,12 +75,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return super.authenticationManagerBean();
     }
 
-
     @Bean
     public OAuth2AuthorizedClientRepository authorizedClientRepository(
             ClientRegistrationRepository clientRegistrationRepository) {
         return new HttpSessionOAuth2AuthorizedClientRepository();
     }
-
 
 }
