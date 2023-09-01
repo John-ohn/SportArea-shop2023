@@ -23,19 +23,21 @@ public class CommentController {
     }
 
     @GetMapping("/list")
-    public List<Comment> list (){
+    public List<CommentDTO> list (){
        return commentService.findAll();
     }
 
-    @GetMapping("/company-response")
-    public List<Comment> findCompanyResponse (){
-        return commentService.findCompanyResponse();
+    @GetMapping("/company-comments")
+    public List<Comment> findCompanyComments (){
+        return commentService.findCompanyComments();
     }
 
     @GetMapping("/{id}")
     public List<CommentDTO> findAllUserComments (@PathVariable("id") Long id){
         return commentService.findAllUserComments(id);
     }
+
+
 
 
 

@@ -21,7 +21,7 @@ public interface CommentRepository extends JpaRepository<Comment,Long> {
     @QueryHints(@QueryHint(name = org.hibernate.jpa.QueryHints.HINT_READONLY, value = "true"))
     @Query("SELECT c FROM Comment c LEFT JOIN FETCH c.userId  " +
             "LEFT JOIN FETCH c.productId WHERE c.note = 'FOR_COMPANY'" )
-    List<Comment> findCompanyResponse();
+    List<Comment> findCompanyComments();
 
     @QueryHints(@QueryHint(name = org.hibernate.jpa.QueryHints.HINT_READONLY, value = "true"))
     @Query("SELECT c FROM Comment c " +

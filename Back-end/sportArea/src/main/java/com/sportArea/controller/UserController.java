@@ -1,6 +1,5 @@
 package com.sportArea.controller;
 
-import com.sportArea.entity.User;
 import com.sportArea.entity.dto.UserDTO;
 import com.sportArea.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;

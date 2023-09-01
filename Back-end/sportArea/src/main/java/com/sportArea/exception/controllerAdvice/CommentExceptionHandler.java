@@ -1,7 +1,7 @@
 package com.sportArea.exception.controllerAdvice;
 
-import com.sportArea.exception.UserException;
-import com.sportArea.exception.model.UserErrorResponse;
+import com.sportArea.exception.CommentException;
+import com.sportArea.exception.model.CommentErrorResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -10,22 +10,21 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 
 import java.sql.Timestamp;
 
-
 @ControllerAdvice
-public class UserRestExceptionHandler {
+public class CommentExceptionHandler {
 
     Logger logger = LoggerFactory.getLogger(UserRestExceptionHandler.class);
 
     @ExceptionHandler
-    public ResponseEntity<UserErrorResponse> handlerException(UserException exc) {
-        UserErrorResponse userErrorResponse = new UserErrorResponse(
+    public ResponseEntity<CommentErrorResponse> handlerException(CommentException exc) {
+        CommentErrorResponse commentErrorResponse = new CommentErrorResponse(
                 exc.getHttpStatus().value(),
                 exc.getMessage(),
                 new Timestamp(System.currentTimeMillis()));
+
         logger.warn("From UserRestExceptionHandler method -handlerException- send message error ({})",
-                userErrorResponse.getMessage());
+                commentErrorResponse.getMessage());
 
-        return new ResponseEntity<>(userErrorResponse, exc.getHttpStatus());
+        return new ResponseEntity<>(commentErrorResponse, exc.getHttpStatus());
     }
-
 }

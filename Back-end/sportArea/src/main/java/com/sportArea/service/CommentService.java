@@ -10,9 +10,9 @@ public interface CommentService {
 
     CommentDTO findById(Long responseId);
 
-    List<Comment> findAll();
+    List<CommentDTO> findAll();
 
-    List<Comment> findCompanyResponse();
+    List<Comment> findCompanyComments();
 
     List<CommentDTO> findAllUserComments(Long userId);
 

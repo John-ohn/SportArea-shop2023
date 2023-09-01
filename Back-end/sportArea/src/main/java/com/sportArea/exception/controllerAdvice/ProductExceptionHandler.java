@@ -20,10 +20,8 @@ public class ProductExceptionHandler {
         ProductExceptionResponse productExceptionResponse = new ProductExceptionResponse( exc.getHttpStatus().value(),
                 exc.getMessage(),
                 new Timestamp(System.currentTimeMillis()));
-//        productExceptionResponse.setStatus(exc.getHttpStatus().value());
-//        productExceptionResponse.setMessage(exc.getMessage());
-//        productExceptionResponse.setTimeStamp(new Timestamp(System.currentTimeMillis()));
-        logger.warn("From ProductExeptionHandler method -handlerException- send message error ({})",
+
+        logger.warn("From ProductExceptionHandler method -handlerException- send message error ({})",
                 productExceptionResponse.getMessage());
 
         return new ResponseEntity<>(productExceptionResponse, exc.getHttpStatus());

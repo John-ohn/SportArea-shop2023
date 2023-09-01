@@ -3,8 +3,6 @@ package com.sportArea.entity;
 import lombok.*;
 
 import javax.persistence.*;
-import javax.swing.*;
-import java.util.List;
 
 @Entity
 @Table(name = "ProductUA")
@@ -42,10 +40,13 @@ public class ProductUA {
     private String taste;
 
     @Column(name = "price")
-    private Long price;
+    private Double price;
 
     @Column(name="currency")
     private String currency;
+
+    @Column(name="weight")
+    private Double weight;
 
     @Column(name = "article")
     private Long article;

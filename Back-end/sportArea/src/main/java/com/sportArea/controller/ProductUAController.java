@@ -1,11 +1,13 @@
 package com.sportArea.controller;
 
 import com.sportArea.entity.ProductUA;
+import com.sportArea.entity.dto.ProductUaDTO;
 import com.sportArea.service.ProductUAService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.method.P;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -24,37 +26,48 @@ public class ProductUAController {
     }
 
     @GetMapping("/list")
-    public List<ProductUA> findAll() {
-        List<ProductUA> productList = productService.findAll();
-        logger.info("From ProductUAController method -findAll- /product/list. Return List of ProductUA");
+    public List<ProductUaDTO> findAll() {
+        List<ProductUaDTO> productList = productService.findAll();
+        logger.info("From ProductUAController method -findAll- /product/list. Return List of ProductDTO");
         return productList;
     }
 
+    @GetMapping("/{productId}")
+    public ProductUaDTO getProductById(@PathVariable("productId") Long productId) {
+        ProductUaDTO productDTO = productService.findById(productId);
+        logger.info("From ProductUAController method -getProductById- /product/{productId}. Return ProductUA");
+
+        return productDTO;
+
+    }
+
     @PostMapping("/add")
-    public ResponseEntity<ProductUA> addProductUA(@RequestBody ProductUA product) {
-        return ResponseEntity.ok(productService.save(product));
+    public ResponseEntity<String> addProductUA(@RequestBody ProductUaDTO product) {
+        productService.save(product);
+
+        return ResponseEntity.ok("Product was added successfully.");
     }
 
     @GetMapping("/main-search")
-    public List<ProductUA> mainSearchProduct(@RequestParam("keyWord") String keyWord) {
+    public List<ProductUaDTO> mainSearchProduct(@RequestParam("keyWord") String keyWord) {
 
-        List<ProductUA> productList = productService.searchByKeyWordInTypeSubtype(keyWord);
+        List<ProductUaDTO> productList = productService.searchByKeyWordInTypeSubtype(keyWord);
         logger.info("From ProductUAController method -main-search- /product/main-searchProduct. Return List of ProductUA");
         return productList;
     }
 
     @GetMapping("/searchProduct")
-    public List<ProductUA> searchProductKeyWordDescription(@RequestParam("keyWord") String keyWord) {
+    public List<ProductUaDTO> searchProductKeyWordDescription(@RequestParam("keyWord") String keyWord) {
 
-        List<ProductUA> productList = productService.searchByKeyWordInDescription(keyWord);
+        List<ProductUaDTO> productList = productService.searchByKeyWordInDescription(keyWord);
         logger.info("From ProductUAController method -searchProductKeyWord- /product/searchProduct. Return List of ProductUA");
         return productList;
     }
 
     @GetMapping("/promotion")
-    public List<ProductUA> searchByPromotionPrice() {
+    public List<ProductUaDTO> searchByPromotionPrice() {
 
-        List<ProductUA> productList = productService.searchByPromotionPrice();
+        List<ProductUaDTO> productList = productService.searchByPromotionPrice();
         logger.info("From ProductUAController method -searchByBestPrice- /product/promotion. Return List of ProductUA");
         return productList;
     }

@@ -2,22 +2,23 @@ package com.sportArea.service;
 
 
 import com.sportArea.entity.ProductUA;
+import com.sportArea.entity.dto.ProductUaDTO;
 
 import java.util.List;
 
 public interface ProductUAService {
 
-    ProductUA findById(Long productId);
+    ProductUaDTO findById(Long productId);
 
-    List<ProductUA> findAll();
+    List<ProductUaDTO> findAll();
 
-    List<ProductUA> searchByKeyWordInDescription(String keyWord);
+    List<ProductUaDTO> searchByKeyWordInDescription(String keyWord);
 
-    List<ProductUA> searchByKeyWordInTypeSubtype(String keyWord);
+    List<ProductUaDTO> searchByKeyWordInTypeSubtype(String keyWord);
 
-    List<ProductUA> searchByPromotionPrice();
+    List<ProductUaDTO> searchByPromotionPrice();
 
-    ProductUA save(ProductUA product);
+    void save(ProductUaDTO product);
 
     void delete(Long productId);
 
