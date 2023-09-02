@@ -29,4 +29,11 @@ public interface CommentRepository extends JpaRepository<Comment,Long> {
             "LEFT JOIN FETCH c.productId " +
             "WHERE u.userId =:Id " )
     List<Comment> findAllUserComments(@Param("Id") Long userId);
+
+    @QueryHints(@QueryHint(name = org.hibernate.jpa.QueryHints.HINT_READONLY, value = "true"))
+    @Query("SELECT c FROM Comment c " +
+            "LEFT JOIN FETCH c.userId " +
+            "LEFT JOIN FETCH c.productId p " +
+            "WHERE p.productId =:productId")
+    List<Comment> findAllProductComments(@Param("productId") Long productId);
 }

@@ -175,6 +175,7 @@ public class ProductUAServiceImp implements ProductUAService {
         }
     }
 
+    @Override
     public ProductUA createProductFromProductUaDTO(ProductUaDTO productUaDTO) {
         ProductUA productUA = new ProductUA();
         productUA.setProductName(productUaDTO.getProductName());
@@ -185,7 +186,9 @@ public class ProductUAServiceImp implements ProductUAService {
         productUA.setProducingCountry(productUaDTO.getProducingCountry());
         productUA.setTaste(productUaDTO.getTaste());
         productUA.setPrice(productUaDTO.getPrice());
+        productUA.setPromotionPrice(productUaDTO.getPromotionPrice());
         productUA.setCurrency(productUaDTO.getCurrency());
+        productUA.setWeight(productUaDTO.getWeight());
         productUA.setArticle(productUaDTO.getArticle());
         productUA.setProductAmount(productUaDTO.getProductAmount());
         productUA.setDescription(productUaDTO.getDescription());
@@ -193,12 +196,15 @@ public class ProductUAServiceImp implements ProductUAService {
         productUA.setRating(productUaDTO.getRating());
         productUA.setStatus(productUaDTO.getStatus());
         productUA.setPromotion(productUaDTO.getPromotion());
+        productUA.setUrlImage(productUaDTO.getUrlImage());
 
         return productUA;
     }
 
+    @Override
     public ProductUaDTO createProductDTOFromProductUA(ProductUA productUA) {
         return ProductUaDTO.builder()
+                .productId(productUA.getProductId())
                 .productName(productUA.getProductName())
                 .brands(productUA.getBrands())
                 .type(productUA.getType())
@@ -207,6 +213,8 @@ public class ProductUAServiceImp implements ProductUAService {
                 .producingCountry(productUA.getProducingCountry())
                 .taste(productUA.getTaste())
                 .price(productUA.getPrice())
+                .promotionPrice(productUA.getPromotionPrice())
+                .weight(productUA.getWeight())
                 .currency(productUA.getCurrency())
                 .article(productUA.getArticle())
                 .productAmount(productUA.getProductAmount())
@@ -215,6 +223,7 @@ public class ProductUAServiceImp implements ProductUAService {
                 .rating(productUA.getRating())
                 .status(productUA.getStatus())
                 .promotion(productUA.getPromotion())
+                .urlImage(productUA.getUrlImage())
                 .build();
     }
 

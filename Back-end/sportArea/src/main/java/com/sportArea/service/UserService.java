@@ -24,4 +24,8 @@ public interface UserService {
 
     void save(UserDTO user);
 
+    User createUserFromRegistration(UserDTO userDTO);
+
+    UserDTO createUserDTOFromUser(User user);
+
 }

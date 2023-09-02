@@ -3,9 +3,12 @@ package com.sportArea.service.Imp;
 import com.sportArea.dao.CommentRepository;
 import com.sportArea.entity.Comment;
 import com.sportArea.entity.dto.CommentDTO;
+import com.sportArea.entity.dto.ProductUaDTO;
+import com.sportArea.entity.dto.UserDTO;
 import com.sportArea.exception.CommentException;
-import com.sportArea.exception.UserException;
 import com.sportArea.service.CommentService;
+import com.sportArea.service.ProductUAService;
+import com.sportArea.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
+
 
 @Service
 @Transactional
@@ -24,11 +27,16 @@ public class CommentServiceImp implements CommentService {
 
     Logger logger = LoggerFactory.getLogger(UserServiceImp.class);
 
+    private final UserService userService;
+
+    private final ProductUAService productUAService;
     private final CommentRepository commentRepository;
 
     @Autowired
-    public CommentServiceImp(CommentRepository commentRepository) {
+    public CommentServiceImp(CommentRepository commentRepository, UserService userService, ProductUAService productUAService) {
         this.commentRepository = commentRepository;
+        this.userService = userService;
+        this.productUAService = productUAService;
     }
 
     @Override
@@ -56,9 +64,37 @@ public class CommentServiceImp implements CommentService {
             logger.info("From CommentServiceImp method -findByCommentId- return List to CommentDTO by id: {} ", userId);
             return commentDTO;
         } else {
-            logger.warn("From CommentServiceImp method -findById- send war message " +
-                    "( Comment with responseId: {} is not available. ({}))", userId, HttpStatus.NOT_FOUND.name());
+            logger.warn("From CommentServiceImp method -findAllUserComments- send war message " +
+                    "( Comment with userId: {} is not available. ({}))", userId, HttpStatus.NOT_FOUND.name());
             throw new CommentException("User with userId: " + userId + " is not available.", HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @Override
+    public List<CommentDTO> findAllProductComments(Long productId) {
+        List<Comment> commentList = commentRepository.findAllProductComments(productId);
+        if (!(commentList.size() == 0)) {
+            List<CommentDTO> commentDTO = commentList.stream()
+                    .map(a->{
+                      UserDTO userDTO= userService.createUserDTOFromUser(a.getUserId());
+                      ProductUaDTO productUaDTO = productUAService.createProductDTOFromProductUA(a.getProductId());
+                        CommentDTO comment = createCommentDTOFromComment(a);
+                        comment.setUserDTO(userDTO);
+                        comment.setProductDTO(productUaDTO);
+                        return comment;
+                    })
+                    .toList();
+
+//            convertToCommentDTOList(commentList)
+//                    .stream().map(a -> a.setUserDTO(userService.createUserDTOFromUser(a.getUserId()))).toList();
+
+            logger.info("From CommentServiceImp method -findAllProductComments- return List to CommentDTO by id: {} ", productId);
+
+            return commentDTO;
+        } else {
+            logger.warn("From CommentServiceImp method -findAllProductComments- send war message " +
+                    "( Comment with productId: {} is not available. ({}))", productId, HttpStatus.NOT_FOUND.name());
+            throw new CommentException("Product with productId: " + productId + " is not available.", HttpStatus.NOT_FOUND);
         }
     }
 
@@ -104,6 +140,16 @@ public class CommentServiceImp implements CommentService {
         return null;
     }
 
+
+    public Comment createCommentFromCommentDTO(CommentDTO commentDTO) {
+        return Comment.builder()
+                .message(commentDTO.getMessage())
+                .note(commentDTO.getNote())
+                .userId(userService.createUserFromRegistration(commentDTO.getUserDTO()))
+                .productId(productUAService.createProductFromProductUaDTO(commentDTO.getProductDTO()))
+                .build();
+    }
+
     public CommentDTO createCommentDTOFromComment(Comment comment) {
 
         return CommentDTO
@@ -111,8 +157,8 @@ public class CommentServiceImp implements CommentService {
                 .commentId(comment.getCommentId())
                 .message(comment.getMessage())
                 .note(comment.getNote())
-                .userId(comment.getUserId())
-                .productId(comment.getProductId())
+                .userDTO(userService.createUserDTOFromUser(comment.getUserId()))
+                .productDTO(productUAService.createProductDTOFromProductUA(comment.getProductId()))
                 .build();
     }
 

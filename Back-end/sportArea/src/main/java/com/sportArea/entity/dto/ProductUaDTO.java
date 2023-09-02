@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.math.BigDecimal;
+
 
 @Data
 @AllArgsConstructor
@@ -30,11 +32,13 @@ public class ProductUaDTO {
 
     private String taste;
 
-    private Double price;
+    private BigDecimal price;
+
+    private BigDecimal promotionPrice;
 
     private String currency;
 
-    private Double weight;
+    private String weight;
 
     private Long article;
 
@@ -49,4 +53,6 @@ public class ProductUaDTO {
     private String status;
 
     private Integer promotion;
+
+    private String urlImage;
 }

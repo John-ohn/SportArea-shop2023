@@ -143,6 +143,7 @@ public class UserServiceImp implements UserService {
         }
     }
 
+    @Override
     public User createUserFromRegistration(UserDTO userDTO) {
         User user = new User();
         user.setFirstName(userDTO.getFirstName());
@@ -153,6 +154,7 @@ public class UserServiceImp implements UserService {
         return user;
     }
 
+    @Override
     public UserDTO createUserDTOFromUser(User user) {
         return UserDTO
                 .builder()

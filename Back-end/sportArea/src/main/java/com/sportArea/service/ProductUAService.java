@@ -23,4 +23,8 @@ public interface ProductUAService {
     void delete(Long productId);
 
     void deleteProductUABetweenIds(Long startId, Long endId);
+
+    ProductUA createProductFromProductUaDTO(ProductUaDTO productUaDTO);
+
+    ProductUaDTO createProductDTOFromProductUA(ProductUA productUA);
 }

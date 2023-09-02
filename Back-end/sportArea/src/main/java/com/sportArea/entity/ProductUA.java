@@ -3,6 +3,7 @@ package com.sportArea.entity;
 import lombok.*;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 
 @Entity
 @Table(name = "ProductUA")
@@ -40,13 +41,16 @@ public class ProductUA {
     private String taste;
 
     @Column(name = "price")
-    private Double price;
+    private BigDecimal price;
+
+    @Column(name="promotionPrice")
+    private BigDecimal promotionPrice;
 
     @Column(name="currency")
     private String currency;
 
     @Column(name="weight")
-    private Double weight;
+    private String weight;
 
     @Column(name = "article")
     private Long article;
@@ -68,6 +72,9 @@ public class ProductUA {
 
     @Column(name = "promotion", columnDefinition = "INT default 0")
     private Integer promotion;
+
+    @Column(name="urlImage")
+    private String urlImage;
 //
 //    @OneToMany(mappedBy = "productId")
 //    private List<Response> response;
