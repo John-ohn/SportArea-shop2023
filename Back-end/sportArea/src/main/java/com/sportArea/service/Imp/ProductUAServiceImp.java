@@ -178,6 +178,7 @@ public class ProductUAServiceImp implements ProductUAService {
     @Override
     public ProductUA createProductFromProductUaDTO(ProductUaDTO productUaDTO) {
         ProductUA productUA = new ProductUA();
+        productUA.setProductId(productUaDTO.getProductId());
         productUA.setProductName(productUaDTO.getProductName());
         productUA.setBrands(productUaDTO.getBrands());
         productUA.setType(productUaDTO.getType());
@@ -203,28 +204,29 @@ public class ProductUAServiceImp implements ProductUAService {
 
     @Override
     public ProductUaDTO createProductDTOFromProductUA(ProductUA productUA) {
-        return ProductUaDTO.builder()
-                .productId(productUA.getProductId())
-                .productName(productUA.getProductName())
-                .brands(productUA.getBrands())
-                .type(productUA.getType())
-                .subtype(productUA.getSubtype())
-                .formOfIssue(productUA.getFormOfIssue())
-                .producingCountry(productUA.getProducingCountry())
-                .taste(productUA.getTaste())
-                .price(productUA.getPrice())
-                .promotionPrice(productUA.getPromotionPrice())
-                .weight(productUA.getWeight())
-                .currency(productUA.getCurrency())
-                .article(productUA.getArticle())
-                .productAmount(productUA.getProductAmount())
-                .description(productUA.getDescription())
-                .productConsist(productUA.getProductConsist())
-                .rating(productUA.getRating())
-                .status(productUA.getStatus())
-                .promotion(productUA.getPromotion())
-                .urlImage(productUA.getUrlImage())
-                .build();
+
+            return ProductUaDTO.builder()
+                    .productId(productUA.getProductId())
+                    .productName(productUA.getProductName())
+                    .brands(productUA.getBrands())
+                    .type(productUA.getType())
+                    .subtype(productUA.getSubtype())
+                    .formOfIssue(productUA.getFormOfIssue())
+                    .producingCountry(productUA.getProducingCountry())
+                    .taste(productUA.getTaste())
+                    .price(productUA.getPrice())
+                    .promotionPrice(productUA.getPromotionPrice())
+                    .weight(productUA.getWeight())
+                    .currency(productUA.getCurrency())
+                    .article(productUA.getArticle())
+                    .productAmount(productUA.getProductAmount())
+                    .description(productUA.getDescription())
+                    .productConsist(productUA.getProductConsist())
+                    .rating(productUA.getRating())
+                    .status(productUA.getStatus())
+                    .promotion(productUA.getPromotion())
+                    .urlImage(productUA.getUrlImage())
+                    .build();
     }
 
     public List<ProductUaDTO> convertToProductDTOList(List<ProductUA> productList) {

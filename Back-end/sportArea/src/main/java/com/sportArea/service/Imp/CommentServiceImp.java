@@ -2,9 +2,11 @@ package com.sportArea.service.Imp;
 
 import com.sportArea.dao.CommentRepository;
 import com.sportArea.entity.Comment;
+import com.sportArea.entity.Note;
+import com.sportArea.entity.ProductUA;
+import com.sportArea.entity.dto.AddComment;
 import com.sportArea.entity.dto.CommentDTO;
 import com.sportArea.entity.dto.ProductUaDTO;
-import com.sportArea.entity.dto.UserDTO;
 import com.sportArea.exception.CommentException;
 import com.sportArea.service.CommentService;
 import com.sportArea.service.ProductUAService;
@@ -30,6 +32,7 @@ public class CommentServiceImp implements CommentService {
     private final UserService userService;
 
     private final ProductUAService productUAService;
+
     private final CommentRepository commentRepository;
 
     @Autowired
@@ -74,19 +77,7 @@ public class CommentServiceImp implements CommentService {
     public List<CommentDTO> findAllProductComments(Long productId) {
         List<Comment> commentList = commentRepository.findAllProductComments(productId);
         if (!(commentList.size() == 0)) {
-            List<CommentDTO> commentDTO = commentList.stream()
-                    .map(a->{
-                      UserDTO userDTO= userService.createUserDTOFromUser(a.getUserId());
-                      ProductUaDTO productUaDTO = productUAService.createProductDTOFromProductUA(a.getProductId());
-                        CommentDTO comment = createCommentDTOFromComment(a);
-                        comment.setUserDTO(userDTO);
-                        comment.setProductDTO(productUaDTO);
-                        return comment;
-                    })
-                    .toList();
-
-//            convertToCommentDTOList(commentList)
-//                    .stream().map(a -> a.setUserDTO(userService.createUserDTOFromUser(a.getUserId()))).toList();
+            List<CommentDTO> commentDTO = convertToCommentDTOList(commentList);
 
             logger.info("From CommentServiceImp method -findAllProductComments- return List to CommentDTO by id: {} ", productId);
 
@@ -94,7 +85,7 @@ public class CommentServiceImp implements CommentService {
         } else {
             logger.warn("From CommentServiceImp method -findAllProductComments- send war message " +
                     "( Comment with productId: {} is not available. ({}))", productId, HttpStatus.NOT_FOUND.name());
-            throw new CommentException("Product with productId: " + productId + " is not available.", HttpStatus.NOT_FOUND);
+            throw new CommentException("Comment with productId: " + productId + " is not available. Product don't have comments.", HttpStatus.NOT_FOUND);
         }
     }
 
@@ -126,8 +117,10 @@ public class CommentServiceImp implements CommentService {
     }
 
     @Override
-    public List<Comment> findCompanyComments() {
-        return commentRepository.findCompanyComments();
+    public List<CommentDTO> findCompanyComments() {
+        List<Comment> commentList = commentRepository.findCompanyComments();
+
+        return convertToCommentDTOList(commentList);
     }
 
     @Override
@@ -136,8 +129,21 @@ public class CommentServiceImp implements CommentService {
     }
 
     @Override
-    public Comment save(Comment comment) {
-        return null;
+    public void addProductComment(AddComment comment) {
+        if (!(comment == null)) {
+            comment.setNote(Note.FOR_PRODUCT);
+            commentRepository.addProductComment(
+                    comment.getMessage(),
+                    comment.getNote().toString(),
+                    comment.getUserId(),
+                    comment.getProductId(),
+                    comment.getProductRating()
+            );
+
+            addProductRating(comment.getProductId());
+
+            logger.info("Add new comment !");
+        }
     }
 
 
@@ -145,28 +151,52 @@ public class CommentServiceImp implements CommentService {
         return Comment.builder()
                 .message(commentDTO.getMessage())
                 .note(commentDTO.getNote())
-                .userId(userService.createUserFromRegistration(commentDTO.getUserDTO()))
-                .productId(productUAService.createProductFromProductUaDTO(commentDTO.getProductDTO()))
+                .user(userService.createUserFromRegistration(commentDTO.getUserDTO()))
+                .product(productUAService.createProductFromProductUaDTO(commentDTO.getProductDTO()))
+                .productRating(commentDTO.getProductRating())
                 .build();
     }
 
     public CommentDTO createCommentDTOFromComment(Comment comment) {
 
-        return CommentDTO
-                .builder()
-                .commentId(comment.getCommentId())
-                .message(comment.getMessage())
-                .note(comment.getNote())
-                .userDTO(userService.createUserDTOFromUser(comment.getUserId()))
-                .productDTO(productUAService.createProductDTOFromProductUA(comment.getProductId()))
-                .build();
+        if (comment.getProduct() == null) {
+            return CommentDTO
+                    .builder()
+                    .commentId(comment.getCommentId())
+                    .message(comment.getMessage())
+                    .note(comment.getNote())
+                    .userDTO(userService.createUserDTOFromUser(comment.getUser()))
+                    .build();
+        } else {
+            return CommentDTO
+                    .builder()
+                    .commentId(comment.getCommentId())
+                    .message(comment.getMessage())
+                    .note(comment.getNote())
+                    .productRating(comment.getProductRating())
+                    .userDTO(userService.createUserDTOFromUser(comment.getUser()))
+                    .productDTO(productUAService.createProductDTOFromProductUA(comment.getProduct()))
+                    .build();
+        }
     }
 
     public List<CommentDTO> convertToCommentDTOList(List<Comment> commentList) {
-        return commentList
-                .stream()
+
+        List<CommentDTO> commentDTO = commentList.stream()
                 .map(this::createCommentDTOFromComment)
                 .toList();
+
+        return commentDTO;
+    }
+
+    public void addProductRating(Long productId) {
+        Float productRating = commentRepository.getProductRating(productId);
+
+        ProductUaDTO productUA = productUAService.findById(productId);
+        productUA.setRating(productRating);
+
+        productUAService.save(productUA);
+        logger.info("Add new product rating: {}; productId: {} ", productRating, productId);
     }
 
 }

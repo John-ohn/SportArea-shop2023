@@ -51,7 +51,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         "/user/welcome",
                         "/product/**",
                         "/comment/**").permitAll()
-                .antMatchers(HttpMethod.POST, "/user/**", "/product/**").permitAll()
+                .antMatchers(HttpMethod.POST, "/user/**", "/product/**", "/comment/**").permitAll()
                 .antMatchers(HttpMethod.DELETE, "/user/**", "/product/**").permitAll()
 //                .antMatchers(HttpMethod.GET, "/user/**").hasAnyAuthority(Permission.DEVELOPERS_READ.getPermission())
 //                .antMatchers(HttpMethod.POST, "/user/**").hasAuthority(Permission.DEVELOPERS_WRITE.getPermission())

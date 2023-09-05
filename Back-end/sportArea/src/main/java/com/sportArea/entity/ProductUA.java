@@ -65,7 +65,7 @@ public class ProductUA {
     private String productConsist;
 
     @Column(name = "rating")
-    private Integer rating;
+    private Float rating;
 
     @Column(name = "status")
     private String status;

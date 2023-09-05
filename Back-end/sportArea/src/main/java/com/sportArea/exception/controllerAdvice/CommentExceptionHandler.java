@@ -22,7 +22,7 @@ public class CommentExceptionHandler {
                 exc.getMessage(),
                 new Timestamp(System.currentTimeMillis()));
 
-        logger.warn("From UserRestExceptionHandler method -handlerException- send message error ({})",
+        logger.warn("From CommentExceptionHandler method -handlerException- send message error ({})",
                 commentErrorResponse.getMessage());
 
         return new ResponseEntity<>(commentErrorResponse, exc.getHttpStatus());

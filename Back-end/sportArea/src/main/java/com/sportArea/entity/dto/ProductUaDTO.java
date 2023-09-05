@@ -48,7 +48,7 @@ public class ProductUaDTO {
 
     private String productConsist;
 
-    private Integer rating;
+    private Float rating;
 
     private String status;
 
