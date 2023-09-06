@@ -68,7 +68,28 @@ public class ProductUAController {
     public List<ProductUaDTO> searchByPromotionPrice() {
 
         List<ProductUaDTO> productList = productService.searchByPromotionPrice();
-        logger.info("From ProductUAController method -searchByBestPrice- /product/promotion. Return List of ProductUA");
+        logger.info("From ProductUAController method -searchByBestPrice- /product/promotion. Return List of Products");
+        return productList;
+    }
+
+    @GetMapping("/searchProductPriceAsc")
+    public List<ProductUaDTO> sortByPriceAscKeyWordDescription(@RequestParam("keyWord") String keyWord) {
+        List<ProductUaDTO> productList = productService.sortByPriceAscKeyWordDescription(keyWord);
+        logger.info("From ProductUAController method -sortByPriceAscKeyWordDescription- /product/searchProductPriceAsc. Return List of Products");
+        return productList;
+    }
+
+    @GetMapping("/searchProductPriceDesc")
+    public List<ProductUaDTO> sortByPriceDescKeyWordDescription(@RequestParam("keyWord") String keyWord) {
+        List<ProductUaDTO> productList = productService.sortByPriceDescKeyWordDescription(keyWord);
+        logger.info("From ProductUAController method -sortByPriceDescKeyWordDescription- /product/searchProductPriceDesc. Return List of Products");
+        return productList;
+    }
+
+    @GetMapping("/searchProductRatingDesc")
+    public List<ProductUaDTO> sortByRatingDescKeyWordDescription(@RequestParam("keyWord") String keyWord) {
+        List<ProductUaDTO> productList = productService.sortByRatingDescKeyWordDescription(keyWord);
+        logger.info("From ProductUAController method -sortByRatingDescKeyWordDescription- /product/searchProductRatingDesc. Return List of Products");
         return productList;
     }
 
