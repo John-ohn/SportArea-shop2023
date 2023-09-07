@@ -5,6 +5,7 @@ import com.sportArea.entity.ProductUA;
 import com.sportArea.entity.dto.ProductUaDTO;
 import org.springframework.data.repository.query.Param;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 public interface ProductUAService {
@@ -34,4 +35,12 @@ public interface ProductUAService {
     List<ProductUaDTO> sortByPriceAscKeyWordDescription(String keyWord);
 
     List<ProductUaDTO> sortByRatingDescKeyWordDescription(String keyWord);
+
+    List<ProductUaDTO> sortByProductNameAscKeyWordDescription(String keyWord);
+
+    List<ProductUaDTO> sortByPriceBetweenKeyWordDescription(
+            String keyWord,
+            BigDecimal lowPrice,
+            BigDecimal highPrice
+    );
 }

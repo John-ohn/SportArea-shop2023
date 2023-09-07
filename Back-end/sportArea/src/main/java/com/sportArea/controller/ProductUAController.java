@@ -6,10 +6,12 @@ import com.sportArea.service.ProductUAService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.method.P;
 import org.springframework.web.bind.annotation.*;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 
@@ -92,5 +94,24 @@ public class ProductUAController {
         logger.info("From ProductUAController method -sortByRatingDescKeyWordDescription- /product/searchProductRatingDesc. Return List of Products");
         return productList;
     }
+
+    @GetMapping("/searchProductNameAsc")
+    public List<ProductUaDTO> sortByProductNameAscKeyWordDescription(@RequestParam("keyWord") String keyWord) {
+        List<ProductUaDTO> productList = productService.sortByProductNameAscKeyWordDescription(keyWord);
+        logger.info("From ProductUAController method -sortByProductNameAscKeyWordDescription- /product/searchProductNameAsc. Return List of Products");
+        return productList;
+    }
+
+    @GetMapping("/searchProductPriceBetweenAsc")
+    public List<ProductUaDTO> sortByPriceBetweenKeyWordDescription(
+            @RequestParam("keyWord") String keyWord,
+            @RequestParam("lowPrice") BigDecimal lowPrice,
+            @RequestParam("highPrice") BigDecimal highPrice
+    ) {
+        List<ProductUaDTO> productList = productService.sortByPriceBetweenKeyWordDescription(keyWord, lowPrice, highPrice);
+        logger.info("From ProductUAController method -sortByProductNameAscKeyWordDescription- /product/searchProductNameAsc. Return List of Products");
+        return productList;
+    }
+
 
 }

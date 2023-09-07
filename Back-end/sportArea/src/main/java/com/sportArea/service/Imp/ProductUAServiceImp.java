@@ -8,11 +8,11 @@ import com.sportArea.service.ProductUAService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -219,7 +219,7 @@ public class ProductUAServiceImp implements ProductUAService {
     }
 
     @Override
-    public List<ProductUaDTO> sortByRatingDescKeyWordDescription(String keyWord){
+    public List<ProductUaDTO> sortByRatingDescKeyWordDescription(String keyWord) {
         if (!keyWord.isEmpty()) {
             List<ProductUA> productUAList = productRepository.sortByRatingDescKeyWordDescription(keyWord);
             if (!productUAList.isEmpty()) {
@@ -233,6 +233,47 @@ public class ProductUAServiceImp implements ProductUAService {
             }
         } else {
             logger.warn("From ProductUAServiceImp method -sortByRatingDescKeyWordDescription- send war message " +
+                    "(Key Word is not available or his is empty.)");
+            throw new ProductException("Key Word is not available or his is empty.", HttpStatus.NO_CONTENT);
+        }
+
+    }
+
+    @Override
+    public List<ProductUaDTO> sortByProductNameAscKeyWordDescription(String keyWord) {
+        if (!keyWord.isEmpty()) {
+            List<ProductUA> productUAList = productRepository.sortByProductNameAscKeyWordDescription(keyWord);
+            if (!productUAList.isEmpty()) {
+                List<ProductUaDTO> productUaDTOList = convertToProductDTOList(productUAList);
+                logger.info("From ProductUAServiceImp method -sortByProductNameAscKeyWordDescription- return List Products");
+                return productUaDTOList;
+            } else {
+                logger.warn("From ProductUAServiceImp method -sortByProductNameAscKeyWordDescription- send war message " +
+                        "(Products List is not available or his is empty.)");
+                throw new ProductException("Products List is not available or his is empty.", HttpStatus.NO_CONTENT);
+            }
+        } else {
+            logger.warn("From ProductUAServiceImp method -sortByProductNameAscKeyWordDescription- send war message " +
+                    "(Key Word is not available or his is empty.)");
+            throw new ProductException("Key Word is not available or his is empty.", HttpStatus.NO_CONTENT);
+        }
+    }
+
+    @Override
+    public List<ProductUaDTO> sortByPriceBetweenKeyWordDescription(String keyWord, BigDecimal lowPrice, BigDecimal highPrice) {
+        if (!(keyWord.isEmpty()) && (lowPrice.compareTo(BigDecimal.ZERO) > 0) && (highPrice.compareTo(BigDecimal.ZERO) > 0)) {
+            List<ProductUA> productUAList = productRepository.sortByPriceBetweenKeyWordDescription(keyWord, lowPrice, highPrice);
+            if (!productUAList.isEmpty()) {
+                List<ProductUaDTO> productUaDTOList = convertToProductDTOList(productUAList);
+                logger.info("From ProductUAServiceImp method -sortByProductNameAscKeyWordDescription- return List Products");
+                return productUaDTOList;
+            } else {
+                logger.warn("From ProductUAServiceImp method -sortByProductNameAscKeyWordDescription- send war message " +
+                        "(Products List is not available or his is empty.)");
+                throw new ProductException("Products List is not available or his is empty.", HttpStatus.NO_CONTENT);
+            }
+        } else {
+            logger.warn("From ProductUAServiceImp method -sortByProductNameAscKeyWordDescription- send war message " +
                     "(Key Word is not available or his is empty.)");
             throw new ProductException("Key Word is not available or his is empty.", HttpStatus.NO_CONTENT);
         }

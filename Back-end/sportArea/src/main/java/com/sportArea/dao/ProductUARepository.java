@@ -10,6 +10,7 @@ import org.springframework.security.core.parameters.P;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.QueryHint;
+import java.math.BigDecimal;
 import java.util.List;
 
 @Transactional
@@ -36,6 +37,20 @@ public interface ProductUARepository extends JpaRepository<ProductUA, Long> {
     List<ProductUA> sortByRatingDescKeyWordDescription(@Param("keyWord") String keyWord);
 
     @QueryHints(@QueryHint(name = org.hibernate.jpa.QueryHints.HINT_READONLY, value = "true"))
+    @Query("SELECT p FROM ProductUA p WHERE p.description LIKE %:keyWord% ORDER BY p.productName ASC")
+    List<ProductUA> sortByProductNameAscKeyWordDescription(@Param("keyWord") String keyWord);
+
+    @QueryHints(@QueryHint(name = org.hibernate.jpa.QueryHints.HINT_READONLY, value = "true"))
+    @Query("SELECT p FROM ProductUA p WHERE p.description LIKE %:keyWord% " +
+            "AND p.price BETWEEN :lowPrice AND :highPrice " +
+            "ORDER BY p.price ASC")
+    List<ProductUA> sortByPriceBetweenKeyWordDescription(
+            @Param("keyWord") String keyWord,
+            @Param("lowPrice")BigDecimal lowPrice,
+            @Param("highPrice")BigDecimal highPrice
+    );
+
+    @QueryHints(@QueryHint(name = org.hibernate.jpa.QueryHints.HINT_READONLY, value = "true"))
     @Query("SELECT prod FROM ProductUA prod WHERE prod.type LIKE %:keyWord% OR prod.subtype LIKE %:keyWord% ")
     List<ProductUA> searchByKeyWordInTypeSubtype(@Param("keyWord") String keyWord);
 
@@ -43,13 +58,8 @@ public interface ProductUARepository extends JpaRepository<ProductUA, Long> {
     @Query("SELECT prod FROM ProductUA prod WHERE prod.promotion = 1 ORDER BY prod.price ASC")
     List<ProductUA> searchByPromotionPrice();
 
-    @QueryHints(@QueryHint(name = org.hibernate.jpa.QueryHints.HINT_READONLY, value = "true"))
-    @Query("SELECT p FROM ProductUA p ORDER BY p.price ASC")
-    List<ProductUA> sortByPriceAsc();
 
-    @QueryHints(@QueryHint(name = org.hibernate.jpa.QueryHints.HINT_READONLY, value = "true"))
-    @Query("SELECT p FROM ProductUA p ORDER BY p.price DESC")
-    List<ProductUA> sortByPriceDesc();
+
 
 
 }
