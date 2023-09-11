@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -53,7 +54,7 @@ public class ProductUAServiceImp implements ProductUAService {
 
             List<ProductUaDTO> productDTOList = convertToProductDTOList(productList);
 
-            logger.info("From ProductUAServiceImp method -findAll- return List<ProductUaDTO>.");
+            logger.info("From ProductUAServiceImp method -findAll- return List of ProductUaDTOs.");
 
             return productDTOList;
         } else {
@@ -130,7 +131,10 @@ public class ProductUAServiceImp implements ProductUAService {
 
         if (product != null) {
             ProductUA productUa = createProductFromProductUaDTO(product);
+            LocalDateTime localDateTime = LocalDateTime.now();
+            productUa.setDateСreation(localDateTime);
             productRepository.save(productUa);
+
             logger.info("From ProductUAServiceImp method -save- return new message (Product was added successfully.).");
 
 
@@ -281,6 +285,29 @@ public class ProductUAServiceImp implements ProductUAService {
     }
 
     @Override
+    public List<ProductUaDTO> sortByTimeKeyWordDescription(String keyWord) {
+
+        if (!keyWord.isEmpty()) {
+            List<ProductUA> productUAList = productRepository.sortByTimeKeyWordDescription(keyWord);
+            if (!productUAList.isEmpty()) {
+                List<ProductUaDTO> productUaDTOList = convertToProductDTOList(productUAList);
+                logger.info("From ProductUAServiceImp method -sortByTimeKeyWordDescription- return List Products");
+                return productUaDTOList;
+            } else {
+                logger.warn("From ProductUAServiceImp method -sortByTimeKeyWordDescription- send war message " +
+                        "(Products List is not available or his is empty.)");
+                throw new ProductException("Products List is not available or his is empty.", HttpStatus.NO_CONTENT);
+            }
+        } else {
+            logger.warn("From ProductUAServiceImp method -sortByTimeKeyWordDescription- send war message " +
+                    "(Key Word is not available or his is empty.)");
+            throw new ProductException("Key Word is not available or his is empty.", HttpStatus.NO_CONTENT);
+        }
+    }
+
+
+
+    @Override
     public ProductUA createProductFromProductUaDTO(ProductUaDTO productUaDTO) {
         ProductUA productUA = new ProductUA();
         productUA.setProductId(productUaDTO.getProductId());
@@ -302,6 +329,7 @@ public class ProductUAServiceImp implements ProductUAService {
         productUA.setRating(productUaDTO.getRating());
         productUA.setStatus(productUaDTO.getStatus());
         productUA.setPromotion(productUaDTO.getPromotion());
+        productUA.setDateСreation(productUaDTO.getDateСreation());
         productUA.setUrlImage(productUaDTO.getUrlImage());
 
         return productUA;
@@ -330,6 +358,7 @@ public class ProductUAServiceImp implements ProductUAService {
                 .rating(productUA.getRating())
                 .status(productUA.getStatus())
                 .promotion(productUA.getPromotion())
+                .dateСreation(productUA.getDateСreation())
                 .urlImage(productUA.getUrlImage())
                 .build();
     }

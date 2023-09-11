@@ -102,16 +102,26 @@ public class ProductUAController {
         return productList;
     }
 
-    @GetMapping("/searchProductPriceBetweenAsc")
+    @GetMapping("/searchProductPriceBetween")
     public List<ProductUaDTO> sortByPriceBetweenKeyWordDescription(
             @RequestParam("keyWord") String keyWord,
             @RequestParam("lowPrice") BigDecimal lowPrice,
             @RequestParam("highPrice") BigDecimal highPrice
     ) {
         List<ProductUaDTO> productList = productService.sortByPriceBetweenKeyWordDescription(keyWord, lowPrice, highPrice);
-        logger.info("From ProductUAController method -sortByProductNameAscKeyWordDescription- /product/searchProductNameAsc. Return List of Products");
+        logger.info("From ProductUAController method -sortByProductNameAscKeyWordDescription- /product/searchProductPriceBetween. Return List of Products");
         return productList;
     }
+
+    @GetMapping("/searchProductTime")
+    public List<ProductUaDTO> sortByTimeKeyWordDescription(@RequestParam("keyWord") String keyWord) {
+
+        List<ProductUaDTO> productList = productService.sortByTimeKeyWordDescription(keyWord);
+        logger.info("From ProductUAController method -sortByTimeKeyWordDescription- /product/searchProductPriceTime. Return List of Products");
+        return productList;
+    }
+
+
 
 
 }

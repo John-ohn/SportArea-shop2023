@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 
 @Data
@@ -53,6 +54,8 @@ public class ProductUaDTO {
     private String status;
 
     private Integer promotion;
+
+    private LocalDateTime dateСreation;
 
     private String urlImage;
 }

@@ -3,7 +3,6 @@ package com.sportArea.service.Imp;
 import com.sportArea.dao.CommentRepository;
 import com.sportArea.entity.Comment;
 import com.sportArea.entity.Note;
-import com.sportArea.entity.ProductUA;
 import com.sportArea.entity.dto.AddComment;
 import com.sportArea.entity.dto.CommentDTO;
 import com.sportArea.entity.dto.ProductUaDTO;
@@ -151,7 +150,7 @@ public class CommentServiceImp implements CommentService {
         return Comment.builder()
                 .message(commentDTO.getMessage())
                 .note(commentDTO.getNote())
-                .user(userService.createUserFromRegistration(commentDTO.getUserDTO()))
+                .user(userService.createUserFromUserDTO(commentDTO.getUserDTO()))
                 .product(productUAService.createProductFromProductUaDTO(commentDTO.getProductDTO()))
                 .productRating(commentDTO.getProductRating())
                 .build();

@@ -43,4 +43,6 @@ public interface ProductUAService {
             BigDecimal lowPrice,
             BigDecimal highPrice
     );
+
+    List<ProductUaDTO> sortByTimeKeyWordDescription(String keyWord);
 }

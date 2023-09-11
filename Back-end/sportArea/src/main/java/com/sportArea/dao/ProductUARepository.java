@@ -51,6 +51,12 @@ public interface ProductUARepository extends JpaRepository<ProductUA, Long> {
     );
 
     @QueryHints(@QueryHint(name = org.hibernate.jpa.QueryHints.HINT_READONLY, value = "true"))
+    @Query("SELECT p FROM ProductUA p WHERE p.description LIKE %:keyWord% ORDER BY p.dateСreation DESC")
+    List<ProductUA> sortByTimeKeyWordDescription(@Param("keyWord") String keyWord);
+
+
+
+    @QueryHints(@QueryHint(name = org.hibernate.jpa.QueryHints.HINT_READONLY, value = "true"))
     @Query("SELECT prod FROM ProductUA prod WHERE prod.type LIKE %:keyWord% OR prod.subtype LIKE %:keyWord% ")
     List<ProductUA> searchByKeyWordInTypeSubtype(@Param("keyWord") String keyWord);
 

@@ -4,6 +4,8 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
+import java.time.LocalDateTime;
+import java.util.Date;
 
 @Entity
 @Table(name = "ProductUA")
@@ -75,6 +77,9 @@ public class ProductUA {
 
     @Column(name="urlImage")
     private String urlImage;
+
+    @Column(name = "dateСreation")
+    private LocalDateTime dateСreation;
 //
 //    @OneToMany(mappedBy = "productId")
 //    private List<Response> response;

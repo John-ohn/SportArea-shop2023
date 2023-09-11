@@ -5,7 +5,6 @@ import com.sportArea.entity.Role;
 import com.sportArea.entity.Status;
 import com.sportArea.entity.TypeRegistration;
 import com.sportArea.entity.User;
-import com.sportArea.entity.dto.GoogleUserDTO;
 import com.sportArea.entity.dto.UserDTO;
 import com.sportArea.exception.UserException;
 import com.sportArea.service.UserService;
@@ -98,7 +97,7 @@ public class UserServiceImp implements UserService {
                 throw new UserException("Email already exists", HttpStatus.BAD_REQUEST);
             }
             String encodedPassword = passwordEncoder.encode(userDTO.getPassword());
-            User user = createUserFromRegistration(userDTO);
+            User user = createUserFromUserDTO(userDTO);
             user.setPassword(encodedPassword);
             user.setRole(Role.ROLE_USER);
             user.setStatus(Status.ACTIVE);
@@ -144,7 +143,7 @@ public class UserServiceImp implements UserService {
     }
 
     @Override
-    public User createUserFromRegistration(UserDTO userDTO) {
+    public User createUserFromUserDTO(UserDTO userDTO) {
         User user = new User();
         user.setFirstName(userDTO.getFirstName());
         user.setLastName(userDTO.getLastName());
