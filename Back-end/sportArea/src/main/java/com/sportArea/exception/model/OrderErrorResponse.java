@@ -9,15 +9,9 @@ import java.sql.Timestamp;
 @Getter
 @Setter
 @NoArgsConstructor
-public class OrderErrorResponse{
+public class OrderErrorResponse extends AbstractErrorResponse {
 
-    private int status;
-    private String message;
-    private Timestamp timeStamp;
-
-    public OrderErrorResponse(int status, String message, Timestamp timeStamp){
-        this.status=status;
-        this.message=message;
-        this.timeStamp=timeStamp;
+    public OrderErrorResponse(int status, String message, Timestamp timeStamp) {
+        super(status, message, timeStamp);
     }
 }

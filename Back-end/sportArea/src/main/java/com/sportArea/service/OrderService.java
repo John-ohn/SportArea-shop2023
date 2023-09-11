@@ -21,7 +21,7 @@ public interface OrderService {
 
     <S extends OrderDTO> boolean exists(Example<S> example);
 
-    void delete(OrderDTO entity);
+    void delete( Long orderId);
 
 
 }

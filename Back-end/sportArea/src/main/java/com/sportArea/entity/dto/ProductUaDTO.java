@@ -55,6 +55,8 @@ public class ProductUaDTO {
 
     private Integer promotion;
 
+    private Long numberOfOrders;
+
     private LocalDateTime dateСreation;
 
     private String urlImage;

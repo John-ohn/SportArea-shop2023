@@ -108,9 +108,9 @@ public class UserServiceImp implements UserService {
 
         } else {
             logger.warn("From UserServiceImp method -save- send war message " +
-                    "( User is not available or his is empty. ({})))", HttpStatus.NO_CONTENT);
+                    "( User is not available or his is empty. ({})))", HttpStatus.NOT_FOUND);
 
-            throw new UserException("User is not available or his is empty. ", HttpStatus.NO_CONTENT);
+            throw new UserException("User is not available or his is empty. ", HttpStatus.NOT_FOUND);
         }
     }
 

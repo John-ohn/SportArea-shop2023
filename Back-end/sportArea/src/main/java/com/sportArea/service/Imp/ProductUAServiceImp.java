@@ -140,9 +140,9 @@ public class ProductUAServiceImp implements ProductUAService {
 
         } else {
             logger.warn("From ProductUAServiceImp method -save- send war message " +
-                    "( Product is not available or his is empty. ({}))", HttpStatus.NO_CONTENT.value());
+                    "( Product is not available or his is empty. ({}))", HttpStatus.NOT_FOUND.value());
 
-            throw new ProductException("Product is not available or his is empty. ", HttpStatus.NO_CONTENT);
+            throw new ProductException("Product is not available or his is empty. ", HttpStatus.NOT_FOUND);
         }
     }
 
@@ -192,12 +192,12 @@ public class ProductUAServiceImp implements ProductUAService {
             } else {
                 logger.warn("From ProductUAServiceImp method -sortByPriceDescKeyWordDescription- send war message " +
                         "(Products List is not available or his is empty.)");
-                throw new ProductException("Products List is not available or his is empty.", HttpStatus.NO_CONTENT);
+                throw new ProductException("Products List is not available or his is empty.", HttpStatus.NOT_FOUND);
             }
         } else {
             logger.warn("From ProductUAServiceImp method -sortByPriceDescKeyWordDescription- send war message " +
                     "(Key Word is not available or his is empty.)");
-            throw new ProductException("Key Word is not available or his is empty.", HttpStatus.NO_CONTENT);
+            throw new ProductException("Key Word is not available or his is empty.", HttpStatus.NOT_FOUND);
         }
     }
 
@@ -212,12 +212,12 @@ public class ProductUAServiceImp implements ProductUAService {
             } else {
                 logger.warn("From ProductUAServiceImp method -sortByPriceAscKeyWordDescription- send war message " +
                         "(Products List is not available or his is empty.)");
-                throw new ProductException("Products List is not available or his is empty.", HttpStatus.NO_CONTENT);
+                throw new ProductException("Products List is not available or his is empty.", HttpStatus.NOT_FOUND);
             }
         } else {
             logger.warn("From ProductUAServiceImp method -sortByPriceDescKeyWordDescription- send war message " +
                     "(Key Word is not available or his is empty.)");
-            throw new ProductException("Key Word is not available or his is empty.", HttpStatus.NO_CONTENT);
+            throw new ProductException("Key Word is not available or his is empty.", HttpStatus.NOT_FOUND);
         }
 
     }
@@ -233,12 +233,12 @@ public class ProductUAServiceImp implements ProductUAService {
             } else {
                 logger.warn("From ProductUAServiceImp method -sortByRatingDescKeyWordDescription- send war message " +
                         "(Products List is not available or his is empty.)");
-                throw new ProductException("Products List is not available or his is empty.", HttpStatus.NO_CONTENT);
+                throw new ProductException("Products List is not available or his is empty.", HttpStatus.NOT_FOUND);
             }
         } else {
             logger.warn("From ProductUAServiceImp method -sortByRatingDescKeyWordDescription- send war message " +
                     "(Key Word is not available or his is empty.)");
-            throw new ProductException("Key Word is not available or his is empty.", HttpStatus.NO_CONTENT);
+            throw new ProductException("Key Word is not available or his is empty.", HttpStatus.NOT_FOUND);
         }
 
     }
@@ -254,12 +254,12 @@ public class ProductUAServiceImp implements ProductUAService {
             } else {
                 logger.warn("From ProductUAServiceImp method -sortByProductNameAscKeyWordDescription- send war message " +
                         "(Products List is not available or his is empty.)");
-                throw new ProductException("Products List is not available or his is empty.", HttpStatus.NO_CONTENT);
+                throw new ProductException("Products List is not available or his is empty.", HttpStatus.NOT_FOUND);
             }
         } else {
             logger.warn("From ProductUAServiceImp method -sortByProductNameAscKeyWordDescription- send war message " +
                     "(Key Word is not available or his is empty.)");
-            throw new ProductException("Key Word is not available or his is empty.", HttpStatus.NO_CONTENT);
+            throw new ProductException("Key Word is not available or his is empty.", HttpStatus.NOT_FOUND);
         }
     }
 
@@ -274,12 +274,12 @@ public class ProductUAServiceImp implements ProductUAService {
             } else {
                 logger.warn("From ProductUAServiceImp method -sortByProductNameAscKeyWordDescription- send war message " +
                         "(Products List is not available or his is empty.)");
-                throw new ProductException("Products List is not available or his is empty.", HttpStatus.NO_CONTENT);
+                throw new ProductException("Products List is not available or his is empty.", HttpStatus.NOT_FOUND);
             }
         } else {
             logger.warn("From ProductUAServiceImp method -sortByProductNameAscKeyWordDescription- send war message " +
                     "(Key Word is not available or his is empty.)");
-            throw new ProductException("Key Word is not available or his is empty.", HttpStatus.NO_CONTENT);
+            throw new ProductException("Key Word is not available or his is empty.", HttpStatus.NOT_FOUND);
         }
 
     }
@@ -296,12 +296,12 @@ public class ProductUAServiceImp implements ProductUAService {
             } else {
                 logger.warn("From ProductUAServiceImp method -sortByTimeKeyWordDescription- send war message " +
                         "(Products List is not available or his is empty.)");
-                throw new ProductException("Products List is not available or his is empty.", HttpStatus.NO_CONTENT);
+                throw new ProductException("Products List is not available or his is empty.", HttpStatus.NOT_FOUND);
             }
         } else {
             logger.warn("From ProductUAServiceImp method -sortByTimeKeyWordDescription- send war message " +
                     "(Key Word is not available or his is empty.)");
-            throw new ProductException("Key Word is not available or his is empty.", HttpStatus.NO_CONTENT);
+            throw new ProductException("Key Word is not available or his is empty.", HttpStatus.NOT_FOUND);
         }
     }
 
@@ -329,6 +329,7 @@ public class ProductUAServiceImp implements ProductUAService {
         productUA.setRating(productUaDTO.getRating());
         productUA.setStatus(productUaDTO.getStatus());
         productUA.setPromotion(productUaDTO.getPromotion());
+        productUA.setNumberOfOrders(productUaDTO.getNumberOfOrders());
         productUA.setDateСreation(productUaDTO.getDateСreation());
         productUA.setUrlImage(productUaDTO.getUrlImage());
 
@@ -358,6 +359,7 @@ public class ProductUAServiceImp implements ProductUAService {
                 .rating(productUA.getRating())
                 .status(productUA.getStatus())
                 .promotion(productUA.getPromotion())
+                .numberOfOrders(productUA.getNumberOfOrders())
                 .dateСreation(productUA.getDateСreation())
                 .urlImage(productUA.getUrlImage())
                 .build();

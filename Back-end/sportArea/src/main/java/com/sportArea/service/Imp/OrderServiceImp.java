@@ -2,8 +2,11 @@ package com.sportArea.service.Imp;
 
 import com.sportArea.dao.OrderRepository;
 import com.sportArea.entity.Order;
+import com.sportArea.entity.ProductUA;
 import com.sportArea.entity.dto.OrderDTO;
+import com.sportArea.entity.dto.ProductUaDTO;
 import com.sportArea.exception.OrderException;
+import com.sportArea.exception.UserException;
 import com.sportArea.service.OrderService;
 import com.sportArea.service.ProductUAService;
 import com.sportArea.service.UserService;
@@ -89,12 +92,13 @@ public class OrderServiceImp implements OrderService {
 
             logger.info("From OrderServiceImp method -save- return new message (Order was added successfully.).");
 
+            updateProductNumberOfOrders(order.getProduct().getProductId());
 
         } else {
             logger.warn("From OrderServiceImp method -save- send war message " +
-                    "( Order is not available or his is empty. ({}))", HttpStatus.NO_CONTENT.value());
+                    "( Order is not available or his is empty. ({}))", HttpStatus.NOT_FOUND.value());
 
-            throw new OrderException("Order is not available or his is empty. ", HttpStatus.NO_CONTENT);
+            throw new OrderException("Order is not available or his is empty. ", HttpStatus.NOT_FOUND);
         }
     }
 
@@ -106,13 +110,11 @@ public class OrderServiceImp implements OrderService {
             logger.info("From OrderServiceImp method -numberOfOrders- return number of count Orders By Product: {}", count);
             return count;
 
-
         } else {
             logger.warn("From OrderServiceImp method -numberOfOrders- send war message " +
-                    "( Product Id: {} is not available or his is empty. ({}))", productId, HttpStatus.NO_CONTENT.value());
+                    "( Product Id: {} is not available or his is empty. ({}))", productId, HttpStatus.NOT_FOUND.value());
 
-            throw new OrderException("Product Id: " + productId + " is not available or his is empty. ", HttpStatus.NO_CONTENT);
-
+            throw new OrderException("Product Id: " + productId + " is not available or his is empty. ", HttpStatus.NOT_FOUND);
         }
     }
 
@@ -122,8 +124,28 @@ public class OrderServiceImp implements OrderService {
     }
 
     @Override
-    public void delete(OrderDTO entity) {
+    public void delete(Long orderId) {
 
+        if ((orderId > 0)) {
+            Optional<Order> order = orderRepository.findById(orderId);
+
+            if (order.isPresent()) {
+                orderRepository.delete(order.get());
+                logger.info("From OrderServiceImp method -delete- return message (Order with orderId: {} was deleted.).",
+                        orderId);
+                updateProductNumberOfOrders(order.get().getProduct().getProductId());
+                logger.info("From OrderServiceImp method -delete- return message ( Update Product Number Of Orders with productId: {}).",
+                        order.get().getProduct().getProductId());
+            } else {
+                logger.warn("From OrderServiceImp method -delete- send war message " +
+                        "(Order is not available. ({}) )", HttpStatus.NOT_FOUND.name());
+                throw new OrderException("Order is not available.", HttpStatus.NOT_FOUND);
+            }
+        } else {
+            logger.warn("From OrderServiceImp method -delete- send war message " +
+                    "Order with orderId:  {} is not available.  {}", orderId, HttpStatus.NOT_FOUND.name());
+            throw new OrderException("Order with orderId: " + orderId + " is not available.", HttpStatus.NOT_FOUND);
+        }
     }
 
     public OrderDTO createOrderDTOFromOrder(Order order) {
@@ -143,19 +165,34 @@ public class OrderServiceImp implements OrderService {
     }
 
     public Order createOrderFromOrderDTO(OrderDTO order) {
-        return Order.builder()
-                .orderId(order.getOrderId())
-                .firstName(order.getFirstName())
-                .lastName(order.getLastName())
-                .email(order.getEmail())
-                .phoneNumber(order.getPhoneNumber())
-                .paymentMethod(order.getPaymentMethod())
-                .delivery(order.getDelivery())
-                .amount(order.getAmount())
-                .orderDate(order.getOrderDate())
-                .user(userService.createUserFromUserDTO(order.getUser()))
-                .product(productUAService.createProductFromProductUaDTO(order.getProduct()))
-                .build();
+        if(order.getUser()==null){
+            return Order.builder()
+                    .orderId(order.getOrderId())
+                    .firstName(order.getFirstName())
+                    .lastName(order.getLastName())
+                    .email(order.getEmail())
+                    .phoneNumber(order.getPhoneNumber())
+                    .paymentMethod(order.getPaymentMethod())
+                    .delivery(order.getDelivery())
+                    .amount(order.getAmount())
+                    .orderDate(order.getOrderDate())
+                    .product(productUAService.createProductFromProductUaDTO(order.getProduct()))
+                    .build();
+        }else {
+            return Order.builder()
+                    .orderId(order.getOrderId())
+                    .firstName(order.getFirstName())
+                    .lastName(order.getLastName())
+                    .email(order.getEmail())
+                    .phoneNumber(order.getPhoneNumber())
+                    .paymentMethod(order.getPaymentMethod())
+                    .delivery(order.getDelivery())
+                    .amount(order.getAmount())
+                    .orderDate(order.getOrderDate())
+                    .user(userService.createUserFromUserDTO(order.getUser()))
+                    .product(productUAService.createProductFromProductUaDTO(order.getProduct()))
+                    .build();
+        }
     }
 
     public List<OrderDTO> convertToOrderDTOList(List<Order> orderList) {
@@ -166,5 +203,11 @@ public class OrderServiceImp implements OrderService {
         return orderDTOList;
     }
 
+    public void updateProductNumberOfOrders(Long productId) {
+        Long count = numberOfOrders(productId);
+        ProductUaDTO productUA = productUAService.findById(productId);
+        productUA.setNumberOfOrders(count);
+        productUAService.save(productUA);
+    }
 
 }

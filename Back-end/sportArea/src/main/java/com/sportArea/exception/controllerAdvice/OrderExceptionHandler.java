@@ -17,10 +17,11 @@ public class OrderExceptionHandler {
 
     @ExceptionHandler
     public ResponseEntity<OrderErrorResponse> handlerException(OrderException exc) {
-        OrderErrorResponse orderErrorResponse = new OrderErrorResponse();
-        orderErrorResponse.setStatus(exc.getHttpStatus().value());
-        orderErrorResponse.setMessage( exc.getMessage());
-        orderErrorResponse.setTimeStamp( new Timestamp(System.currentTimeMillis()));
+        OrderErrorResponse orderErrorResponse = new OrderErrorResponse(
+                exc.getHttpStatus().value(),
+                exc.getMessage(),
+                new Timestamp(System.currentTimeMillis())
+        );
         logger.warn("From OrderExceptionHandler method -handlerException- send message error ({})",
                 orderErrorResponse.getMessage());
 

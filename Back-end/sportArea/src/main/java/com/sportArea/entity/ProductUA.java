@@ -75,11 +75,16 @@ public class ProductUA {
     @Column(name = "promotion", columnDefinition = "INT default 0")
     private Integer promotion;
 
-    @Column(name="urlImage")
-    private String urlImage;
+    @Column(name="numberOfOrders")
+    private Long numberOfOrders;
 
     @Column(name = "dateСreation")
     private LocalDateTime dateСreation;
+
+    @Column(name="urlImage")
+    private String urlImage;
+
+
 //
 //    @OneToMany(mappedBy = "productId")
 //    private List<Response> response;
