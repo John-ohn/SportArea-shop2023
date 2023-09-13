@@ -5,7 +5,6 @@ import lombok.*;
 import javax.persistence.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.Date;
 
 @Entity
 @Table(name = "ProductUA")
@@ -79,7 +78,7 @@ public class ProductUA {
     private Long numberOfOrders;
 
     @Column(name = "dateСreation")
-    private LocalDateTime dateСreation;
+    private LocalDateTime dateCreation;
 
     @Column(name="urlImage")
     private String urlImage;

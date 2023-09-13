@@ -2,11 +2,9 @@ package com.sportArea.service.Imp;
 
 import com.sportArea.dao.OrderRepository;
 import com.sportArea.entity.Order;
-import com.sportArea.entity.ProductUA;
 import com.sportArea.entity.dto.OrderDTO;
 import com.sportArea.entity.dto.ProductUaDTO;
 import com.sportArea.exception.OrderException;
-import com.sportArea.exception.UserException;
 import com.sportArea.service.OrderService;
 import com.sportArea.service.ProductUAService;
 import com.sportArea.service.UserService;

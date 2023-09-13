@@ -57,7 +57,7 @@ public class ProductUaDTO {
 
     private Long numberOfOrders;
 
-    private LocalDateTime dateСreation;
+    private LocalDateTime dateCreation;
 
     private String urlImage;
 }

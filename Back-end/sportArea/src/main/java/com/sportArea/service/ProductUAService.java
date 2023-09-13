@@ -38,6 +38,8 @@ public interface ProductUAService {
 
     List<ProductUaDTO> sortByProductNameAscKeyWordDescription(String keyWord);
 
+    List<ProductUaDTO> sortByNumberOfOrdersDescKeyWordDescription(String keyWord);
+
     List<ProductUaDTO> sortByPriceBetweenKeyWordDescription(
             String keyWord,
             BigDecimal lowPrice,
@@ -45,4 +47,8 @@ public interface ProductUAService {
     );
 
     List<ProductUaDTO> sortByTimeKeyWordDescription(String keyWord);
+
+    List<ProductUaDTO> searchAndSortKeyWordDescriptionFromDataBase(String keyWord, String sortBy);
+
+    List<ProductUaDTO> searchAndSort(String keyWord, String sortBy, String searchLocation);
 }

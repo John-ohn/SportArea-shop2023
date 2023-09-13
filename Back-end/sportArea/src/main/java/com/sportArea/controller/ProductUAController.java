@@ -122,6 +122,32 @@ public class ProductUAController {
     }
 
 
+    @GetMapping("/searchProductPopular")
+    public List<ProductUaDTO> sortByNumberOfOrdersDescKeyWordDescription(@RequestParam("keyWord") String keyWord) {
+
+        List<ProductUaDTO> productList = productService.sortByNumberOfOrdersDescKeyWordDescription(keyWord);
+        logger.info("From ProductUAController method -sortByNumberOfOrdersDescKeyWordDescription- /product/searchProductPopular. Return List of Products");
+        return productList;
+    }
+
+//    @GetMapping("/searchProductAll")
+//    public List<ProductUaDTO> searchAndSortKeyWordDescriptionFromDataBase(@RequestParam("keyWord") String keyWord,
+//                                                                          @RequestParam("sortBy") String sortBy) {
+//
+//        List<ProductUaDTO> productList = productService.searchAndSortKeyWordDescriptionFromDataBase(keyWord, sortBy);
+//        logger.info("From ProductUAController method -searchAndSortKeyWordDescriptionFromDataBase- /product/searchProductAll. Return List of Products");
+//        return productList;
+//    }
+
+    @GetMapping("/searchProductAll")
+    public List<ProductUaDTO> searchAndSortKeyWordDescriptionFromDataBase(@RequestParam("keyWord") String keyWord,
+                                                                          @RequestParam("sortBy") String sortBy,
+                                                                          @RequestParam("searchLocation") String searchLocation) {
+
+        List<ProductUaDTO> productList = productService.searchAndSort(keyWord, sortBy, searchLocation);
+        logger.info("From ProductUAController method -searchAndSortKeyWordDescriptionFromDataBase- /product/searchProductAll. Return List of Products");
+        return productList;
+    }
 
 
 }
