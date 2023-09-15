@@ -20,7 +20,9 @@ public class CommentDTO {
 
     private Note note;
 
-    private User userId;
+    private Float productRating;
 
-    private ProductUA productId;
+    private UserDTO userDTO;
+
+    private ProductUaDTO productDTO;
 }

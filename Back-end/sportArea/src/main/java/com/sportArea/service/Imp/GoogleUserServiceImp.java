@@ -41,7 +41,7 @@ public class GoogleUserServiceImp implements GoogleUserService {
             Optional<User> optionalUser = userRepository.findByEmail(googleUser.getEmail());
             if (optionalUser.isPresent()) {
                 logger.info("From GoogleUserServiceImp method -saveUserGoogle- send war message " +
-                        "( Email already exists. ({})))", HttpStatus.NO_CONTENT.name());
+                        "( Email already exists. ({})))", HttpStatus.NOT_FOUND.name());
             } else {
 
                 User user = createUserFromGoogleUser(googleUser);
@@ -52,9 +52,9 @@ public class GoogleUserServiceImp implements GoogleUserService {
 
         } else {
             logger.info("From GoogleUserServiceImp method -saveUserGoogle- send war message " +
-                    "( User is not available or his is empty. ({})))", HttpStatus.NO_CONTENT);
+                    "( User is not available or his is empty. ({})))", HttpStatus.NOT_FOUND);
 
-            throw new UserException("User is not available or his is empty. ", HttpStatus.NO_CONTENT);
+            throw new UserException("User is not available or his is empty. ", HttpStatus.NOT_FOUND);
         }
     }
 

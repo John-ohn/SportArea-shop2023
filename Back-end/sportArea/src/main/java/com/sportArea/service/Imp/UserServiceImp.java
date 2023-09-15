@@ -5,7 +5,6 @@ import com.sportArea.entity.Role;
 import com.sportArea.entity.Status;
 import com.sportArea.entity.TypeRegistration;
 import com.sportArea.entity.User;
-import com.sportArea.entity.dto.GoogleUserDTO;
 import com.sportArea.entity.dto.UserDTO;
 import com.sportArea.exception.UserException;
 import com.sportArea.service.UserService;
@@ -98,7 +97,7 @@ public class UserServiceImp implements UserService {
                 throw new UserException("Email already exists", HttpStatus.BAD_REQUEST);
             }
             String encodedPassword = passwordEncoder.encode(userDTO.getPassword());
-            User user = createUserFromRegistration(userDTO);
+            User user = createUserFromUserDTO(userDTO);
             user.setPassword(encodedPassword);
             user.setRole(Role.ROLE_USER);
             user.setStatus(Status.ACTIVE);
@@ -109,9 +108,9 @@ public class UserServiceImp implements UserService {
 
         } else {
             logger.warn("From UserServiceImp method -save- send war message " +
-                    "( User is not available or his is empty. ({})))", HttpStatus.NO_CONTENT);
+                    "( User is not available or his is empty. ({})))", HttpStatus.NOT_FOUND);
 
-            throw new UserException("User is not available or his is empty. ", HttpStatus.NO_CONTENT);
+            throw new UserException("User is not available or his is empty. ", HttpStatus.NOT_FOUND);
         }
     }
 
@@ -143,7 +142,8 @@ public class UserServiceImp implements UserService {
         }
     }
 
-    public User createUserFromRegistration(UserDTO userDTO) {
+    @Override
+    public User createUserFromUserDTO(UserDTO userDTO) {
         User user = new User();
         user.setFirstName(userDTO.getFirstName());
         user.setLastName(userDTO.getLastName());
@@ -153,6 +153,7 @@ public class UserServiceImp implements UserService {
         return user;
     }
 
+    @Override
     public UserDTO createUserDTOFromUser(User user) {
         return UserDTO
                 .builder()

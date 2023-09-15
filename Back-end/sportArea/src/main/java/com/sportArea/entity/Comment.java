@@ -23,12 +23,15 @@ public class Comment {
     @Enumerated(value = EnumType.STRING)
     private Note note;
 
+    @Column(name="productRating")
+    private Float productRating;
+
     @ManyToOne()
     @JoinColumn(name = "userId")
-    private User userId;
+    private User user;
 
     @ManyToOne()
     @JoinColumn(name = "productId")
-    private ProductUA productId;
+    private ProductUA product;
 
 }

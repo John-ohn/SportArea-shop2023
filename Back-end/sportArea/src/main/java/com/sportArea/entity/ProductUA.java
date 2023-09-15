@@ -3,8 +3,8 @@ package com.sportArea.entity;
 import lombok.*;
 
 import javax.persistence.*;
-import javax.swing.*;
-import java.util.List;
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "ProductUA")
@@ -42,10 +42,16 @@ public class ProductUA {
     private String taste;
 
     @Column(name = "price")
-    private Long price;
+    private BigDecimal price;
+
+    @Column(name="promotionPrice")
+    private BigDecimal promotionPrice;
 
     @Column(name="currency")
     private String currency;
+
+    @Column(name="weight")
+    private String weight;
 
     @Column(name = "article")
     private Long article;
@@ -60,13 +66,24 @@ public class ProductUA {
     private String productConsist;
 
     @Column(name = "rating")
-    private Integer rating;
+    private Float rating;
 
     @Column(name = "status")
     private String status;
 
     @Column(name = "promotion", columnDefinition = "INT default 0")
     private Integer promotion;
+
+    @Column(name="numberOfOrders")
+    private Long numberOfOrders;
+
+    @Column(name = "dateСreation")
+    private LocalDateTime dateCreation;
+
+    @Column(name="urlImage")
+    private String urlImage;
+
+
 //
 //    @OneToMany(mappedBy = "productId")
 //    private List<Response> response;
