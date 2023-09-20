@@ -77,7 +77,7 @@ public class ProductUA {
     @Column(name="numberOfOrders")
     private Long numberOfOrders;
 
-    @Column(name = "dateСreation")
+    @Column(name = "dateCreation")
     private LocalDateTime dateCreation;
 
     @Column(name="urlImage")

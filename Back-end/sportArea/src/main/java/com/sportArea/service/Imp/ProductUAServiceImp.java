@@ -166,87 +166,21 @@ public class ProductUAServiceImp implements ProductUAService {
         }
     }
 
-    @Override
-    public List<ProductUaDTO> sortByPriceDescKeyWordDescription(String keyWord) {
-        return checkConvertSortKeyWordDescription(keyWord,
-                "sortByPriceDescKeyWordDescription",
-                productRepository::sortByPriceDescKeyWordDescription);
-    }
+
 
     @Override
-    public List<ProductUaDTO> sortByPriceAscKeyWordDescription(String keyWord) {
-        return checkConvertSortKeyWordDescription(keyWord,
-                "sortByPriceAscKeyWordDescription",
-                productRepository::sortByPriceAscKeyWordDescription);
-    }
-
-    @Override
-    public List<ProductUaDTO> sortByRatingDescKeyWordDescription(String keyWord) {
-        return checkConvertSortKeyWordDescription(keyWord,
-                "sortByRatingDescKeyWordDescription",
-                productRepository::sortByRatingDescKeyWordDescription);
-    }
-
-    @Override
-    public List<ProductUaDTO> sortByProductNameAscKeyWordDescription(String keyWord) {
-
-        return checkConvertSortKeyWordDescription(keyWord,
-                "sortByProductNameAscKeyWordDescription",
-                productRepository::sortByProductNameAscKeyWordDescription);
-    }
-
-    @Override
-    public List<ProductUaDTO> sortByPriceBetweenKeyWordDescription(String keyWord, BigDecimal lowPrice, BigDecimal highPrice) {
-        if (!(keyWord.isEmpty()) && (lowPrice.compareTo(BigDecimal.ZERO) > 0) && (highPrice.compareTo(BigDecimal.ZERO) > 0)) {
-            List<ProductUA> productUAList = productRepository.sortByPriceBetweenKeyWordDescription(keyWord, lowPrice, highPrice);
-            if (!productUAList.isEmpty()) {
-                List<ProductUaDTO> productUaDTOList = convertToProductDTOList(productUAList);
-                logger.info("From ProductUAServiceImp method -sortByProductNameAscKeyWordDescription- return List Products");
-                return productUaDTOList;
-            } else {
-                logger.warn("From ProductUAServiceImp method -sortByProductNameAscKeyWordDescription- send war message " +
-                        "(Products List is not available or his is empty.)");
-                throw new ProductException("Products List is not available or his is empty.", HttpStatus.NOT_FOUND);
-            }
-        } else {
-            logger.warn("From ProductUAServiceImp method -sortByProductNameAscKeyWordDescription- send war message " +
-                    "(Key Word is not available or his is empty.)");
-            throw new ProductException("Key Word is not available or his is empty.", HttpStatus.NOT_FOUND);
-        }
-
-    }
-
-    @Override
-    public List<ProductUaDTO> sortByTimeKeyWordDescription(String keyWord) {
-
-        return checkConvertSortKeyWordDescription(keyWord,
-                "sortByTimeKeyWordDescription",
-                productRepository::sortByTimeKeyWordDescription
-        );
-    }
-
-    @Override
-    public List<ProductUaDTO> sortByNumberOfOrdersDescKeyWordDescription(String keyWord) {
-
-        return checkConvertSortKeyWordDescription(keyWord,
-                "sortByNumberOfOrdersDescKeyWordDescription",
-                productRepository::sortByNumberOfOrdersDescKeyWordDescription
-        );
-    }
-
-    @Override
-    public List<ProductUaDTO> searchAndSort(String keyWord, String sortBy, String searchLocation) {
+    public List<ProductUaDTO> searchAndSort(String keyWord, String sortBy, String searchLocation, String priceBetween, BigDecimal lowPrice, BigDecimal highPrice) {
 
         List<ProductUaDTO> products;
         switch (searchLocation) {
             case "main-search":
-                products = searchAndSortKeyWordTypeSubtypeFromDataBase(keyWord, sortBy);
+                products = searchAndSortKeyWordTypeSubtypeFromDataBase(keyWord, sortBy, priceBetween, lowPrice, highPrice);
                 return products;
             case "description-search":
-                products = searchAndSortKeyWordInDescription(keyWord, sortBy);
+                products = searchAndSortKeyWordInDescription(keyWord, sortBy, priceBetween, lowPrice, highPrice);
                 return products;
             case "best-price":
-                products = searchAndSortPromotionPriceFromDataBase(sortBy);
+                products = searchAndSortPromotionPriceFromDataBase(sortBy, priceBetween, lowPrice, highPrice);
                 return products;
             default:
                 return new ArrayList<>();
@@ -254,27 +188,32 @@ public class ProductUAServiceImp implements ProductUAService {
 
     }
 
-    public List<ProductUaDTO> searchAndSortPromotionPriceFromDataBase(String sortBy) {
-
-        List<ProductUA> products = productRepository.searchByPromotionPrice();
-        if (!products.isEmpty()) {
-            List<ProductUaDTO> productsList = sortBy(products, sortBy);
-
-            return productsList;
-        } else {
-            logger.warn("From ProductUAServiceImp method -searchAndSortPromotionPriceFromDataBase-. Nothing found send war message " +
-                    "(Products List is not available or his is empty.)");
-            throw new ProductException("Products List is not available or his is empty.", HttpStatus.NOT_FOUND);
-        }
-    }
-
-    public List<ProductUaDTO> searchAndSortKeyWordTypeSubtypeFromDataBase(String keyWord, String sortBy) {
+    public List<ProductUaDTO> searchAndSortKeyWordTypeSubtypeFromDataBase(String keyWord,
+                                                                          String sortBy,
+                                                                          String priceBetween,
+                                                                          BigDecimal lowPrice,
+                                                                          BigDecimal highPrice) {
         if (!keyWord.isEmpty()) {
             List<ProductUA> products = productRepository.searchByKeyWordInTypeSubtype(keyWord);
             if (!products.isEmpty()) {
-                List<ProductUaDTO> productsList = sortBy(products, sortBy);
+                if (priceBetween.equals("true")) {
+                    if (lowPrice.compareTo(BigDecimal.ZERO) >= 0
+                            && highPrice.compareTo(BigDecimal.ZERO) > 0
+                            && highPrice.compareTo(lowPrice) > (lowPrice.compareTo(highPrice))
+                    ) {
+                        if (sortBy.isEmpty()) {
+                            sortBy = "priceAsc";
+                        }
+                        
+                        List<ProductUaDTO> productsList = sortBy(products, sortBy, lowPrice, highPrice);
 
-                return productsList;
+                        return productsList;
+                    }
+                } else {
+                    List<ProductUaDTO> productsList = sortBy(products, sortBy);
+
+                    return productsList;
+                }
             } else {
                 logger.warn("From ProductUAServiceImp method -searchAndSortKeyWordTypeSubtypeFromDataBase-.Nothing found from keyword ( {} ) send war message " +
                         "(Products List is not available or his is empty.)", keyWord);
@@ -286,15 +225,37 @@ public class ProductUAServiceImp implements ProductUAService {
             throw new ProductException("Key Word is not available or his is empty.", HttpStatus.NOT_FOUND);
         }
 
+        return new ArrayList<>();
     }
 
-    public List<ProductUaDTO> searchAndSortKeyWordInDescription(String keyWord, String sortBy) {
+    public List<ProductUaDTO> searchAndSortKeyWordInDescription(String keyWord,
+                                                                String sortBy,
+                                                                String priceBetween,
+                                                                BigDecimal lowPrice,
+                                                                BigDecimal highPrice) {
         if (!keyWord.isEmpty()) {
             List<ProductUA> products = productRepository.searchByKeyWordInDescription(keyWord);
             if (!products.isEmpty()) {
-                List<ProductUaDTO> productsList = sortBy(products, sortBy);
+                if (priceBetween.equals("true")) {
+                    if (lowPrice.compareTo(BigDecimal.ZERO) >= 0
+                            && highPrice.compareTo(BigDecimal.ZERO) > 0
+                            && highPrice.compareTo(lowPrice) > (lowPrice.compareTo(highPrice))
+                    ) {
 
-                return productsList;
+                        if (sortBy.isEmpty()) {
+                            sortBy = "priceAsc";
+                        }
+
+                        List<ProductUaDTO> productsList = sortBy(products, sortBy, lowPrice, highPrice);
+                        return productsList;
+                    }
+
+                } else {
+                    List<ProductUaDTO> productsList = sortBy(products, sortBy);
+
+                    return productsList;
+                }
+
             } else {
                 logger.warn("From ProductUAServiceImp method -searchAndSortKeyWordInDescription-. Nothing found from keyword ( {} ) send war message " +
                         "(Products List is not available or his is empty.)", keyWord);
@@ -306,9 +267,136 @@ public class ProductUAServiceImp implements ProductUAService {
             throw new ProductException("Key Word is not available or his is empty.", HttpStatus.NOT_FOUND);
         }
 
+        return new ArrayList<>();
+    }
+
+    public List<ProductUaDTO> searchAndSortPromotionPriceFromDataBase(String sortBy,
+                                                                      String priceBetween,
+                                                                      BigDecimal lowPrice,
+                                                                      BigDecimal highPrice) {
+
+        List<ProductUA> products = productRepository.searchByPromotionPrice();
+        if (!products.isEmpty()) {
+            if (priceBetween.equals("true")) {
+                if (lowPrice.compareTo(BigDecimal.ZERO) >= 0
+                        && highPrice.compareTo(BigDecimal.ZERO) > 0
+                        && highPrice.compareTo(lowPrice) > (lowPrice.compareTo(highPrice))
+                ) {
+                    if (sortBy.equals("priceAsc")) {
+                        sortBy = "promotionPriceBetweenAsc";
+                    } else if (sortBy.equals("priceDesc")) {
+                        sortBy = "promotionPriceBetweenDesc";
+                    } else if (sortBy.isEmpty()) {
+                        sortBy = "promotionPriceBetweenAsc";
+                    }
+
+                    List<ProductUaDTO> productsList = sortBy(products, sortBy, lowPrice, highPrice);
+
+                    return productsList;
+                }
+            } else {
+                if (sortBy.equals("priceAsc")) {
+                    sortBy = "promotionPriceAsc";
+                } else if (sortBy.equals("priceDesc")) {
+                    sortBy = "promotionPriceDesc";
+                }
+
+                List<ProductUaDTO> productsList = sortBy(products, sortBy);
+
+                return productsList;
+            }
+        } else {
+            logger.warn("From ProductUAServiceImp method -searchAndSortPromotionPriceFromDataBase-. Nothing found send war message " +
+                    "(Products List is not available or his is empty.)");
+            throw new ProductException("Products List is not available or his is empty.", HttpStatus.NOT_FOUND);
+        }
+        return new ArrayList<>();
     }
 
     // The method performs sorting on app side.
+    private List<ProductUaDTO> sortBy(List<ProductUA> list,
+                                      String sortBy,
+                                      BigDecimal lowPrice,
+                                      BigDecimal highPrice) {
+        List<ProductUaDTO> productsList = new ArrayList<>(convertToProductDTOList(list));
+        if (!(sortBy.isEmpty())) {
+            switch (sortBy) {
+                case "rating":
+                    // Sort products by rating logic
+                    productsList = productsList.stream().filter(product ->
+                                    (product.getPrice().compareTo(lowPrice)) >= 0 && (product.getPrice().compareTo(highPrice)) <= 0)
+                            .sorted(Comparator.comparing(ProductUaDTO::getRating).reversed())
+                            .toList();
+                    break;
+                case "priceAsc":
+                    // Sort products by price asc logic
+                    productsList = productsList.stream().filter(product ->
+                                    (product.getPrice().compareTo(lowPrice)) >= 0 && (product.getPrice().compareTo(highPrice)) <= 0)
+                            .sorted(Comparator.comparing(ProductUaDTO::getPrice))
+                            .toList();
+                    break;
+                case "priceDesc":
+                    // Sort products by price desc logic
+                    productsList = productsList.stream().filter(product ->
+                                    (product.getPrice().compareTo(lowPrice)) >= 0 && (product.getPrice().compareTo(highPrice)) <= 0)
+                            .sorted(Comparator.comparing(ProductUaDTO::getPrice).reversed())
+                            .toList();
+                    break;
+                case "new":
+                    // Sort products by datetime logic
+                    productsList = productsList.stream().filter(product ->
+                                    (product.getPrice().compareTo(lowPrice)) >= 0 && (product.getPrice().compareTo(highPrice)) <= 0)
+                            .sorted(Comparator.comparing(ProductUaDTO::getDateCreation).reversed())
+                            .toList();
+                    break;
+                case "popular":
+                    // Sort products by popularity logic
+                    productsList = productsList.stream().filter(product ->
+                                    (product.getPrice().compareTo(lowPrice)) >= 0 && (product.getPrice().compareTo(highPrice)) <= 0)
+                            .sorted(Comparator.comparing(ProductUaDTO::getNumberOfOrders).reversed())
+                            .toList();
+                    break;
+                case "name":
+                    // Sort products by name logic
+                    productsList = productsList.stream().filter(product ->
+                                    (product.getPrice().compareTo(lowPrice)) >= 0 && (product.getPrice().compareTo(highPrice)) <= 0)
+                            .sorted(Comparator.comparing(ProductUaDTO::getProductName))
+                            .toList();
+                    break;
+//                case "priceBetweenAse":
+//                    productsList = productsList.stream().filter(product ->
+//                                    (product.getPrice().compareTo(lowPrice)) >= 0 && (product.getPrice().compareTo(highPrice)) <= 0)
+//                            .sorted(Comparator.comparing(ProductUaDTO::getPrice))
+//                            .toList();
+//                    break;
+//                case "priceBetweenDesc":
+//                    productsList = productsList.stream().filter(product ->
+//                                    (product.getPrice().compareTo(lowPrice)) >= 0 && (product.getPrice().compareTo(highPrice)) <= 0)
+//                            .sorted(Comparator.comparing(ProductUaDTO::getPrice).reversed())
+//                            .toList();
+//                    break;
+
+                case "promotionPriceBetweenAsc":
+                    productsList = productsList.stream().filter(product ->
+                                    (product.getPromotionPrice().compareTo(lowPrice)) >= 0 && (product.getPromotionPrice().compareTo(highPrice)) <= 0)
+                            .sorted(Comparator.comparing(ProductUaDTO::getPromotionPrice))
+                            .toList();
+                    break;
+                case "promotionPriceBetweenDesc":
+                    productsList = productsList.stream().filter(product ->
+                                    (product.getPromotionPrice().compareTo(lowPrice)) >= 0 && (product.getPromotionPrice().compareTo(highPrice)) <= 0)
+                            .sorted(Comparator.comparing(ProductUaDTO::getPromotionPrice).reversed())
+                            .toList();
+                    break;
+                default:
+                    // Handle default case or throw an exception
+                    break;
+            }
+        }
+
+        return productsList;
+    }
+
     private List<ProductUaDTO> sortBy(List<ProductUA> list, String sortBy) {
         List<ProductUaDTO> productsList = new ArrayList<>(convertToProductDTOList(list));
         if (!(sortBy.isEmpty())) {
@@ -337,6 +425,12 @@ public class ProductUAServiceImp implements ProductUAService {
                     // Sort products by name logic
                     productsList.sort(Comparator.comparing(ProductUaDTO::getProductName));
                     break;
+                case "promotionPriceAse":
+                    productsList.sort(Comparator.comparing(ProductUaDTO::getPromotionPrice));
+                    break;
+                case "promotionPriceDesc":
+                    productsList.sort(Comparator.comparing(ProductUaDTO::getPromotionPrice).reversed());
+                    break;
                 default:
                     // Handle default case or throw an exception
                     break;
@@ -345,50 +439,6 @@ public class ProductUAServiceImp implements ProductUAService {
 
         return productsList;
     }
-
-    // The method performs sorting on Data Base side.
-    @Override
-    public List<ProductUaDTO> searchAndSortKeyWordDescriptionFromDataBase(String keyWord, String sortBy) {
-        List<ProductUaDTO> products;
-        if (!(sortBy.isEmpty())) {
-
-            switch (sortBy) {
-                case "rating":
-                    // Sort products by rating logic
-                    products = sortByRatingDescKeyWordDescription(keyWord);
-                    return products;
-                case "priceAsc":
-                    // Sort products by price asc logic
-                    products = sortByPriceAscKeyWordDescription(keyWord);
-                    return products;
-                case "priceDesc":
-                    // Sort products by price desc logic
-                    products = sortByPriceDescKeyWordDescription(keyWord);
-                    return products;
-                case "new":
-                    // Sort products by datetime logic
-                    products = sortByTimeKeyWordDescription(keyWord);
-                    return products;
-                case "popular":
-                    // Sort products by popularity logic
-                    products = sortByNumberOfOrdersDescKeyWordDescription(keyWord);
-                    return products;
-                case "name":
-                    // Sort products by name logic
-                    products = sortByProductNameAscKeyWordDescription(keyWord);
-                    return products;
-                default:
-                    // default products search by keyWord in Description
-                    break;
-            }
-        } else {
-            products = searchByKeyWordInDescription(keyWord);
-            return products;
-        }
-        return new ArrayList<>();
-    }
-
-
 
     @Override
     public ProductUA createProductFromProductUaDTO(ProductUaDTO productUaDTO) {

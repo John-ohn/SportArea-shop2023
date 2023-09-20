@@ -51,14 +51,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         "/user/welcome",
                         "/product/**",
                         "/comment/**",
-                        "/order/**").permitAll()
+                        "/order/**",
+                        "/basket/**").permitAll()
                 .antMatchers(HttpMethod.POST, "/user/**",
                         "/product/**",
                         "/comment/**",
-                        "/order/**").permitAll()
+                        "/order/**",
+                        "/basket/**").permitAll()
                 .antMatchers(HttpMethod.DELETE, "/user/**",
                         "/product/**",
-                        "/order/**").permitAll()
+                        "/order/**",
+                        "/basket/**").permitAll()
 //                .antMatchers(HttpMethod.GET, "/user/**").hasAnyAuthority(Permission.DEVELOPERS_READ.getPermission())
 //                .antMatchers(HttpMethod.POST, "/user/**").hasAuthority(Permission.DEVELOPERS_WRITE.getPermission())
 //                .antMatchers(HttpMethod.DELETE, "/user/**").hasAuthority(Permission.DEVELOPERS_WRITE.getPermission())
