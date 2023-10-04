@@ -36,17 +36,17 @@ public class CommentController {
         return commentService.findAll();
     }
 
-    @GetMapping("/company-comments")
+    @GetMapping("/company")
     public List<CommentDTO> findCompanyComments() {
         return commentService.findCompanyComments();
     }
 
-    @GetMapping("/user-comments/{userId}")
+    @GetMapping("/user/{userId}")
     public List<CommentDTO> findAllUserComments(@PathVariable("userId") Long userId) {
         return commentService.findAllUserComments(userId);
     }
 
-    @GetMapping("/product-comments/{productId}")
+    @GetMapping("/product/{productId}")
     public List<CommentDTO> findAllProductComments(@PathVariable("productId") Long productId) {
         List<CommentDTO> commentDTOList = commentService.findAllProductComments(productId);
         logger.info("From controller -product-comments-. Send all Product Comments with productId: {}", productId);
@@ -54,7 +54,7 @@ public class CommentController {
         return commentDTOList;
     }
 
-    @PostMapping("/addProductComment")
+    @PostMapping("/product")
     public ResponseEntity<String> addProductComment(@RequestBody AddComment commentDTO) {
 
         commentService.addProductComment(commentDTO);
