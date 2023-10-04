@@ -43,11 +43,10 @@ public class BasketController {
     }
 
 
-    @PostMapping("/basket")
+    @PostMapping("/add")
     public ResponseEntity<String> addedBasket(@RequestBody BasketDTO basket) {
         basketService.save(basket);
         return ResponseEntity.ok("Product was added in basket successfully.");
-
     }
 
 
