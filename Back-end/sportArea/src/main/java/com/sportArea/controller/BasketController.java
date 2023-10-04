@@ -43,7 +43,7 @@ public class BasketController {
     }
 
 
-    @PostMapping("/add")
+    @PostMapping("/basket")
     public ResponseEntity<String> addedBasket(@RequestBody BasketDTO basket) {
         basketService.save(basket);
         return ResponseEntity.ok("Product was added in basket successfully.");
@@ -51,7 +51,7 @@ public class BasketController {
     }
 
 
-    @DeleteMapping ("/delete/{id}")
+    @DeleteMapping ("/{id}")
     public ResponseEntity<String> deleteBasket(@PathVariable("id") Long id) {
         basketService.deleteByGuestId(id);
         return ResponseEntity.ok("Baskets delete successfully.");
@@ -79,12 +79,13 @@ public class BasketController {
     @DeleteMapping ("/guestId")
     public ResponseEntity<?> deleteGuestId(@RequestParam("guestId") Long guestId){
 
-     if(guestUser.containsGuestId(guestId)) {
-         guestUser.deleteGuestId(guestId);
-        }else{
-         logger.info("This guestId: {} is not exist {}", guestId, HttpStatus.BAD_REQUEST.name());
-         return new ResponseEntity<>("This guestId: "+guestId+" is not exist ", HttpStatus.BAD_REQUEST);
-     }
+        if (guestUser.containsGuestId(guestId)) {
+            guestUser.deleteGuestId(guestId);
+        } else {
+            logger.info("This guestId: {} is not exist {}", guestId, HttpStatus.BAD_REQUEST.name());
+            return new ResponseEntity<>("This guestId: " + guestId + " is not exist ", HttpStatus.BAD_REQUEST);
+        }
+
         Set<Long> list = guestUser.getGuestIdList();
         logger.info("List guestId: {} is already exist {} ", list, HttpStatus.OK.name());
         return new ResponseEntity<>("guestId was delete successfully.", HttpStatus.OK);

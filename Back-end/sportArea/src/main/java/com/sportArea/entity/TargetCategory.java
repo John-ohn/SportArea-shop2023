@@ -21,6 +21,9 @@ public class TargetCategory {
     @Column(name = "nameCategory")
     private String  nameCategory;
 
+    @Column(name = "translateName")
+    private String  translateName;
+
     @Column(name = "iconHttp")
     private String iconHttp;
 
