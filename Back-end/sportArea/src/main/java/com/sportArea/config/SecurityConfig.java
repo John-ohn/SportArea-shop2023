@@ -40,16 +40,28 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/user/auth/login").permitAll()
                 .antMatchers(HttpMethod.POST, "/user/registration").permitAll()
                 .antMatchers(HttpMethod.GET, "/user/testAuth").hasAnyAuthority(Permission.DEVELOPERS_READ.getPermission())
-                .antMatchers(HttpMethod.GET, "/response/**", "/oauth2",
+                .antMatchers(HttpMethod.GET,
+                        "/response/**",
+                        "/oauth2",
                         "/user/list",
                         "/user/{userId}",
                         "/user/registration",
                         "/user/delete/{userId}",
                         "/user/delete/between",
                         "/user/welcome",
-                        "/product/**").permitAll()
-                .antMatchers(HttpMethod.POST, "/user/**", "/product/**").permitAll()
-                .antMatchers(HttpMethod.DELETE, "/user/**", "/product/**").permitAll()
+                        "/product/**",
+                        "/comment/**",
+                        "/order/**",
+                        "/basket/**").permitAll()
+                .antMatchers(HttpMethod.POST, "/user/**",
+                        "/product/**",
+                        "/comment/**",
+                        "/order/**",
+                        "/basket/**").permitAll()
+                .antMatchers(HttpMethod.DELETE, "/user/**",
+                        "/product/**",
+                        "/order/**",
+                        "/basket/**").permitAll()
 //                .antMatchers(HttpMethod.GET, "/user/**").hasAnyAuthority(Permission.DEVELOPERS_READ.getPermission())
 //                .antMatchers(HttpMethod.POST, "/user/**").hasAuthority(Permission.DEVELOPERS_WRITE.getPermission())
 //                .antMatchers(HttpMethod.DELETE, "/user/**").hasAuthority(Permission.DEVELOPERS_WRITE.getPermission())

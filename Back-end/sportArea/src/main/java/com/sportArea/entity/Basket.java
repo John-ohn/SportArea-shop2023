@@ -1,17 +1,18 @@
 package com.sportArea.entity;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.util.List;
 
 @Entity
 @Table(name = "Basket")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class Basket {
 
     @Id
@@ -19,7 +20,10 @@ public class Basket {
     @Column(name = "basketId")
     private Long basketId;
 
-    @OneToMany
-    @JoinColumn(name = "orderId")
-    private List<Order> order;
+    @Column(name = "guestId")
+    private Long guestId;
+
+    @ManyToOne()
+    @JoinColumn(name = "productId")
+    private ProductUA productUA;
 }

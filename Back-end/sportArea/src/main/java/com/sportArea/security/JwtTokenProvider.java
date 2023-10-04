@@ -60,20 +60,6 @@ public class JwtTokenProvider {
                 .compact();
     }
 
-//    public String createToken(Authentication authentication) {
-//        UserPrincipal userPrincipal = (UserPrincipal) authentication.getPrincipal();
-//        Date now = new Date();
-//        Date expiryDate = new Date(now.getTime() + appConfig.getTokenExpirationMsec());
-//
-//        return Jwts.builder()
-//                .setSubject((userPrincipal.getName()))
-//                .setIssuedAt(new Date())
-//                .setExpiration(expiryDate)
-//                .signWith(SignatureAlgorithm.HS512, appConfig.getTokenSecret())
-//                .compact();
-//    }
-
-
     public boolean validateToken(String token) {
         try {
             Jws<Claims> claimsJws = Jwts.parser().setSigningKey(securityKey).parseClaimsJws(token);

@@ -1,17 +1,20 @@
 package com.sportArea.entity;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "Ordering")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Builder
 public class Order {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -40,7 +43,7 @@ public class Order {
     private Integer amount;
 
     @Column(name = "orderDate")
-    private LocalDate orderDate;
+    private LocalDateTime orderDate;
 
     @ManyToOne
     @JoinColumn(name = "userId")

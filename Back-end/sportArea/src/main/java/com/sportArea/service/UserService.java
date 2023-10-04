@@ -1,9 +1,7 @@
 package com.sportArea.service;
 
 import com.sportArea.entity.User;
-import com.sportArea.entity.dto.GoogleUserDTO;
 import com.sportArea.entity.dto.UserDTO;
-import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 import java.util.Optional;
@@ -23,5 +21,9 @@ public interface UserService {
     void deleteUsersBetweenIds(Long startId, Long endId);
 
     void save(UserDTO user);
+
+    User createUserFromUserDTO(UserDTO userDTO);
+
+    UserDTO createUserDTOFromUser(User user);
 
 }

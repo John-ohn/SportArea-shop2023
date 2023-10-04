@@ -1,6 +1,5 @@
 package com.sportArea.controller;
 
-import com.sportArea.entity.User;
 import com.sportArea.entity.dto.UserDTO;
 import com.sportArea.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +16,7 @@ import java.util.List;
 @RequestMapping("/user")
 @Validated
 public class UserController {
+
 
     private final UserService userService;
 
