@@ -1,4 +1,4 @@
-package com.sportArea.restJWT;
+package com.sportArea.entity.dto.restJWT;
 
 import lombok.Data;
 

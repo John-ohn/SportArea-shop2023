@@ -6,7 +6,7 @@ import com.sportArea.entity.Status;
 import com.sportArea.entity.TypeRegistration;
 import com.sportArea.entity.User;
 import com.sportArea.entity.dto.GoogleUserDTO;
-import com.sportArea.exception.UserException;
+import com.sportArea.exception.GeneralException;
 import com.sportArea.security.JwtTokenProvider;
 import com.sportArea.service.GoogleUserService;
 import org.slf4j.Logger;
@@ -54,7 +54,7 @@ public class GoogleUserServiceImp implements GoogleUserService {
             logger.info("From GoogleUserServiceImp method -saveUserGoogle- send war message " +
                     "( User is not available or his is empty. ({})))", HttpStatus.NOT_FOUND);
 
-            throw new UserException("User is not available or his is empty. ", HttpStatus.NOT_FOUND);
+            throw new GeneralException("User is not available or his is empty. ", HttpStatus.NOT_FOUND);
         }
     }
 

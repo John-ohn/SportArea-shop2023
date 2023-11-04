@@ -1,7 +1,5 @@
 package com.sportArea.controller;
 
-import com.sportArea.entity.Comment;
-import com.sportArea.entity.ProductUA;
 import com.sportArea.entity.dto.AddComment;
 import com.sportArea.entity.dto.CommentDTO;
 import com.sportArea.entity.dto.ProductUaDTO;
@@ -16,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/comment")
+@RequestMapping("/api/v1/comments")
 public class CommentController {
 
     Logger logger = LoggerFactory.getLogger(CommentController.class);
@@ -31,7 +29,7 @@ public class CommentController {
         this.productUAService = productUAService;
     }
 
-    @GetMapping("/list")
+    @GetMapping
     public List<CommentDTO> list() {
         return commentService.findAll();
     }
@@ -41,12 +39,12 @@ public class CommentController {
         return commentService.findCompanyComments();
     }
 
-    @GetMapping("/user/{userId}")
+    @GetMapping("/users/{userId}")
     public List<CommentDTO> findAllUserComments(@PathVariable("userId") Long userId) {
         return commentService.findAllUserComments(userId);
     }
 
-    @GetMapping("/product/{productId}")
+    @GetMapping("/products/{productId}")
     public List<CommentDTO> findAllProductComments(@PathVariable("productId") Long productId) {
         List<CommentDTO> commentDTOList = commentService.findAllProductComments(productId);
         logger.info("From controller -product-comments-. Send all Product Comments with productId: {}", productId);

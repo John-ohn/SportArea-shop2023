@@ -1,6 +1,6 @@
 package com.sportArea.exception.controllerAdvice;
 
-import com.sportArea.exception.model.UserErrorResponse;
+import com.sportArea.exception.model.ErrorResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -18,8 +18,8 @@ public class ValidExceptionHandler {
     Logger logger = LoggerFactory.getLogger(ValidExceptionHandler.class);
 
     @ExceptionHandler
-    public ResponseEntity<UserErrorResponse> handlerException(MethodArgumentNotValidException exc) {
-        UserErrorResponse userErrorResponse = new UserErrorResponse();
+    public ResponseEntity<ErrorResponse> handlerException(MethodArgumentNotValidException exc) {
+        ErrorResponse userErrorResponse = new ErrorResponse();
         userErrorResponse.setStatus(HttpStatus.BAD_REQUEST.value());
         userErrorResponse.setMessage(Objects.requireNonNull(exc.getFieldError()).getDefaultMessage());
         userErrorResponse.setTimeStamp(new Timestamp(System.currentTimeMillis()));

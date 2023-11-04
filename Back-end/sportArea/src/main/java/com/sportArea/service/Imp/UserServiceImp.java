@@ -6,7 +6,7 @@ import com.sportArea.entity.Status;
 import com.sportArea.entity.TypeRegistration;
 import com.sportArea.entity.User;
 import com.sportArea.entity.dto.UserDTO;
-import com.sportArea.exception.UserException;
+import com.sportArea.exception.GeneralException;
 import com.sportArea.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -45,7 +45,7 @@ public class UserServiceImp implements UserService {
         } else {
             logger.warn("From UserServiceImp method -findById- send war message " +
                     "( User with userId: {} is not available. ({}))", userId, HttpStatus.NOT_FOUND);
-            throw new UserException("User with userId: " + userId + " is not available.", HttpStatus.NOT_FOUND);
+            throw new GeneralException("User with userId: " + userId + " is not available.", HttpStatus.NOT_FOUND);
         }
     }
 
@@ -68,7 +68,7 @@ public class UserServiceImp implements UserService {
             logger.warn("From UserServiceImp method -findByEmail- send war message " +
                     "( User with email: {} is not available. ({}))", email, HttpStatus.NOT_FOUND);
 
-            throw new UserException("User with email: " + email + " is not available.", HttpStatus.NOT_FOUND);
+            throw new GeneralException("User with email: " + email + " is not available.", HttpStatus.NOT_FOUND);
         }
     }
 
@@ -82,7 +82,7 @@ public class UserServiceImp implements UserService {
             logger.warn("From UserServiceImp method -findByEmail- send war message " +
                     "( User with keyWord: {} is not available. ({}))", keyWord, HttpStatus.NOT_FOUND);
 
-            throw new UserException("User with keyWord: " + keyWord + " is not available.", HttpStatus.NOT_FOUND);
+            throw new GeneralException("User with keyWord: " + keyWord + " is not available.", HttpStatus.NOT_FOUND);
         }
 
     }
@@ -94,7 +94,7 @@ public class UserServiceImp implements UserService {
             if (optionalUser.isPresent()) {
                 logger.warn("From UserServiceImp method -save- send war message " +
                         "( Email already exists. ({})))", HttpStatus.NO_CONTENT.name());
-                throw new UserException("Email already exists", HttpStatus.BAD_REQUEST);
+                throw new GeneralException("Email already exists", HttpStatus.BAD_REQUEST);
             }
             String encodedPassword = passwordEncoder.encode(userDTO.getPassword());
             User user = createUserFromUserDTO(userDTO);
@@ -110,7 +110,7 @@ public class UserServiceImp implements UserService {
             logger.warn("From UserServiceImp method -save- send war message " +
                     "( User is not available or his is empty. ({})))", HttpStatus.NOT_FOUND);
 
-            throw new UserException("User is not available or his is empty. ", HttpStatus.NOT_FOUND);
+            throw new GeneralException("User is not available or his is empty. ", HttpStatus.NOT_FOUND);
         }
     }
 
@@ -123,7 +123,7 @@ public class UserServiceImp implements UserService {
         } else {
             logger.warn("From UserServiceImp method -delete- send war message " +
                     "(User with userId: {} is not available. ({}) )", userId, HttpStatus.NOT_FOUND.name());
-            throw new UserException("User with userId: " + userId + " is not available.", HttpStatus.NOT_FOUND);
+            throw new GeneralException("User with userId: " + userId + " is not available.", HttpStatus.NOT_FOUND);
         }
     }
 
@@ -138,7 +138,7 @@ public class UserServiceImp implements UserService {
         } else {
             logger.warn("From UserServiceImp method -deleteUsersBetweenIds- send war message " +
                     "(Users with userIds: {} and {} is not available. {}", startId, endId, HttpStatus.NOT_FOUND.name());
-            throw new UserException("Users with userIds: " + startId + "and " + endId + " is not available.", HttpStatus.NOT_FOUND);
+            throw new GeneralException("Users with userIds: " + startId + "and " + endId + " is not available.", HttpStatus.NOT_FOUND);
         }
     }
 
