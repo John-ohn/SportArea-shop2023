@@ -3,7 +3,7 @@ package com.sportArea.service.Imp;
 import com.sportArea.dao.BlogRepository;
 import com.sportArea.entity.Blog;
 import com.sportArea.entity.dto.BlogDTO;
-import com.sportArea.exception.BlogException;
+import com.sportArea.exception.GeneralException;
 import com.sportArea.service.BlogService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,7 +40,7 @@ public class BlogServiceImp implements BlogService {
         }else{
             logger.warn("From BlogServiceImp method -findAll- send war message " +
                     "( Blog with blogId is not available. ({}))", HttpStatus.NOT_FOUND);
-            throw new BlogException("Don't find any Blog. Blogs list is empty.", HttpStatus.NOT_FOUND);
+            throw new GeneralException("Don't find any Blog. Blogs list is empty.", HttpStatus.NOT_FOUND);
         }
     }
 
@@ -54,7 +54,7 @@ public class BlogServiceImp implements BlogService {
         }else {
             logger.warn("From BlogServiceImp method -findById- send war message " +
                     "( Blog with blogId {} is not available. ({}))", blogId, HttpStatus.NOT_FOUND);
-            throw new BlogException("Blog with blogId: " + blogId + " is not available.", HttpStatus.NOT_FOUND);
+            throw new GeneralException("Blog with blogId: " + blogId + " is not available.", HttpStatus.NOT_FOUND);
         }
     }
 

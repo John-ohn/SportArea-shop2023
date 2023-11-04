@@ -2,7 +2,7 @@ package com.sportArea.service.Imp;
 
 import com.sportArea.dao.TargetCategoryRepository;
 import com.sportArea.entity.TargetCategory;
-import com.sportArea.exception.ProductException;
+import com.sportArea.exception.GeneralException;
 import com.sportArea.service.TargetCategoryService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,7 +40,7 @@ public class TargetCategoryServiceImp implements TargetCategoryService {
             logger.info("From TargetCategoryServiceImp methods - findById - return TargetCategory");
             return category.get();
         } else {
-            throw new ProductException("TargetCategory with this categoryId :" + categoryId + " don't exist ", HttpStatus.NOT_FOUND);
+            throw new GeneralException("TargetCategory with this categoryId :" + categoryId + " don't exist ", HttpStatus.NOT_FOUND);
         }
     }
 
@@ -50,7 +50,7 @@ public class TargetCategoryServiceImp implements TargetCategoryService {
             targetCategoryRepository.save(categoryName);
             logger.info("From TargetCategoryServiceImp methods - save - save new object TargetCategory");
         }else {
-            throw new ProductException("TargetCategory object is empty ", HttpStatus.NOT_FOUND);
+            throw new GeneralException("TargetCategory object is empty ", HttpStatus.NOT_FOUND);
         }
     }
 
@@ -61,7 +61,7 @@ public class TargetCategoryServiceImp implements TargetCategoryService {
             targetCategoryRepository.delete(category.get());
             logger.info("From TargetCategoryServiceImp methods - delete - delete object TargetCategory with categoryId : {}  ", categoryId );
         }else{
-            throw new ProductException("TargetCategory with this categoryId :" + categoryId + " don't exist ", HttpStatus.NOT_FOUND);
+            throw new GeneralException("TargetCategory with this categoryId :" + categoryId + " don't exist ", HttpStatus.NOT_FOUND);
         }
 
     }

@@ -4,7 +4,7 @@ import com.sportArea.dao.OrderRepository;
 import com.sportArea.entity.Order;
 import com.sportArea.entity.dto.OrderDTO;
 import com.sportArea.entity.dto.ProductUaDTO;
-import com.sportArea.exception.OrderException;
+import com.sportArea.exception.GeneralException;
 import com.sportArea.service.OrderService;
 import com.sportArea.service.ProductUAService;
 import com.sportArea.service.UserService;
@@ -52,7 +52,7 @@ public class OrderServiceImp implements OrderService {
         } else {
             logger.warn("From OrderServiceImp method -findById- send war message " +
                     "( Don't find any Orders. Products list is empty. ({}))", HttpStatus.NOT_FOUND);
-            throw new OrderException("Don't find any Orders. Orders list is empty.", HttpStatus.NOT_FOUND);
+            throw new GeneralException("Don't find any Orders. Orders list is empty.", HttpStatus.NOT_FOUND);
         }
     }
 
@@ -75,7 +75,7 @@ public class OrderServiceImp implements OrderService {
         } else {
             logger.warn("From OrderServiceImp method -findById- send war message " +
                     "( Order with orderId {} is not available. ({}))", orderId, HttpStatus.NOT_FOUND);
-            throw new OrderException("Order with orderId: " + orderId + " is not available.", HttpStatus.NOT_FOUND);
+            throw new GeneralException("Order with orderId: " + orderId + " is not available.", HttpStatus.NOT_FOUND);
         }
 
     }
@@ -96,7 +96,7 @@ public class OrderServiceImp implements OrderService {
             logger.warn("From OrderServiceImp method -save- send war message " +
                     "( Order is not available or his is empty. ({}))", HttpStatus.NOT_FOUND.value());
 
-            throw new OrderException("Order is not available or his is empty. ", HttpStatus.NOT_FOUND);
+            throw new GeneralException("Order is not available or his is empty. ", HttpStatus.NOT_FOUND);
         }
     }
 
@@ -112,7 +112,7 @@ public class OrderServiceImp implements OrderService {
             logger.warn("From OrderServiceImp method -numberOfOrders- send war message " +
                     "( Product Id: {} is not available or his is empty. ({}))", productId, HttpStatus.NOT_FOUND.value());
 
-            throw new OrderException("Product Id: " + productId + " is not available or his is empty. ", HttpStatus.NOT_FOUND);
+            throw new GeneralException("Product Id: " + productId + " is not available or his is empty. ", HttpStatus.NOT_FOUND);
         }
     }
 
@@ -137,12 +137,12 @@ public class OrderServiceImp implements OrderService {
             } else {
                 logger.warn("From OrderServiceImp method -delete- send war message " +
                         "(Order is not available. ({}) )", HttpStatus.NOT_FOUND.name());
-                throw new OrderException("Order is not available.", HttpStatus.NOT_FOUND);
+                throw new GeneralException("Order is not available.", HttpStatus.NOT_FOUND);
             }
         } else {
             logger.warn("From OrderServiceImp method -delete- send war message " +
                     "Order with orderId:  {} is not available.  {}", orderId, HttpStatus.NOT_FOUND.name());
-            throw new OrderException("Order with orderId: " + orderId + " is not available.", HttpStatus.NOT_FOUND);
+            throw new GeneralException("Order with orderId: " + orderId + " is not available.", HttpStatus.NOT_FOUND);
         }
     }
 

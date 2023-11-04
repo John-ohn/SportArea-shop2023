@@ -1,7 +1,7 @@
 package com.sportArea.exception.controllerAdvice;
 
-import com.sportArea.exception.UserException;
-import com.sportArea.exception.model.UserErrorResponse;
+import com.sportArea.exception.GeneralException;
+import com.sportArea.exception.model.ErrorResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -12,17 +12,17 @@ import java.sql.Timestamp;
 
 
 @ControllerAdvice
-public class UserRestExceptionHandler {
+public class GeneralRestExceptionHandler {
 
-    Logger logger = LoggerFactory.getLogger(UserRestExceptionHandler.class);
+    Logger logger = LoggerFactory.getLogger(GeneralRestExceptionHandler.class);
 
     @ExceptionHandler
-    public ResponseEntity<UserErrorResponse> handlerException(UserException exc) {
-        UserErrorResponse userErrorResponse = new UserErrorResponse(
+    public ResponseEntity<ErrorResponse> handlerException(GeneralException exc) {
+        ErrorResponse userErrorResponse = new ErrorResponse(
                 exc.getHttpStatus().value(),
                 exc.getMessage(),
                 new Timestamp(System.currentTimeMillis()));
-        logger.warn("From UserRestExceptionHandler method -handlerException- send message error ({})",
+        logger.warn("From GeneralRestExceptionHandler method -handlerException- send message error ({})",
                 userErrorResponse.getMessage());
 
         return new ResponseEntity<>(userErrorResponse, exc.getHttpStatus());

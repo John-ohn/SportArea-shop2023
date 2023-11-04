@@ -10,9 +10,9 @@ import java.sql.Timestamp;
 @Getter
 @Setter
 @NoArgsConstructor
-public class ProductExceptionResponse extends AbstractErrorResponse {
-
-    public ProductExceptionResponse(int status, String message, Timestamp timeStamp){
-        super(status, message, timeStamp);
-    }
+@AllArgsConstructor
+public  class ErrorResponse {
+    private int status;
+    private String message;
+    private Timestamp timeStamp;
 }

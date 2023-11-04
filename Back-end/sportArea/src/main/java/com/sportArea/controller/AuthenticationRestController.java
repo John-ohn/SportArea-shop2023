@@ -1,7 +1,8 @@
-package com.sportArea.restJWT;
+package com.sportArea.controller;
 
 
 import com.sportArea.entity.User;
+import com.sportArea.entity.dto.restJWT.AuthenticationRequestDTO;
 import com.sportArea.security.JwtTokenProvider;
 import com.sportArea.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +25,7 @@ import java.util.Map;
 import java.util.HashMap;
 
 @RestController
-@RequestMapping("/user/auth")
+@RequestMapping("/api/v1/user/auth")
 public class AuthenticationRestController {
 
     private final AuthenticationManager authenticationManager;

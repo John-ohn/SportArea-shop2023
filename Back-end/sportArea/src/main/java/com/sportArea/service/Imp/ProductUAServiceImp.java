@@ -3,7 +3,7 @@ package com.sportArea.service.Imp;
 import com.sportArea.dao.ProductUARepository;
 import com.sportArea.entity.ProductUA;
 import com.sportArea.entity.dto.ProductUaDTO;
-import com.sportArea.exception.ProductException;
+import com.sportArea.exception.GeneralException;
 import com.sportArea.service.ProductUAService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,7 +46,7 @@ public class ProductUAServiceImp implements ProductUAService {
         } else {
             logger.warn("From ProductUAServiceImp method -findById- send war message " +
                     "( Product with productId {} is not available. ({}))", productId, HttpStatus.NOT_FOUND);
-            throw new ProductException("Product with productId: " + productId + " is not available.", HttpStatus.NOT_FOUND);
+            throw new GeneralException("Product with productId: " + productId + " is not available.", HttpStatus.NOT_FOUND);
         }
     }
 
@@ -61,7 +61,7 @@ public class ProductUAServiceImp implements ProductUAService {
 
             return productDTOList;
         } else {
-            throw new ProductException("Don't find any Products. Products list is empty.", HttpStatus.NOT_FOUND);
+            throw new GeneralException("Don't find any Products. Products list is empty.", HttpStatus.NOT_FOUND);
         }
 
     }
@@ -86,14 +86,14 @@ public class ProductUAServiceImp implements ProductUAService {
                 logger.warn("From ProductUAServiceImp method -searchByKeyWordInTypeSubtype- send war message " +
                         "(Product with keyWord: {} not found. ({}))", keyWord, HttpStatus.NOT_FOUND.name());
 
-                throw new ProductException("Product with keyWord: " + keyWord + " not found.",
+                throw new GeneralException("Product with keyWord: " + keyWord + " not found.",
                         HttpStatus.NOT_FOUND);
             }
         } else {
             logger.warn("From ProductUAServiceImp method -searchByKeyWordInTypeSubtype- send war message " +
                     "Key word is empty or null . ({})", HttpStatus.NOT_FOUND.name());
 
-            throw new ProductException("Key word is empty or null" + keyWord,
+            throw new GeneralException("Key word is empty or null" + keyWord,
                     HttpStatus.NOT_FOUND);
         }
     }
@@ -108,7 +108,7 @@ public class ProductUAServiceImp implements ProductUAService {
         } else {
             logger.warn("From ProductUAServiceImp method -searchByBestPrice- send war message " +
                     "List with promotion products is empty or not available. ({})", HttpStatus.NOT_FOUND.name());
-            throw new ProductException("List with promotion products is empty or not available.", HttpStatus.NOT_FOUND);
+            throw new GeneralException("List with promotion products is empty or not available.", HttpStatus.NOT_FOUND);
         }
     }
 
@@ -128,7 +128,7 @@ public class ProductUAServiceImp implements ProductUAService {
             logger.warn("From ProductUAServiceImp method -save- send war message " +
                     "( Product is not available or his is empty. ({}))", HttpStatus.NOT_FOUND.value());
 
-            throw new ProductException("Product is not available or his is empty. ", HttpStatus.NOT_FOUND);
+            throw new GeneralException("Product is not available or his is empty. ", HttpStatus.NOT_FOUND);
         }
     }
 
@@ -145,7 +145,7 @@ public class ProductUAServiceImp implements ProductUAService {
             logger.warn("From ProductUAServiceImp method -delete- send war message " +
                     "(Product with productId: {} is not available. {} )", productId, HttpStatus.NOT_FOUND.value());
 
-            throw new ProductException("Product with productId: " + productId + " is not available.",
+            throw new GeneralException("Product with productId: " + productId + " is not available.",
                     HttpStatus.NOT_FOUND);
         }
     }
@@ -161,15 +161,39 @@ public class ProductUAServiceImp implements ProductUAService {
         } else {
             logger.warn("From ProductUAServiceImp method -deleteProductUABetweenIds- send war message " +
                     "(Product with productIds: {} and {} is not available. {}", startId, endId, HttpStatus.NOT_FOUND.value());
-            throw new ProductException("Product with productIds: " + startId + "and " + endId + " is not available.",
+            throw new GeneralException("Product with productIds: " + startId + "and " + endId + " is not available.",
                     HttpStatus.NOT_FOUND);
         }
     }
 
+    @Override
+    public List<ProductUaDTO> searchProducts(String keyWord,
+                                     String searchLocation) {
 
+        List<ProductUaDTO> products;
+        switch (searchLocation) {
+            case "main-search":
+                products = searchAndSortKeyWordTypeSubtypeFromDataBase(keyWord);
+                return products;
+            case "description-search":
+                products = searchAndSortKeyWordInDescription(keyWord);
+                return products;
+            case "best-price":
+                products = searchAndSortPromotionPriceFromDataBase();
+                return products;
+            default:
+                return new ArrayList<>();
+        }
+
+    }
 
     @Override
-    public List<ProductUaDTO> searchAndSort(String keyWord, String sortBy, String searchLocation, String priceBetween, BigDecimal lowPrice, BigDecimal highPrice) {
+    public List<ProductUaDTO> searchAndSort(String keyWord,
+                                            String sortBy,
+                                            String searchLocation,
+                                            String priceBetween,
+                                            BigDecimal lowPrice,
+                                            BigDecimal highPrice) {
 
         List<ProductUaDTO> products;
         switch (searchLocation) {
@@ -185,6 +209,26 @@ public class ProductUAServiceImp implements ProductUAService {
             default:
                 return new ArrayList<>();
         }
+
+    }
+
+    public List<ProductUaDTO> searchAndSortKeyWordTypeSubtypeFromDataBase(String keyWord) {
+        if (!keyWord.isEmpty()) {
+            List<ProductUA> products = productRepository.searchByKeyWordInTypeSubtype(keyWord);
+            if (!products.isEmpty()) {
+                List<ProductUaDTO> productsList = convertToProductDTOList(products);
+                return productsList;
+            } else {
+                logger.warn("From ProductUAServiceImp method -searchAndSortKeyWordTypeSubtypeFromDataBase-.Nothing found from keyword ( {} ) send war message " +
+                        "(Products List is not available or his is empty.)", keyWord);
+                throw new GeneralException("Products List is not available or his is empty.", HttpStatus.NOT_FOUND);
+            }
+        } else {
+            logger.warn("From ProductUAServiceImp method -searchAndSortKeyWordTypeSubtypeFromDataBase- send war message " +
+                    "(Key Word is not available or his is empty.)");
+            throw new GeneralException("Key Word is not available or his is empty.", HttpStatus.NOT_FOUND);
+        }
+
 
     }
 
@@ -204,7 +248,7 @@ public class ProductUAServiceImp implements ProductUAService {
                         if (sortBy.isEmpty()) {
                             sortBy = "priceAsc";
                         }
-                        
+
                         List<ProductUaDTO> productsList = sortBy(products, sortBy, lowPrice, highPrice);
 
                         return productsList;
@@ -217,15 +261,36 @@ public class ProductUAServiceImp implements ProductUAService {
             } else {
                 logger.warn("From ProductUAServiceImp method -searchAndSortKeyWordTypeSubtypeFromDataBase-.Nothing found from keyword ( {} ) send war message " +
                         "(Products List is not available or his is empty.)", keyWord);
-                throw new ProductException("Products List is not available or his is empty.", HttpStatus.NOT_FOUND);
+                throw new GeneralException("Products List is not available or his is empty.", HttpStatus.NOT_FOUND);
             }
         } else {
             logger.warn("From ProductUAServiceImp method -searchAndSortKeyWordTypeSubtypeFromDataBase- send war message " +
                     "(Key Word is not available or his is empty.)");
-            throw new ProductException("Key Word is not available or his is empty.", HttpStatus.NOT_FOUND);
+            throw new GeneralException("Key Word is not available or his is empty.", HttpStatus.NOT_FOUND);
         }
 
         return new ArrayList<>();
+    }
+
+    public List<ProductUaDTO> searchAndSortKeyWordInDescription(String keyWord) {
+        if (!keyWord.isEmpty()) {
+            List<ProductUA> products = productRepository.searchByKeyWordInDescription(keyWord);
+            if (!products.isEmpty()) {
+
+                List<ProductUaDTO> productsList = convertToProductDTOList(products);
+                return productsList;
+
+            } else {
+                logger.warn("From ProductUAServiceImp method -searchAndSortKeyWordInDescription-. Nothing found from keyword ( {} ) send war message " +
+                        "(Products List is not available or his is empty.)", keyWord);
+                throw new GeneralException("Products List is not available or his is empty.", HttpStatus.NOT_FOUND);
+            }
+        } else {
+            logger.warn("From ProductUAServiceImp method -searchAndSortKeyWordInDescription- send war message " +
+                    "(Key Word is not available or his is empty.)");
+            throw new GeneralException("Key Word is not available or his is empty.", HttpStatus.NOT_FOUND);
+        }
+
     }
 
     public List<ProductUaDTO> searchAndSortKeyWordInDescription(String keyWord,
@@ -259,15 +324,29 @@ public class ProductUAServiceImp implements ProductUAService {
             } else {
                 logger.warn("From ProductUAServiceImp method -searchAndSortKeyWordInDescription-. Nothing found from keyword ( {} ) send war message " +
                         "(Products List is not available or his is empty.)", keyWord);
-                throw new ProductException("Products List is not available or his is empty.", HttpStatus.NOT_FOUND);
+                throw new GeneralException("Products List is not available or his is empty.", HttpStatus.NOT_FOUND);
             }
         } else {
             logger.warn("From ProductUAServiceImp method -searchAndSortKeyWordInDescription- send war message " +
                     "(Key Word is not available or his is empty.)");
-            throw new ProductException("Key Word is not available or his is empty.", HttpStatus.NOT_FOUND);
+            throw new GeneralException("Key Word is not available or his is empty.", HttpStatus.NOT_FOUND);
         }
 
         return new ArrayList<>();
+    }
+
+    public List<ProductUaDTO> searchAndSortPromotionPriceFromDataBase() {
+
+        List<ProductUA> products = productRepository.searchByPromotionPrice();
+        if (!products.isEmpty()) {
+
+            List<ProductUaDTO> productsList = convertToProductDTOList(products);
+            return productsList;
+        } else {
+            logger.warn("From ProductUAServiceImp method -searchAndSortPromotionPriceFromDataBase-. Nothing found send war message " +
+                    "(Products List is not available or his is empty.)");
+            throw new GeneralException("Products List is not available or his is empty.", HttpStatus.NOT_FOUND);
+        }
     }
 
     public List<ProductUaDTO> searchAndSortPromotionPriceFromDataBase(String sortBy,
@@ -308,7 +387,7 @@ public class ProductUAServiceImp implements ProductUAService {
         } else {
             logger.warn("From ProductUAServiceImp method -searchAndSortPromotionPriceFromDataBase-. Nothing found send war message " +
                     "(Products List is not available or his is empty.)");
-            throw new ProductException("Products List is not available or his is empty.", HttpStatus.NOT_FOUND);
+            throw new GeneralException("Products List is not available or his is empty.", HttpStatus.NOT_FOUND);
         }
         return new ArrayList<>();
     }
@@ -517,12 +596,12 @@ public class ProductUAServiceImp implements ProductUAService {
             } else {
                 logger.warn("From ProductUAServiceImp method -{}-. Nothing found from keyword ( {} ) send war message " +
                         "(Products List is not available or his is empty.)", methodName, keyWord);
-                throw new ProductException("Products List is not available or his is empty.", HttpStatus.NOT_FOUND);
+                throw new GeneralException("Products List is not available or his is empty.", HttpStatus.NOT_FOUND);
             }
         } else {
             logger.warn("From ProductUAServiceImp method -{}- send war message " +
                     "(Keyword is not available or his is empty.)", methodName);
-            throw new ProductException("Keyword is not available or his is empty.", HttpStatus.NOT_FOUND);
+            throw new GeneralException("Keyword is not available or his is empty.", HttpStatus.NOT_FOUND);
         }
     }
 

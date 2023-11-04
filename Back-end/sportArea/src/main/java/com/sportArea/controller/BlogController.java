@@ -15,7 +15,7 @@ import java.util.List;
 
 
 @RestController
-@RequestMapping("/blog")
+@RequestMapping("/api/v1/blogs")
 public class BlogController {
 
     Logger logger = LoggerFactory.getLogger(BlogController.class);
@@ -26,7 +26,7 @@ public class BlogController {
         this.blogService = blogService;
     }
 
-    @GetMapping("/list")
+    @GetMapping
     public List<BlogDTO> findAll() {
         List<BlogDTO> blogList = blogService.findAll();
 

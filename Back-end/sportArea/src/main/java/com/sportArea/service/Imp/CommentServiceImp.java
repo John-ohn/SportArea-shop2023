@@ -6,7 +6,7 @@ import com.sportArea.entity.Note;
 import com.sportArea.entity.dto.AddComment;
 import com.sportArea.entity.dto.CommentDTO;
 import com.sportArea.entity.dto.ProductUaDTO;
-import com.sportArea.exception.CommentException;
+import com.sportArea.exception.GeneralException;
 import com.sportArea.service.CommentService;
 import com.sportArea.service.ProductUAService;
 import com.sportArea.service.UserService;
@@ -52,7 +52,7 @@ public class CommentServiceImp implements CommentService {
         } else {
             logger.warn("From CommentServiceImp method -findById- send war message " +
                     "( Comment with commentId: {} is not available. ({}))", commentId, HttpStatus.NOT_FOUND.name());
-            throw new CommentException("Comment with commentId: " + commentId + " is not available.", HttpStatus.NOT_FOUND);
+            throw new GeneralException("Comment with commentId: " + commentId + " is not available.", HttpStatus.NOT_FOUND);
         }
     }
 
@@ -68,7 +68,7 @@ public class CommentServiceImp implements CommentService {
         } else {
             logger.warn("From CommentServiceImp method -findAllUserComments- send war message " +
                     "( Comment with userId: {} is not available. ({}))", userId, HttpStatus.NOT_FOUND.name());
-            throw new CommentException("User with userId: " + userId + " is not available.", HttpStatus.NOT_FOUND);
+            throw new GeneralException("User with userId: " + userId + " is not available.", HttpStatus.NOT_FOUND);
         }
     }
 
@@ -84,7 +84,7 @@ public class CommentServiceImp implements CommentService {
         } else {
             logger.warn("From CommentServiceImp method -findAllProductComments- send war message " +
                     "( Comment with productId: {} is not available. ({}))", productId, HttpStatus.NOT_FOUND.name());
-            throw new CommentException("Comment with productId: " + productId + " is not available. Product don't have comments.", HttpStatus.NOT_FOUND);
+            throw new GeneralException("Comment with productId: " + productId + " is not available. Product don't have comments.", HttpStatus.NOT_FOUND);
         }
     }
 
@@ -96,7 +96,7 @@ public class CommentServiceImp implements CommentService {
             logger.info("From CommentServiceImp method -findAll- return List of Comments.");
             return commentDTOList;
         } else {
-            throw new CommentException("Comments is not available. The list of comments is empty.", HttpStatus.NOT_FOUND);
+            throw new GeneralException("Comments is not available. The list of comments is empty.", HttpStatus.NOT_FOUND);
         }
 
     }
@@ -110,7 +110,7 @@ public class CommentServiceImp implements CommentService {
         } else {
             logger.warn("From CommentServiceImp method -delete- send war message " +
                     "(Comment with responseId: {} is not available. ({}) )", responseId, HttpStatus.NOT_FOUND.name());
-            throw new CommentException("Comment with responseId: " + responseId + " is not available.", HttpStatus.NOT_FOUND);
+            throw new GeneralException("Comment with responseId: " + responseId + " is not available.", HttpStatus.NOT_FOUND);
         }
 
     }
