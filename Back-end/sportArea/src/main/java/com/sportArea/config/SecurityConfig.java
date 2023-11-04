@@ -38,30 +38,35 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers("/").permitAll()
                 .antMatchers("/user/auth/login").permitAll()
-                .antMatchers(HttpMethod.POST, "/user/registration").permitAll()
-                .antMatchers(HttpMethod.GET, "/user/testAuth").hasAnyAuthority(Permission.DEVELOPERS_READ.getPermission())
+                .antMatchers(HttpMethod.POST, "/api/v1/users/registration").permitAll()
+                .antMatchers(HttpMethod.GET, "/api/v1/users/testAuth").hasAnyAuthority(Permission.DEVELOPERS_READ.getPermission())
                 .antMatchers(HttpMethod.GET,
                         "/response/**",
                         "/oauth2",
-                        "/user/list",
-                        "/user/{userId}",
-                        "/user/registration",
-                        "/user/delete/{userId}",
-                        "/user/delete/between",
-                        "/user/welcome",
-                        "/product/**",
-                        "/comment/**",
-                        "/order/**",
-                        "/basket/**").permitAll()
-                .antMatchers(HttpMethod.POST, "/user/**",
-                        "/product/**",
-                        "/comment/**",
-                        "/order/**",
-                        "/basket/**").permitAll()
-                .antMatchers(HttpMethod.DELETE, "/user/**",
-                        "/product/**",
-                        "/order/**",
-                        "/basket/**").permitAll()
+                        "/api/v1/users",
+                        "/api/v1/users/{userId}",
+                        "/api/v1/users/registration",
+                        "/api/v1/users/welcome",
+                        "/api/v1/products/**",
+                        "/api/v1/comments/**",
+                        "/api/v1/orders/**",
+                        "/api/v1/baskets/**",
+                        "/api/v1/blogs/**",
+                        "/api/v1/categorys/**").permitAll()
+                .antMatchers(HttpMethod.POST, "/api/v1/users/**",
+                        "/api/v1/user/auth/login",
+                        "/api/v1/products/**",
+                        "/api/v1/comments/**",
+                        "/api/v1/orders/**",
+                        "/api/v1/baskets/**",
+                        "/api/v1/blogs/**",
+                        "/api/v1/categorys/**").permitAll()
+                .antMatchers(HttpMethod.DELETE, "/api/v1/users/**",
+                        "/api/v1/products/**",
+                        "/api/v1/orders/**",
+                        "/api/v1/baskets/**",
+                        "/api/v1/blogs/**",
+                        "/api/v1/categorys/**").permitAll()
 //                .antMatchers(HttpMethod.GET, "/user/**").hasAnyAuthority(Permission.DEVELOPERS_READ.getPermission())
 //                .antMatchers(HttpMethod.POST, "/user/**").hasAuthority(Permission.DEVELOPERS_WRITE.getPermission())
 //                .antMatchers(HttpMethod.DELETE, "/user/**").hasAuthority(Permission.DEVELOPERS_WRITE.getPermission())

@@ -36,4 +36,7 @@ public interface ProductUAService {
                                      String priceBetween,
                                      BigDecimal lowPrice,
                                      BigDecimal highPrice);
+
+    List<ProductUaDTO> searchProducts(String keyWord,
+                                      String searchLocation);
 }

@@ -1,7 +1,9 @@
 package com.sportArea.controller;
 
 import com.sportArea.entity.GuestUser;
+import com.sportArea.entity.Role;
 import com.sportArea.entity.dto.BasketDTO;
+import com.sportArea.entity.dto.GuestDTO;
 import com.sportArea.service.BasketService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,7 +17,7 @@ import java.util.Random;
 import java.util.Set;
 
 @RestController
-@RequestMapping("/basket")
+@RequestMapping("/api/v1/baskets")
 public class BasketController {
 
     Logger logger= LoggerFactory.getLogger(BasketController.class);
@@ -36,14 +38,14 @@ public class BasketController {
 
     }
 
-    @GetMapping("/productList/{guestId}")
+    @GetMapping("/products/{guestId}")
     public List<BasketDTO> findByGuestId(@PathVariable("guestId") Long guestId) {
 
         return basketService.findByGuestId(guestId);
     }
 
 
-    @PostMapping("/add")
+    @PostMapping
     public ResponseEntity<String> addedBasket(@RequestBody BasketDTO basket) {
         basketService.save(basket);
         return ResponseEntity.ok("Product was added in basket successfully.");
@@ -57,8 +59,8 @@ public class BasketController {
 
     }
 
-    @GetMapping("/guestId")
-    public Long guestId(){
+    @GetMapping("/guest/id")
+    public ResponseEntity<GuestDTO>  guestId(){
         Random random = new Random();
         Long guestId=random.nextLong(1,1000);
       while(guestUser.containsGuestId(guestId)) {
@@ -72,11 +74,13 @@ public class BasketController {
         Set<Long> list = guestUser.getGuestIdList();
         logger.info("List guestId: {} is already exist {} ", list, HttpStatus.CREATED.name());
 
-      return guestId;
+        GuestDTO guest = new GuestDTO(guestId, Role.ROLE_GUEST);
+
+      return ResponseEntity.ok(guest);
     }
 
-    @DeleteMapping ("/guestId")
-    public ResponseEntity<?> deleteGuestId(@RequestParam("guestId") Long guestId){
+    @DeleteMapping ("/guest/{guestId}")
+    public ResponseEntity<?> deleteGuestId(@PathVariable("guestId") Long guestId){
 
         if (guestUser.containsGuestId(guestId)) {
             guestUser.deleteGuestId(guestId);
