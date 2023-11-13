@@ -51,6 +51,21 @@ public class ProductUAServiceImp implements ProductUAService {
     }
 
     @Override
+    public ProductUA findByIdInProduct(Long productId) {
+        Optional<ProductUA> product = productRepository.findById(productId);
+
+        if (product.isPresent()) {
+            logger.info("From ProductUAServiceImp method -findById- return Product by id: {} ", productId);
+
+            return product.get();
+        } else {
+            logger.warn("From ProductUAServiceImp method -findById- send war message " +
+                    "( Product with productId {} is not available. ({}))", productId, HttpStatus.NOT_FOUND);
+            throw new GeneralException("Product with productId: " + productId + " is not available.", HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @Override
     public List<ProductUaDTO> findAll() {
         List<ProductUA> productList = productRepository.findAll();
         if (!productList.isEmpty()) {

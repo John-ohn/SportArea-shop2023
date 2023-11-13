@@ -1,7 +1,6 @@
 package com.sportArea.entity.dto;
 
-import com.sportArea.entity.ProductUA;
-import com.sportArea.entity.User;
+import com.sportArea.entity.DeliveryAddress;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -9,6 +8,7 @@ import lombok.NoArgsConstructor;
 
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -28,7 +28,7 @@ public class OrderDTO {
 
     private String paymentMethod;
 
-    private String delivery;
+    private DeliveryAddress delivery;
 
     private Integer amount;
 
@@ -36,5 +36,5 @@ public class OrderDTO {
 
     private UserDTO user;
 
-    private ProductUaDTO product;
+    private List<ProductUaDTO> product;
 }

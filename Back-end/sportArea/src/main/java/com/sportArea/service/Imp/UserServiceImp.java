@@ -48,6 +48,19 @@ public class UserServiceImp implements UserService {
             throw new GeneralException("User with userId: " + userId + " is not available.", HttpStatus.NOT_FOUND);
         }
     }
+    @Override
+    public User findByIdInUser(Long userId) {
+        Optional<User> userOptional = userRepository.findById(userId);
+        if (userOptional.isPresent()) {
+            User user = userOptional.get();
+            logger.info("From UserServiceImp method -findById- return User by id: {} ", userId);
+            return user;
+        } else {
+            logger.warn("From UserServiceImp method -findById- send war message " +
+                    "( User with userId: {} is not available. ({}))", userId, HttpStatus.NOT_FOUND);
+            throw new GeneralException("User with userId: " + userId + " is not available.", HttpStatus.NOT_FOUND);
+        }
+    }
 
     @Override
     public List<UserDTO> findAll() {

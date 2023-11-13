@@ -10,6 +10,8 @@ public interface UserService {
 
     UserDTO findById(Long userId);
 
+    User findByIdInUser(Long userId);
+
     List<UserDTO> findAll();
 
     Optional<User> findByEmail(String email);

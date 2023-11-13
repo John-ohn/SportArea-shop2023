@@ -14,6 +14,8 @@ public interface ProductUAService {
 
     List<ProductUaDTO> findAll();
 
+    ProductUA findByIdInProduct(Long productId);
+
     List<ProductUaDTO> searchByKeyWordInDescription(String keyWord);
 
     List<ProductUaDTO> searchByKeyWordInTypeSubtype(String keyWord);

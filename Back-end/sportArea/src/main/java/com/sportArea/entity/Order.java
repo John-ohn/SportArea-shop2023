@@ -6,8 +6,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "Ordering")
@@ -16,6 +16,7 @@ import java.time.LocalDateTime;
 @AllArgsConstructor
 @Builder
 public class Order {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "orderId")
@@ -36,8 +37,9 @@ public class Order {
     @Column(name = "paymentMethod")
     private String paymentMethod;
 
-    @Column(name = "delivery")
-    private String delivery;
+    @OneToOne
+    @JoinColumn(name = "deliveryId")
+    private DeliveryAddress delivery;
 
     @Column(name = "amount")
     private Integer amount;
@@ -49,7 +51,7 @@ public class Order {
     @JoinColumn(name = "userId")
     private User user;
 
-    @ManyToOne
+    @OneToMany
     @JoinColumn(name = "productId")
-    private ProductUA product;
+    private List<ProductUA> product;
 }

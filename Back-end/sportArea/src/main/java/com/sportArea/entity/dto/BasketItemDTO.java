@@ -6,14 +6,25 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class GuestDTO {
+public class BasketItemDTO {
 
-    private Long guestId;
+//        private Long basketId;
 
-    private Role role;
+        private Long customerId;
+
+        private Role customerRole;
+
+        private Long productId;
+
+        private Integer productQuantity;
+
 
 }
+
+

@@ -20,10 +20,18 @@ public class Basket {
     @Column(name = "basketId")
     private Long basketId;
 
-    @Column(name = "guestId")
-    private Long guestId;
+    @ManyToOne
+    @JoinColumn(name = "guestId")
+    private Customer customer;
+
+    @ManyToOne
+    @JoinColumn(name = "userId")
+    private User user;
 
     @ManyToOne()
     @JoinColumn(name = "productId")
     private ProductUA productUA;
+
+    @Column(name = "productQuantity")
+    private Integer productQuantity;
 }

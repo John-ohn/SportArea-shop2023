@@ -1,15 +1,11 @@
 package com.sportArea.entity;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.boot.spi.BasicTypeRegistration;
-
 
 import javax.persistence.*;
-import javax.validation.constraints.*;
-import java.util.List;
 
 @Entity
 @Table(name = "User")
@@ -61,6 +57,9 @@ public class User {
     @Enumerated(value = EnumType.STRING)
     @Column(name = "typeRegistration")
     private TypeRegistration typeRegistration;
+
+//    @OneToMany(mappedBy = "user")
+//    private List<DeliveryAddress> deliveryAddresses;
 //
 //    @OneToMany(mappedBy = "userId")
 //    private List<Response> response;

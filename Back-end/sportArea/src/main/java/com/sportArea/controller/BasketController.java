@@ -3,7 +3,8 @@ package com.sportArea.controller;
 import com.sportArea.entity.GuestUser;
 import com.sportArea.entity.Role;
 import com.sportArea.entity.dto.BasketDTO;
-import com.sportArea.entity.dto.GuestDTO;
+import com.sportArea.entity.dto.BasketItemDTO;
+import com.sportArea.entity.Customer;
 import com.sportArea.service.BasketService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -38,16 +39,17 @@ public class BasketController {
 
     }
 
-    @GetMapping("/products/{guestId}")
-    public List<BasketDTO> findByGuestId(@PathVariable("guestId") Long guestId) {
+    @GetMapping("/products")
+    public List<BasketDTO> findByGuestId(@RequestParam("id")Long id){
+//                                         @RequestParam("role") String role) {
 
-        return basketService.findByGuestId(guestId);
+        return basketService.findByGuestId(id);
     }
 
 
     @PostMapping
-    public ResponseEntity<String> addedBasket(@RequestBody BasketDTO basket) {
-        basketService.save(basket);
+    public ResponseEntity<String> addedBasket(@RequestBody BasketItemDTO basketItem) {
+        basketService.save(basketItem);
         return ResponseEntity.ok("Product was added in basket successfully.");
     }
 
@@ -60,7 +62,7 @@ public class BasketController {
     }
 
     @GetMapping("/guest/id")
-    public ResponseEntity<GuestDTO>  guestId(){
+    public ResponseEntity<Customer>  getNewGuestId(){
         Random random = new Random();
         Long guestId=random.nextLong(1,1000);
       while(guestUser.containsGuestId(guestId)) {
@@ -74,9 +76,9 @@ public class BasketController {
         Set<Long> list = guestUser.getGuestIdList();
         logger.info("List guestId: {} is already exist {} ", list, HttpStatus.CREATED.name());
 
-        GuestDTO guest = new GuestDTO(guestId, Role.ROLE_GUEST);
+        Customer customer = new Customer(guestId, Role.ROLE_GUEST);
 
-      return ResponseEntity.ok(guest);
+      return ResponseEntity.ok(customer);
     }
 
     @DeleteMapping ("/guest/{guestId}")
