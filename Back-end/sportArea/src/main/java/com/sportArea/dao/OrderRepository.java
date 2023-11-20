@@ -11,8 +11,8 @@ import javax.persistence.QueryHint;
 public interface OrderRepository extends JpaRepository<Order, Long> {
 
 
-    @QueryHints(@QueryHint(name = org.hibernate.jpa.QueryHints.HINT_READONLY, value = "true"))
-    @Query("SELECT COUNT(o) FROM Order o WHERE o.product.productId = :productId")
-    Long countOrdersByProduct(@Param("productId") Long productId);
+//    @QueryHints(@QueryHint(name = org.hibernate.jpa.QueryHints.HINT_READONLY, value = "true"))
+//    @Query("SELECT COUNT(o) FROM Order o WHERE o.product.productId = :productId")
+//    Long countOrdersByProduct(@Param("productId") Long productId);
 
 }

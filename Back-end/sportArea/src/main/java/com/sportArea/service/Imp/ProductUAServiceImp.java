@@ -592,6 +592,15 @@ public class ProductUAServiceImp implements ProductUAService {
                 .build();
     }
 
+    @Override
+    public List<ProductUA> convertToProductList(List<ProductUaDTO> productList) {
+        return productList
+                .stream()
+                .map(this::createProductFromProductUaDTO)
+                .toList();
+    }
+
+    @Override
     public List<ProductUaDTO> convertToProductDTOList(List<ProductUA> productList) {
         return productList
                 .stream()

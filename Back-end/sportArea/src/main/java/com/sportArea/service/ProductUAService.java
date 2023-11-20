@@ -41,4 +41,8 @@ public interface ProductUAService {
 
     List<ProductUaDTO> searchProducts(String keyWord,
                                       String searchLocation);
+
+    List<ProductUA> convertToProductList(List<ProductUaDTO> productList);
+
+    List<ProductUaDTO> convertToProductDTOList(List<ProductUA> productList);
 }

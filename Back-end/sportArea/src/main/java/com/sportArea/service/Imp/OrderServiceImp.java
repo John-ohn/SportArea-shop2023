@@ -90,7 +90,7 @@ public class OrderServiceImp implements OrderService {
 
             logger.info("From OrderServiceImp method -save- return new message (Order was added successfully.).");
 
-            updateProductNumberOfOrders(order.getProduct().getProductId());
+//            updateProductNumberOfOrders(order.getProduct().getProductId());
 
         } else {
             logger.warn("From OrderServiceImp method -save- send war message " +
@@ -102,18 +102,19 @@ public class OrderServiceImp implements OrderService {
 
     @Override
     public Long numberOfOrders(Long productId) {
-        if (productId > 0) {
-
-            Long count = orderRepository.countOrdersByProduct(productId);
-            logger.info("From OrderServiceImp method -numberOfOrders- return number of count Orders By Product: {}", count);
-            return count;
-
-        } else {
-            logger.warn("From OrderServiceImp method -numberOfOrders- send war message " +
-                    "( Product Id: {} is not available or his is empty. ({}))", productId, HttpStatus.NOT_FOUND.value());
-
-            throw new GeneralException("Product Id: " + productId + " is not available or his is empty. ", HttpStatus.NOT_FOUND);
-        }
+//        if (productId > 0) {
+//
+////            Long count = orderRepository.countOrdersByProduct(productId);
+//            logger.info("From OrderServiceImp method -numberOfOrders- return number of count Orders By Product: {}", count);
+//            return count;
+//
+//        } else {
+//            logger.warn("From OrderServiceImp method -numberOfOrders- send war message " +
+//                    "( Product Id: {} is not available or his is empty. ({}))", productId, HttpStatus.NOT_FOUND.value());
+//
+//            throw new GeneralException("Product Id: " + productId + " is not available or his is empty. ", HttpStatus.NOT_FOUND);
+//        }
+        return  null;
     }
 
     @Override
@@ -131,9 +132,9 @@ public class OrderServiceImp implements OrderService {
                 orderRepository.delete(order.get());
                 logger.info("From OrderServiceImp method -delete- return message (Order with orderId: {} was deleted.).",
                         orderId);
-                updateProductNumberOfOrders(order.get().getProduct().getProductId());
-                logger.info("From OrderServiceImp method -delete- return message ( Update Product Number Of Orders with productId: {}).",
-                        order.get().getProduct().getProductId());
+//                updateProductNumberOfOrders(order.get().getProduct().getProductId());
+//                logger.info("From OrderServiceImp method -delete- return message ( Update Product Number Of Orders with productId: {}).",
+////                        order.get().getProduct().getProductId());
             } else {
                 logger.warn("From OrderServiceImp method -delete- send war message " +
                         "(Order is not available. ({}) )", HttpStatus.NOT_FOUND.name());
@@ -158,7 +159,7 @@ public class OrderServiceImp implements OrderService {
                 .amount(order.getAmount())
                 .orderDate(order.getOrderDate())
                 .user(userService.createUserDTOFromUser(order.getUser()))
-                .product(productUAService.createProductDTOFromProductUA(order.getProduct()))
+                .product(productUAService.convertToProductDTOList(order.getProduct()))
                 .build();
     }
 
@@ -174,7 +175,7 @@ public class OrderServiceImp implements OrderService {
                     .delivery(order.getDelivery())
                     .amount(order.getAmount())
                     .orderDate(order.getOrderDate())
-                    .product(productUAService.createProductFromProductUaDTO(order.getProduct()))
+                    .product(productUAService.convertToProductList(order.getProduct()))
                     .build();
         }else {
             return Order.builder()
@@ -188,7 +189,7 @@ public class OrderServiceImp implements OrderService {
                     .amount(order.getAmount())
                     .orderDate(order.getOrderDate())
                     .user(userService.createUserFromUserDTO(order.getUser()))
-                    .product(productUAService.createProductFromProductUaDTO(order.getProduct()))
+                    .product(productUAService.convertToProductList(order.getProduct()))
                     .build();
         }
     }

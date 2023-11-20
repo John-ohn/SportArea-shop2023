@@ -35,7 +35,9 @@ public class BlogServiceImp implements BlogService {
 
         if(!blogs.isEmpty()) {
             List<BlogDTO> blogList = convertToProductDTOList(blogs);
+            titek(blogList);
             logger.info("From BlogServiceImp method -findAll- return List of Blogs.");
+            logger.info(blogList.get(0).getText());
             return blogList;
         }else{
             logger.warn("From BlogServiceImp method -findAll- send war message " +
@@ -72,6 +74,68 @@ public class BlogServiceImp implements BlogService {
                 .stream()
                 .map(this::createBlogDTOFromBlog)
                 .toList();
+    }
+
+    public  void titek( List<BlogDTO> list){
+
+
+//        BlogDTO one = list.get(0);
+//        one.setSubTitle(cutText(one.getText()));
+//        BlogDTO two = list.get(1);
+//        two.setSubTitle(cutText2(two.getText()));
+        for (int i =0; i<list.size(); i++){
+            if(i==0){
+                list.get(i).setSubTitle(BlogServiceImp.cutText(list.get(i).getText()));
+            }else if(i==1){
+                list.get(i).setSubTitle(cutText2(list.get(i).getText()));
+            }
+            else {
+                list.get(i).setSubTitle(cutText2(list.get(i).getText()));
+            }
+
+        }
+
+
+    }
+
+    public static String cutText(String text){
+        String [] stringList = text.split(" ");
+        String titelHome="";
+        for(int i = 0; i<24; i++ ){
+                if(i==0){
+                    titelHome=stringList[i];
+                }else {
+                    titelHome = titelHome + " " + stringList[i];
+                    if (i == 23) {
+                        titelHome = titelHome + "...";
+                    }
+                }
+        }
+        String result = titelHome.replace("<p>", "");
+
+        return result;
+
+    }
+
+    public static String cutText2(String text) {
+        String[] stringList = text.split(" ");
+        String titelHome = "";
+        for (int i = 0; i < 25; i++) {
+            if (i == 0) {
+                titelHome = stringList[i];
+            } else {
+                titelHome = titelHome + " " + stringList[i];
+                if (i == 24) {
+                    titelHome = titelHome + "...<p>";
+                }
+            }
+        }
+
+
+        String result = titelHome.replace("<p>", "");
+        return result;
+
+
     }
 
 }
