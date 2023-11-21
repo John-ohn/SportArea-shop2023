@@ -6,7 +6,6 @@ import com.sportArea.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -89,14 +88,5 @@ public class UserController {
 
         logger.info("From UserController controller -testAuth- /users/testAuth. Test login and work jwt token  return user with id 1 ");
         return ResponseEntity.ok(userDTO);
-    }
-
-    @GetMapping("/pay-page")
-    public ResponseEntity<?> payPage(){
-
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Location", "http://18.196.80.0:5020/pay-page");
-        return new ResponseEntity<>(headers, HttpStatus.FOUND);
-
     }
 }
