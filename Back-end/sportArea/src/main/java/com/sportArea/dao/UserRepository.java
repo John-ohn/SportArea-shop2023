@@ -29,5 +29,27 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query("DELETE  FROM User  WHERE userId BETWEEN :startId AND :endId")
     void deleteBetweenIds(@Param("startId") Long startId, @Param("endId") Long endId);
 
+    @Modifying
+    @Query("UPDATE User u SET u.firstName = :value WHERE u.userId = :userId")
+    void updateUserFirstName(@Param("userId") Long userI ,@Param("value") String value);
 
+    @Modifying
+    @Query("UPDATE User u SET u.lastName = :value WHERE u.userId = :userId")
+    void updateUserLastName(@Param("userId") Long userI ,@Param("value") String value);
+
+    @Modifying
+    @Query("UPDATE User u SET u.email = :value WHERE u.userId = :userId")
+    void updateUserEmail(@Param("userId") Long userI ,@Param("value") String value);
+
+    @Modifying
+    @Query("UPDATE User u SET u.phoneNumber = :value WHERE u.userId = :userId")
+    void updateUserPhoneNumber(@Param("userId") Long userI ,@Param("value") String value);
+
+    @Modifying
+    @Query("UPDATE User u SET u.password = :value WHERE u.userId = :userId")
+    void updateUserPassword(@Param("userId") Long userI ,@Param("value") String value);
+
+    @Modifying
+    @Query("UPDATE User u SET u.status = :value WHERE u.userId = :userId")
+    void updateUserStatus(@Param("userId") Long userI ,@Param("value") String value);
 }

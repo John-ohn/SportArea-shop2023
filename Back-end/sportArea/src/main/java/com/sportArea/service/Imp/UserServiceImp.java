@@ -6,18 +6,22 @@ import com.sportArea.entity.Status;
 import com.sportArea.entity.TypeRegistration;
 import com.sportArea.entity.User;
 import com.sportArea.entity.dto.UserDTO;
+import com.sportArea.entity.dto.UserDTOUpdate;
 import com.sportArea.exception.GeneralException;
 import com.sportArea.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.ObjectUtils;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -48,6 +52,7 @@ public class UserServiceImp implements UserService {
             throw new GeneralException("User with userId: " + userId + " is not available.", HttpStatus.NOT_FOUND);
         }
     }
+
     @Override
     public User findByIdInUser(Long userId) {
         Optional<User> userOptional = userRepository.findById(userId);
@@ -100,31 +105,67 @@ public class UserServiceImp implements UserService {
 
     }
 
+    @Override
     public void save(UserDTO userDTO) {
 
         if (userDTO != null) {
-            Optional<User> optionalUser = userRepository.findByEmail(userDTO.getEmail());
-            if (optionalUser.isPresent()) {
-                logger.warn("From UserServiceImp method -save- send war message " +
-                        "( Email already exists. ({})))", HttpStatus.NO_CONTENT.name());
-                throw new GeneralException("Email already exists", HttpStatus.BAD_REQUEST);
+            if (userDTO.getUserId() == null) {
+                Optional<User> optionalUser = userRepository.findByEmail(userDTO.getEmail());
+                if (optionalUser.isPresent()) {
+                    logger.warn("From UserServiceImp method -save- send war message " +
+                            "( Email already exists. ({})))", HttpStatus.NO_CONTENT.name());
+                    throw new GeneralException("Email already exists", HttpStatus.BAD_REQUEST);
+                }
+                String encodedPassword = passwordEncoder.encode(userDTO.getPassword());
+                User user = createUserFromUserDTO(userDTO);
+                user.setPassword(encodedPassword);
+                user.setRole(Role.ROLE_USER);
+                user.setStatus(Status.ACTIVE);
+                user.setTypeRegistration(TypeRegistration.FORM_REGISTRATION);
+                userRepository.save(user);
+
+                logger.info("From UserServiceImp method -save- return new save User from Data Base.");
+            } else {
+
+                User user = createUserFromUserDTO(userDTO);
+                user.setPassword(userDTO.getPassword());
+                user.setRole(userDTO.getRole());
+                user.setStatus(userDTO.getStatus());
+                user.setTypeRegistration(userDTO.getTypeRegistration());
+                userRepository.save(user);
+
+                logger.info("From UserServiceImp method -save- Made update User field in Data Base.");
             }
-            String encodedPassword = passwordEncoder.encode(userDTO.getPassword());
-            User user = createUserFromUserDTO(userDTO);
-            user.setPassword(encodedPassword);
-            user.setRole(Role.ROLE_USER);
-            user.setStatus(Status.ACTIVE);
-            user.setTypeRegistration(TypeRegistration.FORM_REGISTRATION);
-            userRepository.save(user);
-
-            logger.info("From UserServiceImp method -save- return new save User from Data Base.");
-
         } else {
             logger.warn("From UserServiceImp method -save- send war message " +
                     "( User is not available or his is empty. ({})))", HttpStatus.NOT_FOUND);
 
             throw new GeneralException("User is not available or his is empty. ", HttpStatus.NOT_FOUND);
         }
+    }
+
+    @Override
+    public void updateUserFields(Long userId, String fieldName, String updates) {
+        User existingUser = userRepository.findById(userId)
+                .orElseThrow(() -> new GeneralException("User is not available or his is empty. ", HttpStatus.NOT_FOUND));
+
+        // Update fields based on the provided map
+        if (fieldName.equals("firstName")) {
+            userRepository.updateUserFirstName(existingUser.getUserId(), updates);
+        }
+        if (fieldName.equals("lastName")) {
+            userRepository.updateUserLastName(existingUser.getUserId(), updates);
+        }
+        if (fieldName.equals("email")) {
+            userRepository.updateUserEmail(existingUser.getUserId(), updates);
+        }
+        if (fieldName.equals("phoneNumber")) {
+            userRepository.updateUserPhoneNumber(existingUser.getUserId(), updates);
+        }
+        if (fieldName.equals("password")) {
+            userRepository.updateUserPassword(existingUser.getUserId(), updates);
+        }
+
     }
 
     @Override
@@ -157,13 +198,25 @@ public class UserServiceImp implements UserService {
 
     @Override
     public User createUserFromUserDTO(UserDTO userDTO) {
-        User user = new User();
-        user.setFirstName(userDTO.getFirstName());
-        user.setLastName(userDTO.getLastName());
-        user.setEmail(userDTO.getEmail());
-        user.setPhoneNumber(userDTO.getPhoneNumber());
-        user.setPassword(userDTO.getPassword());
-        return user;
+        if (userDTO.getUserId() == null) {
+            User user = new User();
+            user.setFirstName(userDTO.getFirstName());
+            user.setLastName(userDTO.getLastName());
+            user.setEmail(userDTO.getEmail());
+            user.setPhoneNumber(userDTO.getPhoneNumber());
+            user.setPassword(userDTO.getPassword());
+            return user;
+        } else {
+            User user = new User();
+            user.setUserId(userDTO.getUserId());
+            user.setFirstName(userDTO.getFirstName());
+            user.setLastName(userDTO.getLastName());
+            user.setEmail(userDTO.getEmail());
+            user.setPhoneNumber(userDTO.getPhoneNumber());
+            user.setPassword(userDTO.getPassword());
+            return user;
+        }
+
     }
 
     @Override
@@ -180,6 +233,67 @@ public class UserServiceImp implements UserService {
                 .status(user.getStatus())
                 .typeRegistration(TypeRegistration.FORM_REGISTRATION)
                 .build();
+    }
+
+    @Override
+    public UserDTO createToUpdate(UserDTOUpdate userUpdate) {
+        if (ObjectUtils.isEmpty(userUpdate.getPassword())) {
+            Optional<User> existingUser = userRepository.findById(userUpdate.getUserId());
+            if (existingUser.isPresent()) {
+                UserDTO user = UserDTO
+                        .builder()
+                        .userId(existingUser.get().getUserId())
+                        .firstName(userUpdate.getFirstName())
+                        .lastName(userUpdate.getLastName())
+                        .email(userUpdate.getEmail())
+                        .phoneNumber(userUpdate.getPhoneNumber())
+                        .password(existingUser.get().getPassword())
+                        .role(existingUser.get().getRole())
+                        .status(existingUser.get().getStatus())
+                        .typeRegistration(existingUser.get().getTypeRegistration())
+                        .build();
+                return user;
+            } else {
+                logger.warn("From UserServiceImp method -createToUpdate- send war message " +
+                        "( User with userId: {} is not available. ({}))", userUpdate.getUserId(), HttpStatus.NOT_FOUND);
+                throw new GeneralException("User with userId: " + userUpdate.getUserId() + " is not available.", HttpStatus.NOT_FOUND);
+            }
+
+        } else {
+            if (!validateUserPassword(userUpdate)) {
+                Optional<User> existingUser = userRepository.findById(userUpdate.getUserId());
+                if (existingUser.isPresent()) {
+                    String encodedPassword = passwordEncoder.encode(userUpdate.getPassword());
+                    UserDTO user = UserDTO
+                            .builder()
+                            .userId(existingUser.get().getUserId())
+                            .firstName(userUpdate.getFirstName())
+                            .lastName(userUpdate.getLastName())
+                            .email(userUpdate.getEmail())
+                            .phoneNumber(userUpdate.getPhoneNumber())
+                            .password(encodedPassword)
+                            .role(existingUser.get().getRole())
+                            .status(existingUser.get().getStatus())
+                            .typeRegistration(existingUser.get().getTypeRegistration())
+                            .build();
+                    return user;
+                } else {
+                    logger.warn("From UserServiceImp method -createToUpdate- send war message " +
+                            "( User with userId: {} is not available. ({}))", userUpdate.getUserId(), HttpStatus.NOT_FOUND);
+                    throw new GeneralException("User with userId: " + userUpdate.getUserId() + " is not available.", HttpStatus.NOT_FOUND);
+                }
+            } else {
+                throw new GeneralException("Password must contain at least one lowercase letter, one uppercase letter, one digit, no space", HttpStatus.NOT_FOUND);
+            }
+        }
+
+    }
+
+    // Helper method to manually validate the UserDTOUpdate
+    private boolean validateUserPassword(UserDTOUpdate user) {
+
+        // Return false if there are no validation errors, true otherwise.
+        return user.getPassword() == null || !user.getPassword().matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?!.* ).{8,70}$");
     }
 
 }

@@ -1,6 +1,5 @@
 package com.sportArea.entity.dto;
 
-import com.sportArea.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

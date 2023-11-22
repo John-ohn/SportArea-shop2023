@@ -63,6 +63,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         "/api/v1/blogs/**",
                         "/api/v1/categorys/**",
                         "/api/v1/delivery/address/**").permitAll()
+                .antMatchers(HttpMethod.PUT,
+                        "/api/v1/users/**").permitAll()
+                .antMatchers(HttpMethod.PATCH,
+                        "/api/v1/users/**").permitAll()
                 .antMatchers(HttpMethod.DELETE, "/api/v1/users/**",
                         "/api/v1/products/**",
                         "/api/v1/orders/**",

@@ -1,7 +1,11 @@
 package com.sportArea.controller;
 
+
+import com.sportArea.entity.Status;
 import com.sportArea.entity.dto.RegistrationStatus;
 import com.sportArea.entity.dto.UserDTO;
+import com.sportArea.entity.dto.UserDTOUpdate;
+import com.sportArea.entity.dto.userFeilds.*;
 import com.sportArea.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,7 +17,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
 import javax.validation.Valid;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 @RestController
@@ -48,9 +54,86 @@ public class UserController {
     public ResponseEntity<RegistrationStatus> addUser(@Valid @RequestBody UserDTO user) {
         userService.save(user);
         logger.info("From UserController controller -addUser-  /users/registration . Save new user.");
-        RegistrationStatus registrationStatus =new RegistrationStatus(
+        RegistrationStatus registrationStatus = new RegistrationStatus(
                 HttpStatus.CREATED.value(),
-                "Registration was Successful." );
+                "Registration was Successful.");
+        return new ResponseEntity<>(registrationStatus, HttpStatus.CREATED);
+    }
+
+    @PutMapping
+    public ResponseEntity<RegistrationStatus> updateUser(@Valid @RequestBody UserDTOUpdate user) {
+        UserDTO existingUser = userService.createToUpdate(user);
+
+        userService.save(existingUser);
+        logger.info("From UserController controller -updateUser-  /api/v1/users . Update user.");
+        RegistrationStatus registrationStatus = new RegistrationStatus(
+                HttpStatus.CREATED.value(),
+                "Update was Successful.");
+        return new ResponseEntity<>(registrationStatus, HttpStatus.CREATED);
+    }
+    @PatchMapping("/{userId}/first-name")
+    public ResponseEntity<RegistrationStatus> updateUserFirstName(@Valid @RequestBody UserUpdateFirstName firstName,
+                                                                  @PathVariable ("userId") Long userId){
+
+        userService.updateUserFields(userId,"firstName", firstName.getFirstName());
+        RegistrationStatus registrationStatus = new RegistrationStatus(
+                HttpStatus.CREATED.value(),
+                "Update was Successful.");
+        return new ResponseEntity<>(registrationStatus, HttpStatus.CREATED);
+    }
+
+    @PatchMapping("/{userId}/last-name")
+    public ResponseEntity<RegistrationStatus> updateUserLastName(@Valid @RequestBody UserUpdateLastName lastName,
+                                                                  @PathVariable ("userId") Long userId){
+
+        userService.updateUserFields(userId,"lastName", lastName.getLastName());
+        RegistrationStatus registrationStatus = new RegistrationStatus(
+                HttpStatus.CREATED.value(),
+                "Update was Successful.");
+        return new ResponseEntity<>(registrationStatus, HttpStatus.CREATED);
+    }
+
+    @PatchMapping("/{userId}/email")
+    public ResponseEntity<RegistrationStatus> updateUserEmail(@Valid @RequestBody UserUpdateEmail email,
+                                                                 @PathVariable ("userId") Long userId){
+
+        userService.updateUserFields(userId,"email", email.getEmail());
+        RegistrationStatus registrationStatus = new RegistrationStatus(
+                HttpStatus.CREATED.value(),
+                "Update was Successful.");
+        return new ResponseEntity<>(registrationStatus, HttpStatus.CREATED);
+    }
+
+    @PatchMapping("/{userId}/phone-number")
+    public ResponseEntity<RegistrationStatus> updateUserPhoneNumber(@Valid @RequestBody UserUpdatePhoneNumber phoneNumber,
+                                                              @PathVariable ("userId") Long userId){
+
+        userService.updateUserFields(userId,"email", phoneNumber.getPhoneNumber());
+        RegistrationStatus registrationStatus = new RegistrationStatus(
+                HttpStatus.CREATED.value(),
+                "Update was Successful.");
+        return new ResponseEntity<>(registrationStatus, HttpStatus.CREATED);
+    }
+
+    @PatchMapping("/{userId}/password")
+    public ResponseEntity<RegistrationStatus> updateUserPassword(@Valid @RequestBody UserUpdatePassword password,
+                                                                    @PathVariable ("userId") Long userId){
+
+        userService.updateUserFields(userId,"password", password.getPassword());
+        RegistrationStatus registrationStatus = new RegistrationStatus(
+                HttpStatus.CREATED.value(),
+                "Update was Successful.");
+        return new ResponseEntity<>(registrationStatus, HttpStatus.CREATED);
+    }
+
+    @PatchMapping("/{userId}/status")
+    public ResponseEntity<RegistrationStatus> updateUserStatus(@RequestParam("status") Status status,
+                                                                 @PathVariable ("userId") Long userId){
+
+        userService.updateUserFields(userId,"status", status.toString());
+        RegistrationStatus registrationStatus = new RegistrationStatus(
+                HttpStatus.CREATED.value(),
+                "Update was Successful.");
         return new ResponseEntity<>(registrationStatus, HttpStatus.CREATED);
     }
 

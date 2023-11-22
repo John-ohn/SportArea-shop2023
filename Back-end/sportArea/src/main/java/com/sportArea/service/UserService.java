@@ -2,8 +2,11 @@ package com.sportArea.service;
 
 import com.sportArea.entity.User;
 import com.sportArea.entity.dto.UserDTO;
+import com.sportArea.entity.dto.UserDTOUpdate;
+import org.springframework.validation.BindingResult;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 public interface UserService {
@@ -27,5 +30,9 @@ public interface UserService {
     User createUserFromUserDTO(UserDTO userDTO);
 
     UserDTO createUserDTOFromUser(User user);
+
+    UserDTO createToUpdate(UserDTOUpdate userUpdate);
+
+    void updateUserFields(Long userId,String fieldName, String updates);
 
 }

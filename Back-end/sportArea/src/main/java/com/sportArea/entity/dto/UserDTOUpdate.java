@@ -8,21 +8,15 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.Column;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.Pattern;
+import javax.validation.constraints.*;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class UserDTO {
+public class UserDTOUpdate {
 
-
+    @NotNull(message = "User Id can't be empty or null.")
     private Long userId;
 
     @NotEmpty(message = "First Name can't be empty.")
@@ -41,12 +35,13 @@ public class UserDTO {
     @Pattern(regexp = "^[0-9]{10,12}", message = "Write a correct phone number. Use only numbers. Min 10 not more than 12.")
     private String phoneNumber;
 
-    @NotBlank(message = "Password must not be blank")
-    @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?!.* ).{8,70}$",
-            message = "Password must contain at least one lowercase letter, one uppercase letter, one digit, no space")
+//    @NotBlank(message = "Password must not be blank")
+//    @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?!.* ).{8,70}$",
+//            message = "Password must contain at least one lowercase letter, one uppercase letter, one digit, no space")
     private String password;
 
     private Role role;
+
 
     private Status status;
 
