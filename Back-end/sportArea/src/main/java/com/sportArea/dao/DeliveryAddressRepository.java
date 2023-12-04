@@ -9,6 +9,6 @@ import java.util.Optional;
 
 public interface DeliveryAddressRepository extends JpaRepository<DeliveryAddress,Long> {
 
-    @Query("SELECT d FROM DeliveryAddress d WHERE d.user.userId =:userId")
-    Optional<DeliveryAddress > findByUserId(@Param("userId") Long userId);
+//    @Query("SELECT d FROM DeliveryAddress d WHERE d.user.userId =:userId")
+//    Optional<DeliveryAddress > findByUserId(@Param("userId") Long userId);
 }

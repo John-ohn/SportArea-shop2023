@@ -1,32 +1,26 @@
-package com.sportArea.entity.dto;
+package com.sportArea.entity.dto.account;
 
-import com.sportArea.entity.Basket;
+
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+
 import java.math.BigDecimal;
 
-
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @Builder
-public class BasketItemDTO {
+public class OrderItemDTO {
 
     private Long itemId;
 
-    private BasketDTO basket;
-
-//    private Long userId;
-
-    private ProductUaDTO product;
+    private UserOrderProducts product;
 
     private Integer productQuantity;
 
     private BigDecimal productTotalPrice;
-
 }
-
-

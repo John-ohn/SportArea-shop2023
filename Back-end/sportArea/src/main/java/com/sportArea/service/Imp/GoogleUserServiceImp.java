@@ -13,12 +13,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -64,12 +66,14 @@ public class GoogleUserServiceImp implements GoogleUserService {
         GoogleUserDTO googleUse = createGoogleUserFromOAuth2User(oauth2User);
 
         saveUserGoogle(googleUse);
-
-        String token = jwtTokenProvider.createToken(googleUse.getEmail(), googleUse.getRole().name());
+        User user = userRepository.findByEmail(googleUse.getEmail()).orElseThrow(
+                () -> new UsernameNotFoundException("User doesn't exists"));
+        String token = jwtTokenProvider.createToken(googleUse.getEmail(), googleUse.getRole().name(), user.getUserId());
 
         Map<Object, Object> response = new HashMap<>();
         response.put("email", googleUse.getEmail());
         response.put("token", token);
+        response.put("userId", user.getUserId());
 
         return response;
     }
@@ -94,8 +98,8 @@ public class GoogleUserServiceImp implements GoogleUserService {
         GoogleUserDTO googleUse = new GoogleUserDTO();
         googleUse.setEmail(oAuth2User.getAttribute("email"));
         googleUse.setPassword(passwordEncoder.encode(passwordStub));
-        googleUse.setFirstName(mapFirstLastName.get("FirstName"));
-        googleUse.setLastName(mapFirstLastName.get("LastName"));
+        googleUse.setFirstName(mapFirstLastName.get("firstName"));
+        googleUse.setLastName(mapFirstLastName.get("lastName"));
         googleUse.setRole(Role.ROLE_USER);
         googleUse.setStatus(Status.ACTIVE);
         googleUse.setTypeRegistration(TypeRegistration.GOOGLE);
@@ -114,7 +118,14 @@ public class GoogleUserServiceImp implements GoogleUserService {
                 .toString()
                 .split(" ");
 
-        return Map.of("FirstName", firstLastName[0],
-                "LastName", firstLastName[1]);
+        Map<String, String> googleAccount = new HashMap<>();
+        googleAccount.put("firstName", firstLastName[0]);
+
+        if (firstLastName.length <= 1) {
+            return googleAccount;
+        } else {
+            googleAccount.put("lastName", firstLastName[1]);
+            return googleAccount;
+        }
     }
 }

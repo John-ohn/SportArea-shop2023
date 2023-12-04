@@ -37,4 +37,13 @@ public class DeliveryAddressController {
 
         return new ResponseEntity<>("Your delivery address was successful added .", HttpStatus.CREATED);
     }
+
+    @PutMapping
+    public ResponseEntity<String> updateDeliveryAddress(@RequestBody DeliveryAddressDTO deliveryAddressDTO) {
+
+        deliveryAddressService.save(deliveryAddressDTO);
+        logger.info("From DeliveryAddressController controller -addDeliveryAddress- /delivery/address . Save new Delivery Address.");
+
+        return new ResponseEntity<>("Your delivery address was successful added .", HttpStatus.CREATED);
+    }
 }

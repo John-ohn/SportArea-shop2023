@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -18,40 +19,35 @@ import java.util.List;
 public class Order {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Column(name = "orderId")
     private Long orderId;
 
-    @Column(name = "firstName")
-    private String firstName;
-
-    @Column(name = "lastName")
-    private String lastName;
-
-    @Column(name = "email")
-    private String email;
-
-    @Column(name = "phoneNumber")
-    private Long phoneNumber;
+    @OneToOne
+    @JoinColumn(name = "orderInfoId")
+    private OrderInfo orderInfo;
 
     @Column(name = "paymentMethod")
     private String paymentMethod;
 
-    @OneToOne
-    @JoinColumn(name = "deliveryId")
-    private DeliveryAddress delivery;
-
     @Column(name = "amount")
     private Integer amount;
 
+    @Column(name = "totalPrice")
+    private BigDecimal orderTotalPrice;
+
     @Column(name = "orderDate")
     private LocalDateTime orderDate;
+    @Enumerated(value = EnumType.STRING)
+    @Column(name = "orderStatus")
+    private OrderStatus orderStatus;
 
-    @ManyToOne
-    @JoinColumn(name = "userId")
-    private User user;
 
-    @OneToMany
-    @JoinColumn(name = "productId")
-    private List<ProductUA> product;
+    @OneToMany(mappedBy = "order")
+    private List<OrderItem> products;
+
+    public void addOrderItemToOrder(OrderItem orderItem){
+        orderItem.setOrder(this);
+        this.products.add(orderItem);
+    }
 }

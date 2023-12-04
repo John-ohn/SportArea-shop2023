@@ -1,13 +1,8 @@
 package com.sportArea.controller;
 
-import com.sportArea.entity.Role;
-import com.sportArea.entity.User;
-import com.sportArea.entity.dto.GoogleUserDTO;
-import com.sportArea.entity.dto.UserDTO;
 import com.sportArea.security.JwtTokenProvider;
 
 import com.sportArea.service.GoogleUserService;
-import com.sportArea.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,10 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
 
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 @RestController
 public class OAuth2CallbackController {
@@ -67,7 +59,7 @@ public class OAuth2CallbackController {
 
     @GetMapping("/oauth2/authorization/google")
     public ResponseEntity<?> user(@AuthenticationPrincipal OAuth2User principal) {
-        String reactHomePageUrl = "http://localhost:3000/";
+        String reactHomePageUrl = "https://sportarea.pp.ua/";
 
         UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(reactHomePageUrl);
 

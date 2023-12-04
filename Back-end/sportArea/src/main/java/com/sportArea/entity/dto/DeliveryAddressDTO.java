@@ -14,9 +14,9 @@ public class DeliveryAddressDTO {
 
     private Long deliveryId;
 
-    private String name;
-
-    private String phoneNumber;
+//    private String name;
+//
+//    private String phoneNumber;
 
     private String region;
 
@@ -24,5 +24,5 @@ public class DeliveryAddressDTO {
 
     private String department;
 
-    private Long userId;
+//    private Long userId;
 }

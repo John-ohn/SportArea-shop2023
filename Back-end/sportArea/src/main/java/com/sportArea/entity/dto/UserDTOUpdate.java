@@ -35,13 +35,9 @@ public class UserDTOUpdate {
     @Pattern(regexp = "^[0-9]{10,12}", message = "Write a correct phone number. Use only numbers. Min 10 not more than 12.")
     private String phoneNumber;
 
-//    @NotBlank(message = "Password must not be blank")
-//    @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?!.* ).{8,70}$",
-//            message = "Password must contain at least one lowercase letter, one uppercase letter, one digit, no space")
     private String password;
 
     private Role role;
-
 
     private Status status;
 

@@ -108,7 +108,7 @@ public class UserController {
     public ResponseEntity<RegistrationStatus> updateUserPhoneNumber(@Valid @RequestBody UserUpdatePhoneNumber phoneNumber,
                                                               @PathVariable ("userId") Long userId){
 
-        userService.updateUserFields(userId,"email", phoneNumber.getPhoneNumber());
+        userService.updateUserFields(userId,"phoneNumber", phoneNumber.getPhoneNumber());
         RegistrationStatus registrationStatus = new RegistrationStatus(
                 HttpStatus.CREATED.value(),
                 "Update was Successful.");

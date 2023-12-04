@@ -53,7 +53,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         "/api/v1/baskets/**",
                         "/api/v1/blogs/**",
                         "/api/v1/categorys/**",
-                        "/api/v1/delivery/address/**").permitAll()
+                        "/api/v1/delivery/address/**",
+                        "/api/v1/post/**").permitAll()
                 .antMatchers(HttpMethod.POST, "/api/v1/users/**",
                         "/api/v1/user/auth/login",
                         "/api/v1/products/**",
@@ -62,9 +63,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         "/api/v1/baskets/**",
                         "/api/v1/blogs/**",
                         "/api/v1/categorys/**",
-                        "/api/v1/delivery/address/**").permitAll()
+                        "/api/v1/delivery/address/**",
+                        "/api/v1/post/**").permitAll()
                 .antMatchers(HttpMethod.PUT,
-                        "/api/v1/users/**").permitAll()
+                        "/api/v1/users/**",
+                        "/api/v1/delivery/address/**").permitAll()
                 .antMatchers(HttpMethod.PATCH,
                         "/api/v1/users/**").permitAll()
                 .antMatchers(HttpMethod.DELETE, "/api/v1/users/**",
@@ -87,9 +90,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .baseUri("/oauth2/authorization/google")
                 .and()
                 .redirectionEndpoint()
-                .baseUri("/login/oauth2/code/google")
-
-        ;
+                .baseUri("/login/oauth2/code/google");
     }
 
 

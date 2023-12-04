@@ -163,7 +163,8 @@ public class UserServiceImp implements UserService {
             userRepository.updateUserPhoneNumber(existingUser.getUserId(), updates);
         }
         if (fieldName.equals("password")) {
-            userRepository.updateUserPassword(existingUser.getUserId(), updates);
+            String encodedPassword = passwordEncoder.encode(updates);
+            userRepository.updateUserPassword(existingUser.getUserId(), encodedPassword);
         }
 
     }

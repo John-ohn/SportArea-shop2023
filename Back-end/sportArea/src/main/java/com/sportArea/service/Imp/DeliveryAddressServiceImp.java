@@ -1,7 +1,9 @@
 package com.sportArea.service.Imp;
 
 import com.sportArea.dao.DeliveryAddressRepository;
+import com.sportArea.dao.OrderInfoRepository;
 import com.sportArea.entity.DeliveryAddress;
+import com.sportArea.entity.OrderInfo;
 import com.sportArea.entity.dto.DeliveryAddressDTO;
 import com.sportArea.exception.GeneralException;
 import com.sportArea.service.DeliveryAddressService;
@@ -23,12 +25,15 @@ public class DeliveryAddressServiceImp implements DeliveryAddressService {
 
     private final DeliveryAddressRepository deliveryAddressRepository;
 
-    private final UserService userService;
+    private final OrderInfoRepository orderInfoRepository;
+
+//    private final UserService userService;
 
     @Autowired
-    public DeliveryAddressServiceImp(DeliveryAddressRepository deliveryAddressRepository, UserService userService) {
+    public DeliveryAddressServiceImp(DeliveryAddressRepository deliveryAddressRepository,OrderInfoRepository orderInfoRepository) {
         this.deliveryAddressRepository = deliveryAddressRepository;
-        this.userService = userService;
+        this.orderInfoRepository =orderInfoRepository;
+
     }
 
 
@@ -54,11 +59,11 @@ public class DeliveryAddressServiceImp implements DeliveryAddressService {
     @Override
     public DeliveryAddressDTO findByUserId(Long userId) {
 
-        Optional<DeliveryAddress > address = deliveryAddressRepository.findByUserId(userId);
+        Optional<OrderInfo> address = orderInfoRepository.findByUserId(userId);
 
         if(address.isPresent()){
 
-            DeliveryAddressDTO deliveryAddress = createFromDeliveryAddress(address.get());
+            DeliveryAddressDTO deliveryAddress = createFromDeliveryAddress(address.get().getDelivery());
 
             logger.info("From DeliveryAddressServiceImp method -findByUserId- return DeliveryAddress by userId: {} ", userId);
 
@@ -90,24 +95,35 @@ public class DeliveryAddressServiceImp implements DeliveryAddressService {
     public DeliveryAddressDTO createFromDeliveryAddress(DeliveryAddress deliveryAddress){
         return  DeliveryAddressDTO.builder()
                 .deliveryId(deliveryAddress.getDeliveryId())
-                .name(deliveryAddress.getName())
-                .phoneNumber(deliveryAddress.getPhoneNumber())
+//                .name(deliveryAddress.getName())
+//                .phoneNumber(deliveryAddress.getPhoneNumber())
                 .region(deliveryAddress.getRegion())
                 .city(deliveryAddress.getCity())
                 .department(deliveryAddress.getDepartment())
-                .userId(deliveryAddress.getUser().getUserId())
+//                .userId(deliveryAddress.getUser().getUserId())
                 .build();
     }
 
     public DeliveryAddress createFromDeliveryAddressDTO(DeliveryAddressDTO deliveryAddress){
-        return  DeliveryAddress.builder()
-                .name(deliveryAddress.getName())
-                .phoneNumber(deliveryAddress.getPhoneNumber())
-                .region(deliveryAddress.getRegion())
-                .city(deliveryAddress.getCity())
-                .department(deliveryAddress.getDepartment())
-                .user(userService.findByIdInUser(deliveryAddress.getUserId()))
-                .build();
+        if(deliveryAddress.getDeliveryId()!=null){
+            return  DeliveryAddress.builder()
+                    .deliveryId(deliveryAddress.getDeliveryId())
+//                .phoneNumber(deliveryAddress.getPhoneNumber())
+                    .region(deliveryAddress.getRegion())
+                    .city(deliveryAddress.getCity())
+                    .department(deliveryAddress.getDepartment())
+//                .user(userService.findByIdInUser(deliveryAddress.getUserId()))
+                    .build();
+        }else {
+            return DeliveryAddress.builder()
+//                .name(deliveryAddress.getName())
+//                .phoneNumber(deliveryAddress.getPhoneNumber())
+                    .region(deliveryAddress.getRegion())
+                    .city(deliveryAddress.getCity())
+                    .department(deliveryAddress.getDepartment())
+//                .user(userService.findByIdInUser(deliveryAddress.getUserId()))
+                    .build();
+        }
     }
 
 

@@ -1,6 +1,8 @@
 package com.sportArea.security;
 
+import com.sportArea.entity.User;
 import com.sportArea.exception.JwtAuthenticationException;
+import com.sportArea.service.UserService;
 import com.sun.security.auth.UserPrincipal;
 import io.jsonwebtoken.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +13,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -33,10 +36,13 @@ public class JwtTokenProvider {
     private long validityMilliseconds;
 
     private final UserDetailsService userDetailsService;
+    private final UserService userService;
 
     @Autowired
-    public JwtTokenProvider(@Qualifier("userDetailsServiceImpl") UserDetailsService userDetailsService) {
+    public JwtTokenProvider(@Qualifier("userDetailsServiceImpl") UserDetailsService userDetailsService,
+                            UserService userService) {
         this.userDetailsService = userDetailsService;
+        this.userService = userService;
 
 
     }
@@ -46,8 +52,9 @@ public class JwtTokenProvider {
         securityKey = Base64.getEncoder().encodeToString(securityKey.getBytes());
     }
 
-    public String createToken(String username, String role) {
+    public String createToken(String username, String role, Long userId) {
         Claims claims = Jwts.claims().setSubject(username);
+        claims.put("userId", userId);
         claims.put("role", role);
         Date now = new Date();
         Date validity = new Date(now.getTime() + validityMilliseconds * 1000);
