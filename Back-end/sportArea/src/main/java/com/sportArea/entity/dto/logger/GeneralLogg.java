@@ -1,7 +1,5 @@
 package com.sportArea.entity.dto.logger;
 
-import com.sportArea.controller.ProductUAController;
-import lombok.Data;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
@@ -26,6 +24,16 @@ public class GeneralLogg {
                 methodUrl,
                 message);
     }
+
+    public void getLoggerControllerInfoDelete(String nameClass , String nameMethod, String methodUrl, String message ){
+
+        logger.info("From  {}, method - {} -  {}. Delete {}",
+                nameClass ,
+                nameMethod,
+                methodUrl,
+                message);
+    }
+
 
     public void getLoggerControllerWarn(String nameClass , String nameMethod, String methodUrl, String message,  HttpStatus httpStatus ){
 

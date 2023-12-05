@@ -5,8 +5,6 @@ import com.sportArea.entity.dto.OrderDTO;
 import com.sportArea.entity.dto.account.UserOrders;
 import com.sportArea.entity.dto.logger.GeneralLogg;
 import com.sportArea.service.OrderService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,7 +18,7 @@ import java.util.List;
 public class OrderController {
 
 
-    private GeneralLogg generalLogg ;
+    private final GeneralLogg generalLogg ;
 
     private final OrderService orderService;
 
@@ -33,7 +31,6 @@ public class OrderController {
     @GetMapping("/users/{userId}")
     public ResponseEntity<List<UserOrders>> findByUserId(@PathVariable("userId") Long userId) {
         List<UserOrders> orderList = orderService.allUserOrders(userId);
-//        logger.info("From OrderController controller -ordersList- /orders. Return List of Orders.");
 
         generalLogg.getLoggerControllerInfo("OrderController",
                 "ordersList",

@@ -42,7 +42,7 @@ public class UserDTO {
     private String phoneNumber;
 
     @NotBlank(message = "Password must not be blank")
-    @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?!.* ).{8,70}$",
+    @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?!.* ).{8,20}$",
             message = "Password must contain at least one lowercase letter, one uppercase letter, one digit, no space")
     private String password;
 
