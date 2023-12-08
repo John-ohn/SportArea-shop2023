@@ -8,6 +8,7 @@ import com.sportArea.entity.User;
 import com.sportArea.entity.dto.UserDTO;
 import com.sportArea.entity.dto.UserDTOUpdate;
 import com.sportArea.exception.GeneralException;
+import com.sportArea.service.EmailService;
 import com.sportArea.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,6 +21,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ObjectUtils;
 
+import javax.mail.MessagingException;
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -30,12 +33,16 @@ public class UserServiceImp implements UserService {
 
     Logger logger = LoggerFactory.getLogger(UserServiceImp.class);
     private final UserRepository userRepository;
+
     private final PasswordEncoder passwordEncoder;
 
+    private final EmailService emailService;
+
     @Autowired
-    public UserServiceImp(UserRepository userRepository, PasswordEncoder passwordEncoder) {
+    public UserServiceImp(UserRepository userRepository, PasswordEncoder passwordEncoder, EmailService emailService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.emailService = emailService;
     }
 
     @Override
@@ -106,7 +113,7 @@ public class UserServiceImp implements UserService {
     }
 
     @Override
-    public void save(UserDTO userDTO) {
+    public void save(UserDTO userDTO) throws MessagingException, IOException {
 
         if (userDTO != null) {
             if (userDTO.getUserId() == null) {
@@ -125,6 +132,12 @@ public class UserServiceImp implements UserService {
                 userRepository.save(user);
 
                 logger.info("From UserServiceImp method -save- return new save User from Data Base.");
+
+                String userName = user.getFirstName() + " " + user.getLastName();
+
+                emailService.sendMailRegistration(user.getEmail(), userName);
+
+                logger.info("From UserServiceImp method -save- send Mail Registration .");
             } else {
 
                 User user = createUserFromUserDTO(userDTO);
@@ -162,10 +175,27 @@ public class UserServiceImp implements UserService {
         if (fieldName.equals("phoneNumber")) {
             userRepository.updateUserPhoneNumber(existingUser.getUserId(), updates);
         }
-        if (fieldName.equals("password")) {
-            String encodedPassword = passwordEncoder.encode(updates);
-            userRepository.updateUserPassword(existingUser.getUserId(), encodedPassword);
+    }
+
+    public void updateUserPassword(Long userId, String newPassword, String oldPassword) {
+        Optional<User> user = userRepository.findById(userId);
+        if (user.isPresent()) {
+
+            boolean checkPassword = passwordEncoder.matches(oldPassword, user.get().getPassword());
+
+            logger.info("From UserServiceImp method -updateUserPassword- check to password {} .",
+                    checkPassword);
+
+            if (checkPassword) {
+
+                userRepository.updateUserPassword(user.get().getUserId(), passwordEncoder.encode(newPassword));
+            } else {
+                logger.warn("From UserServiceImp method -delete- send war message " +
+                        "(The password does not match. Write the correct valid password   ({}) )", HttpStatus.NOT_FOUND.name());
+                throw new GeneralException("The password does not match. Write the correct valid password.", HttpStatus.NOT_FOUND);
+            }
         }
+
 
     }
 

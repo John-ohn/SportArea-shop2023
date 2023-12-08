@@ -17,7 +17,9 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 
+import javax.mail.MessagingException;
 import javax.validation.Valid;
+import java.io.IOException;
 import java.util.List;
 
 
@@ -64,7 +66,7 @@ public class UserController {
     }
 
     @PostMapping("/registration")
-    public ResponseEntity<RegistrationStatus> addUser(@Valid @RequestBody UserDTO user) {
+    public ResponseEntity<RegistrationStatus> addUser(@Valid @RequestBody UserDTO user) throws MessagingException, IOException {
         userService.save(user);
 
         generalLogg.getLoggerControllerInfo("UserController",
@@ -80,7 +82,7 @@ public class UserController {
     }
 
     @PutMapping
-    public ResponseEntity<RegistrationStatus> updateUser(@Valid @RequestBody UserDTOUpdate user) {
+    public ResponseEntity<RegistrationStatus> updateUser(@Valid @RequestBody UserDTOUpdate user) throws MessagingException, IOException {
         UserDTO existingUser = userService.createToUpdate(user);
 
         userService.save(existingUser);
@@ -170,7 +172,7 @@ public class UserController {
     public ResponseEntity<RegistrationStatus> updateUserPassword(@Valid @RequestBody UserUpdatePassword password,
                                                                  @PathVariable("userId") Long userId) {
 
-        userService.updateUserFields(userId, "password", password.getPassword());
+        userService.updateUserPassword(userId, password.getNewPassword(), password.getOldPassword());
 
         generalLogg.getLoggerControllerInfo("UserController",
                 "updateUserPassword",

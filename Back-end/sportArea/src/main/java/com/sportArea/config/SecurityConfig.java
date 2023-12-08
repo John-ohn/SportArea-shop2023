@@ -64,7 +64,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         "/api/v1/blogs/**",
                         "/api/v1/categorys/**",
                         "/api/v1/delivery/address/**",
-                        "/api/v1/post/**").permitAll()
+                        "/api/v1/post/**",
+                        "/api/v1/email/**").permitAll()
                 .antMatchers(HttpMethod.PUT,
                         "/api/v1/users/**",
                         "/api/v1/delivery/address/**").permitAll()

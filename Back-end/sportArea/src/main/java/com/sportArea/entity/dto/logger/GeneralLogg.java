@@ -44,4 +44,22 @@ public class GeneralLogg {
                 message,
                 httpStatus.toString());
     }
+    public void getLoggerServiceInfo(String nameClass , String nameMethod,  String message ){
+
+        logger.info("From {}, method - {} - . Return {}",
+                nameClass ,
+                nameMethod,
+                message);
+    }
+
+    public void getLoggerServiceWarn(String nameClass , String nameMethod, String message,  HttpStatus httpStatus ){
+
+        logger.warn("From {}, method - {} - . send war message (  {}   status code ({}))",
+                nameClass ,
+                nameMethod,
+                message,
+                httpStatus.toString());
+    }
+
+
 }

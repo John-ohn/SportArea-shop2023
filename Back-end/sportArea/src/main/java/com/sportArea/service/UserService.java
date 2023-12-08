@@ -5,6 +5,8 @@ import com.sportArea.entity.dto.UserDTO;
 import com.sportArea.entity.dto.UserDTOUpdate;
 import org.springframework.validation.BindingResult;
 
+import javax.mail.MessagingException;
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -25,7 +27,7 @@ public interface UserService {
 
     void deleteUsersBetweenIds(Long startId, Long endId);
 
-    void save(UserDTO user);
+    void save(UserDTO user) throws MessagingException, IOException;
 
     User createUserFromUserDTO(UserDTO userDTO);
 
@@ -34,5 +36,7 @@ public interface UserService {
     UserDTO createToUpdate(UserDTOUpdate userUpdate);
 
     void updateUserFields(Long userId,String fieldName, String updates);
+
+    void updateUserPassword(Long userId, String newPassword, String oldPassword);
 
 }

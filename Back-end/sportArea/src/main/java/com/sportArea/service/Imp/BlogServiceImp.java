@@ -37,7 +37,7 @@ public class BlogServiceImp implements BlogService {
             List<BlogDTO> blogList = convertToProductDTOList(blogs);
             titek(blogList);
             logger.info("From BlogServiceImp method -findAll- return List of Blogs.");
-            logger.info(blogList.get(0).getText());
+//            logger.info(blogList.get(0).getText());
             return blogList;
         }else{
             logger.warn("From BlogServiceImp method -findAll- send war message " +

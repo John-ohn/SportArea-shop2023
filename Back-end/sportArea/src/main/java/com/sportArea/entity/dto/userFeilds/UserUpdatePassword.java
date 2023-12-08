@@ -14,8 +14,11 @@ import javax.validation.constraints.Pattern;
 @NoArgsConstructor
 public class UserUpdatePassword {
 
+
+    private String oldPassword;
+
     @NotBlank(message = "Password must not be blank")
     @Pattern(regexp = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?!.* ).{8,70}$",
             message = "Password must contain at least one lowercase letter, one uppercase letter, one digit, no space")
-    private String password;
+    private String newPassword;
 }

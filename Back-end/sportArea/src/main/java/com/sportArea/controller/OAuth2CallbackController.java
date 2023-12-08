@@ -60,23 +60,25 @@ public class OAuth2CallbackController {
 
     @GetMapping("/oauth2/authorization/google")
     public ResponseEntity<?> googleAuthorization(@AuthenticationPrincipal OAuth2User principal) {
-        String reactHomePageUrl = "https://sportarea.pp.ua/";
+//        String reactHomePageUrl = "http://localhost:3000";
 
-        generalLogg.getLoggerControllerInfo("OAuth2CallbackController",
-                "googleAuthorization",
-                "/oauth2/authorization/google",
-                "message (Try get OAuth2User.)");
+//        generalLogg.getLoggerControllerInfo("OAuth2CallbackController",
+//                "googleAuthorization",
+//                "/oauth2/authorization/google",
+//                "message (Try get OAuth2User.)");
 
-        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(reactHomePageUrl);
+//        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(reactHomePageUrl);
 
         Map<Object,Object> response = googleUserService.getJwtTokenFromGoogle(principal);
 
         generalLogg.getLoggerControllerInfo("OAuth2CallbackController",
                 "googleAuthorization",
                 "/oauth2/authorization/google",
-                "JWT Token from google authorization form. And redirect on home page.");
+                "JWT Token from google authorization form. And redirect on home page."+response.toString());
 
-        return ResponseEntity.status(HttpStatus.FOUND)
-                .location(builder.queryParam("jwt", response).build().toUri()).build();
+        return ResponseEntity.ok("JWT Token");
+//
+//        return ResponseEntity.status(HttpStatus.FOUND)
+//                .location(builder.queryParam("jwt", response).build().toUri()).build();
     }
 }
