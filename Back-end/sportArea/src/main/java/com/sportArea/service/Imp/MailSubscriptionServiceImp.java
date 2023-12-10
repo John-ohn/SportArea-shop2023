@@ -7,6 +7,7 @@ import com.sportArea.exception.GeneralException;
 import com.sportArea.service.EmailService;
 import com.sportArea.service.MailSubscriptionService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,6 +26,7 @@ public class MailSubscriptionServiceImp implements MailSubscriptionService {
 
     private final GeneralLogg generalLogg;
 
+    @Qualifier("gmailSMTServiceImp")
     private final EmailService emailService;
 
     @Override
@@ -43,7 +45,7 @@ public class MailSubscriptionServiceImp implements MailSubscriptionService {
                     "addNewSubscription",
                     "message and new save new Subscription from Data Base email: " + email.getEmail());
 
-            emailService.sendMailSubscription(email.getEmail());
+            emailService.sendHtmlEmailSubscription(email.getEmail());
         }else {
             generalLogg.getLoggerServiceWarn("MailSubscriptionServiceImp",
                     "addNewSubscription",

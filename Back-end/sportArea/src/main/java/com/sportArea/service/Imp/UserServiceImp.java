@@ -14,7 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import org.springframework.data.crossstore.ChangeSetPersister;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -24,7 +24,6 @@ import org.springframework.util.ObjectUtils;
 import javax.mail.MessagingException;
 import java.io.IOException;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -36,10 +35,11 @@ public class UserServiceImp implements UserService {
 
     private final PasswordEncoder passwordEncoder;
 
+
     private final EmailService emailService;
 
     @Autowired
-    public UserServiceImp(UserRepository userRepository, PasswordEncoder passwordEncoder, EmailService emailService) {
+    public UserServiceImp(UserRepository userRepository, PasswordEncoder passwordEncoder, @Qualifier("gmailSMTServiceImp")EmailService emailService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.emailService = emailService;
@@ -133,9 +133,9 @@ public class UserServiceImp implements UserService {
 
                 logger.info("From UserServiceImp method -save- return new save User from Data Base.");
 
-                String userName = user.getFirstName() + " " + user.getLastName();
+//                String userName = user.getFirstName() + " " + user.getLastName();
 
-                emailService.sendMailRegistration(user.getEmail(), userName);
+                emailService.sendHtmlEmailRegistration(user.getEmail());
 
                 logger.info("From UserServiceImp method -save- send Mail Registration .");
             } else {

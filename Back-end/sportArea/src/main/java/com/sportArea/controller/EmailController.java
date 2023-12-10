@@ -2,7 +2,6 @@ package com.sportArea.controller;
 
 import com.sportArea.entity.MailSubscription;
 import com.sportArea.entity.dto.logger.GeneralLogg;
-import com.sportArea.service.EmailService;
 import com.sportArea.service.MailSubscriptionService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +17,6 @@ public class EmailController {
 
     private final GeneralLogg generalLogg;
 
-    private final EmailService emailService;
 
     private final MailSubscriptionService mailSubscriptionService;
 
@@ -34,4 +32,7 @@ public class EmailController {
 
         return ResponseEntity.ok("The subscription was successful.");
     }
+
+
+
 }

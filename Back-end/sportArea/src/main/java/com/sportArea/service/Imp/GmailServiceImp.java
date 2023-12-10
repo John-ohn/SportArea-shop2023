@@ -5,7 +5,6 @@ import com.google.api.client.extensions.java6.auth.oauth2.AuthorizationCodeInsta
 import com.google.api.client.extensions.jetty.auth.oauth2.LocalServerReceiver;
 import com.google.api.client.googleapis.auth.oauth2.GoogleAuthorizationCodeFlow;
 import com.google.api.client.googleapis.auth.oauth2.GoogleClientSecrets;
-import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.googleapis.json.GoogleJsonError;
 import com.google.api.client.googleapis.json.GoogleJsonResponseException;
 import com.google.api.client.http.javanet.NetHttpTransport;
@@ -39,11 +38,12 @@ public class GmailServiceImp implements EmailService {
 
 
     GmailServiceImp() throws Exception {
-        NetHttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
-        GsonFactory jsonFactory = GsonFactory.getDefaultInstance();
-        service = new Gmail.Builder(httpTransport, jsonFactory, getCredentials(httpTransport, jsonFactory))
-                .setApplicationName("Test Gmail")
-                .build();
+//        NetHttpTransport httpTransport = GoogleNetHttpTransport.newTrustedTransport();
+//        GsonFactory jsonFactory = GsonFactory.getDefaultInstance();
+//        service = new Gmail.Builder(httpTransport, jsonFactory, getCredentials(httpTransport, jsonFactory))
+//                .setApplicationName("Test Gmail")
+//                .build();
+
     }
 
     private static Credential getCredentials(final NetHttpTransport httpTransport, GsonFactory jsonFactory)
@@ -51,7 +51,7 @@ public class GmailServiceImp implements EmailService {
         // Load client secrets.
         InputStream in = GmailServiceImp.class
                 .getResourceAsStream(
-                        "/client_secret_7205473346-qhl974tr2fcvus5ghg9e0rngh6rl0kkq.apps.googleusercontent.com.json"
+                        "/client_secret_7205473346-37i710djirq6fsbq7i8cki15ilfd9aut.apps.googleusercontent.com.json"
                 );
         if (in == null) {
             throw new FileNotFoundException("Resource not found: ");
@@ -66,32 +66,20 @@ public class GmailServiceImp implements EmailService {
                 .setDataStoreFactory(new FileDataStoreFactory(Paths.get("tokens").toFile()))
                 .setAccessType("offline")
                 .build();
-        LocalServerReceiver receiver = new LocalServerReceiver.Builder().setPort(8888).build();
+        LocalServerReceiver receiver = new LocalServerReceiver.Builder()
+                .setHost("ec2-18-196-80-0.eu-central-1.compute.amazonaws.com")
+                .setPort(5000)
+                .setCallbackPath("/")
+                .build();
         Credential credential = new AuthorizationCodeInstalledApp(flow, receiver).authorize("user");
         //returns an authorized Credential object.
         return credential;
     }
 
-    @Override
-    public void sendMailSubscription(String toEmail) throws MessagingException, IOException {
-        String subject = "Sport Area підписка.";
-        String htmlName = "subscription";
-
-        sendMail(subject, htmlName, toEmail, null);
-    }
-
-    @Override
-    public void sendMailRegistration(String toEmail, String userName) throws MessagingException, IOException {
-        String subject = "Дякуємо за реєстрацію в магазині Sport Are.";
-        String htmlName = "registration";
-
-        sendMail(subject, htmlName, toEmail, userName);
-    }
-
-    public void sendMail(String subject, String htmlName, String toEmail, String userName) throws MessagingException, IOException {
+    public void sendMail(String subject, String htmlName, String toEmail) throws MessagingException, IOException {
 
         // Encode as MIME message
-        MimeMessage email = createMimeMessage(subject, htmlName, toEmail, userName);
+        MimeMessage email = createMimeMessage(subject, htmlName, toEmail);
 
         // Encode and wrap the MIME message into a gmail message
         ByteArrayOutputStream buffer = new ByteArrayOutputStream();
@@ -121,7 +109,7 @@ public class GmailServiceImp implements EmailService {
     }
 
     // Create MimeMessage. Check userName and use correct Overloading method convertHtmlFileToString.
-    private MimeMessage createMimeMessage(String subject, String htmlName, String toEmail, String userName) throws MessagingException, IOException {
+    private MimeMessage createMimeMessage(String subject, String htmlName, String toEmail) throws MessagingException, IOException {
         Properties props = new Properties();
         Session session = Session.getDefaultInstance(props, null);
         MimeMessage email = new MimeMessage(session);
@@ -129,12 +117,12 @@ public class GmailServiceImp implements EmailService {
         email.addRecipient(javax.mail.Message.RecipientType.TO,
                 new InternetAddress(toEmail));
         email.setSubject(subject, "UTF-8");
-        if (userName != null) {
-            // Read the HTML content from a file or store it as a string
-            String htmlContent = convertHtmlFileToString(htmlName + ".html", userName);
-            email.setText(htmlContent, "utf-8", "html");
-            return email;
-        }
+//        if (userName != null) {
+//            // Read the HTML content from a file or store it as a string
+////            String htmlContent = convertHtmlFileToString(htmlName + ".html", userName);
+//            email.setText(htmlContent, "utf-8", "html");
+//            return email;
+//        }
         // Read the HTML content from a file or store it as a string
         String htmlContent = convertHtmlFileToString(htmlName + ".html");
         email.setText(htmlContent, "utf-8", "html");
@@ -155,19 +143,58 @@ public class GmailServiceImp implements EmailService {
     }
 
     // Overloading the method with replacing the values in the html file
-    public static String convertHtmlFileToString(String filePath, String name) throws IOException {
-        // Load the HTML file as a resource
-        ClassPathResource resource = new ClassPathResource(filePath);
+//    public static String convertHtmlFileToString(String filePath, String name) throws IOException {
+//        // Load the HTML file as a resource
+//        ClassPathResource resource = new ClassPathResource(filePath);
+//
+//        // Get the InputStream from the resource
+//        try (InputStream inputStream = resource.getInputStream()) {
+//            // Read the contents of the InputStream into a String using StreamUtils
+//
+//            String streamUtils = StreamUtils.copyToString(inputStream, StandardCharsets.UTF_8);
+//            streamUtils = streamUtils.replace("${name}", name);
+//
+//            return streamUtils;
+//        }
+//    }
 
-        // Get the InputStream from the resource
-        try (InputStream inputStream = resource.getInputStream()) {
-            // Read the contents of the InputStream into a String using StreamUtils
+    @Override
+    public void sendSimpleMailMessage(String name, String to) {
 
-            String streamUtils = StreamUtils.copyToString(inputStream, StandardCharsets.UTF_8);
-            streamUtils = streamUtils.replace("${name}", name);
+    }
 
-            return streamUtils;
-        }
+    @Override
+    public void sendMimeMessageWithAttachments(String name, String toEmail) throws MessagingException, IOException {
+        String subject = "Дякуємо за реєстрацію в магазині Sport Are.";
+        String htmlName = "registration";
+
+        sendMail(subject, htmlName, toEmail);
+    }
+
+    @Override
+    public void sendMimeMessageWithEmbeddedFiles(String name, String to) {
+
+    }
+
+    @Override
+    public void sendHtmlEmailRegistration(String toEmail) throws MessagingException, IOException {
+        String subject = "Дякуємо за реєстрацію в магазині Sport Are.";
+        String htmlName = "registration";
+
+        sendMail(subject, htmlName, toEmail);
+    }
+
+    @Override
+    public void sendHtmlEmailSubscription(String toEmail) throws MessagingException, IOException {
+        String subject = "Sport Area підписка.";
+        String htmlName = "subscription";
+
+        sendMail(subject, htmlName, toEmail);
+    }
+
+    @Override
+    public void sendHtmlEmailWithEmbeddedFiles(String name, String to) {
+
     }
 
 }
