@@ -1,23 +1,23 @@
 package com.sportArea.service;
 
 import com.sportArea.entity.User;
-import com.sportArea.entity.dto.UserDTO;
+import com.sportArea.entity.dto.UserRegistration;
 import com.sportArea.entity.dto.UserDTOUpdate;
-import org.springframework.validation.BindingResult;
+import com.sportArea.entity.dto.UserUpdateRequest;
 
 import javax.mail.MessagingException;
+import javax.validation.Valid;
 import java.io.IOException;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 public interface UserService {
 
-    UserDTO findById(Long userId);
+    UserRegistration findById(Long userId);
 
     User findByIdInUser(Long userId);
 
-    List<UserDTO> findAll();
+    List<UserRegistration> findAll();
 
     Optional<User> findByEmail(String email);
 
@@ -27,15 +27,15 @@ public interface UserService {
 
     void deleteUsersBetweenIds(Long startId, Long endId);
 
-    void save(UserDTO user) throws MessagingException, IOException;
+    void save(UserRegistration user) throws MessagingException, IOException;
 
-    User createUserFromUserDTO(UserDTO userDTO);
+    User createUserFromUserDTO(UserRegistration userRegistration);
 
-    UserDTO createUserDTOFromUser(User user);
+    UserRegistration createUserDTOFromUser(User user);
 
-    UserDTO createToUpdate(UserDTOUpdate userUpdate);
+    UserDTOUpdate createUserForUpdate(Long userId, UserUpdateRequest fieldName);
 
-    void updateUserFields(Long userId,String fieldName, String updates);
+     void validAndUpdateUser(@Valid UserDTOUpdate updates);
 
     void updateUserPassword(Long userId, String newPassword, String oldPassword);
 

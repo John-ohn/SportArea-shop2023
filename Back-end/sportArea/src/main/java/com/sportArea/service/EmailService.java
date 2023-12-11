@@ -13,10 +13,4 @@ public interface EmailService {
     void sendHtmlEmailSubscription(String to) throws MessagingException, IOException;
     void sendHtmlEmailWithEmbeddedFiles(String name, String to);
 
-//    void sendMailSubscription(String toEmail ) throws MessagingException, IOException;
-//
-//    void sendMailRegistration(String toEmail, String userName) throws MessagingException, IOException;
-//
-//    void sendMail(String subject, String htmlName, String toEmail, String userName) throws MessagingException, IOException;
-
 }

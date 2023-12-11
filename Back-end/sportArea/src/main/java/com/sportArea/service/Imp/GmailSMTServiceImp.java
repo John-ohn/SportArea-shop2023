@@ -21,7 +21,8 @@ import java.io.File;
 @Primary
 public class GmailSMTServiceImp implements EmailService {
 
-    public static final String NEW_USER_ACCOUNT_VERIFICATION = "New User Account Verification";
+    public static final String SUB_REGISTRATION = "Дякуємо за реєстрацію в магазині Sport Are.";
+    public static final String SUB_SUBSCRIPTION = "Дякуємо за підписку в магазині Sport Are.";
     public static final String UTF_8_ENCODING = "UTF-8";
     public static final String TEMPLATE_SUBSCRIPTION = "email-template-subscription";
     public static final String TEMPLATE_REGISTRATION = "email-template-registration";
@@ -41,7 +42,7 @@ public class GmailSMTServiceImp implements EmailService {
     public void sendSimpleMailMessage(String name, String to) {
         try {
             SimpleMailMessage message = new SimpleMailMessage();
-            message.setSubject(NEW_USER_ACCOUNT_VERIFICATION);
+//            message.setSubject();
             message.setFrom(fromEmail);
             message.setTo(to);
             message.setText("Test simple mail send");
@@ -59,7 +60,7 @@ public class GmailSMTServiceImp implements EmailService {
             MimeMessage message = getMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, true, UTF_8_ENCODING);
             helper.setPriority(1);
-            helper.setSubject(NEW_USER_ACCOUNT_VERIFICATION);
+//            helper.setSubject(NEW_USER_ACCOUNT_VERIFICATION);
             helper.setFrom(fromEmail);
             helper.setTo(to);
             helper.setText("Test simple mail send");
@@ -93,7 +94,7 @@ public class GmailSMTServiceImp implements EmailService {
             MimeMessage message = getMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, true, UTF_8_ENCODING);
             helper.setPriority(1);
-            helper.setSubject(NEW_USER_ACCOUNT_VERIFICATION);
+            helper.setSubject(SUB_REGISTRATION);
             helper.setFrom(fromEmail);
             helper.setTo(to);
             helper.setText(text, true);
@@ -115,7 +116,7 @@ public class GmailSMTServiceImp implements EmailService {
             MimeMessage message = getMimeMessage();
             MimeMessageHelper helper = new MimeMessageHelper(message, true, UTF_8_ENCODING);
             helper.setPriority(1);
-            helper.setSubject(NEW_USER_ACCOUNT_VERIFICATION);
+            helper.setSubject(SUB_SUBSCRIPTION);
             helper.setFrom(fromEmail);
             helper.setTo(to);
             helper.setText(text, true);
@@ -124,7 +125,6 @@ public class GmailSMTServiceImp implements EmailService {
             System.out.println(exception.getMessage());
             throw new RuntimeException(exception.getMessage());
         }
-
     }
 
     @Override

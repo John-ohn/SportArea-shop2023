@@ -52,7 +52,7 @@ public class MailSubscriptionServiceImp implements MailSubscriptionService {
                     "Email is Empty.",
                     HttpStatus.BAD_REQUEST);
 
-            throw new GeneralException("Нou have already subscribed.", HttpStatus.BAD_REQUEST);
+            throw new GeneralException("You have already subscribed.", HttpStatus.BAD_REQUEST);
         }
     }
 

@@ -1,8 +1,6 @@
 package com.sportArea.entity.dto;
 
 import com.sportArea.entity.Note;
-import com.sportArea.entity.ProductUA;
-import com.sportArea.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -22,7 +20,7 @@ public class CommentDTO {
 
     private Float productRating;
 
-    private UserDTO userDTO;
+    private UserRegistration userRegistration;
 
     private ProductUaDTO productDTO;
 }

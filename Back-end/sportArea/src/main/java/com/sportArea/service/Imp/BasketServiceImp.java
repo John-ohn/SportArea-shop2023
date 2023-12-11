@@ -5,8 +5,6 @@ import com.sportArea.dao.BasketRepository;
 import com.sportArea.entity.*;
 import com.sportArea.entity.dto.BasketDTO;
 import com.sportArea.entity.dto.BasketItemDTO;
-import com.sportArea.entity.dto.ProductUaDTO;
-import com.sportArea.entity.dto.UserDTO;
 import com.sportArea.exception.GeneralException;
 import com.sportArea.service.BasketService;
 import com.sportArea.service.ProductUAService;

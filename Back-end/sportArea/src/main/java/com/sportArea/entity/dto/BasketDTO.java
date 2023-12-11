@@ -18,7 +18,7 @@ public class BasketDTO {
 
     private Long basketId;
 
-    private UserDTO user;
+    private UserRegistration user;
 
     private List<BasketItemDTO> products = new ArrayList<>();;
 

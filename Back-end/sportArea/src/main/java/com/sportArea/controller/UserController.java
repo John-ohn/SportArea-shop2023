@@ -5,8 +5,9 @@ import com.sportArea.entity.Role;
 import com.sportArea.entity.Status;
 import com.sportArea.entity.TypeRegistration;
 import com.sportArea.entity.dto.RegistrationStatus;
-import com.sportArea.entity.dto.UserDTO;
+import com.sportArea.entity.dto.UserRegistration;
 import com.sportArea.entity.dto.UserDTOUpdate;
+import com.sportArea.entity.dto.UserUpdateRequest;
 import com.sportArea.entity.dto.logger.GeneralLogg;
 import com.sportArea.entity.dto.userFeilds.*;
 import com.sportArea.service.UserService;
@@ -41,9 +42,9 @@ public class UserController {
     }
 
     @GetMapping
-    public List<UserDTO> showAllUser() {
+    public List<UserRegistration> showAllUser() {
 
-        List<UserDTO> userList = userService.findAll();
+        List<UserRegistration> userList = userService.findAll();
 
         generalLogg.getLoggerControllerInfo("UserController",
                 "showAllUser",
@@ -54,8 +55,8 @@ public class UserController {
     }
 
     @GetMapping("/{userId}")
-    public ResponseEntity<UserDTO> getUserById(@PathVariable long userId) {
-        UserDTO user = userService.findById(userId);
+    public ResponseEntity<UserRegistration> getUserById(@PathVariable long userId) {
+        UserRegistration user = userService.findById(userId);
 
         generalLogg.getLoggerControllerInfo("UserController",
                 "getUserById",
@@ -66,7 +67,7 @@ public class UserController {
     }
 
     @PostMapping("/registration")
-    public ResponseEntity<RegistrationStatus> addUser(@Valid @RequestBody UserDTO user) throws MessagingException, IOException {
+    public ResponseEntity<RegistrationStatus> addUser(@Valid @RequestBody UserRegistration user) throws MessagingException, IOException {
         userService.save(user);
 
         generalLogg.getLoggerControllerInfo("UserController",
@@ -81,11 +82,14 @@ public class UserController {
         return new ResponseEntity<>(registrationStatus, HttpStatus.CREATED);
     }
 
-    @PutMapping
-    public ResponseEntity<RegistrationStatus> updateUser(@Valid @RequestBody UserDTOUpdate user) throws MessagingException, IOException {
-        UserDTO existingUser = userService.createToUpdate(user);
 
-        userService.save(existingUser);
+    @PatchMapping("/{userId}")
+    public ResponseEntity<RegistrationStatus> updateUser(@PathVariable("userId") Long userId,
+                                                         @RequestBody UserUpdateRequest user) {
+
+        UserDTOUpdate userDTOUpdate = userService.createUserForUpdate(userId, user);
+
+        userService.validAndUpdateUser(userDTOUpdate);
 
         generalLogg.getLoggerControllerInfo("UserController",
                 "updateUser",
@@ -99,74 +103,74 @@ public class UserController {
         return new ResponseEntity<>(registrationStatus, HttpStatus.CREATED);
     }
 
-    @PatchMapping("/{userId}/first-name")
-    public ResponseEntity<RegistrationStatus> updateUserFirstName(@Valid @RequestBody UserUpdateFirstName firstName,
-                                                                  @PathVariable("userId") Long userId) {
+//    @PatchMapping("/{userId}/first-name")
+//    public ResponseEntity<RegistrationStatus> updateUserFirstName(@Valid @RequestBody UserUpdateFirstName firstName,
+//                                                                  @PathVariable("userId") Long userId) {
+//
+////        userService.updateUserFields(userId, "firstName", firstName.getFirstName());
+//
+//        generalLogg.getLoggerControllerInfo("UserController",
+//                "updateUserFirstName",
+//                "/{userId}/first-name",
+//                "message (Update was Successful.) and update User first name to - " + firstName.getFirstName() + " -. with userId: " + userId);
+//
+//        RegistrationStatus registrationStatus = new RegistrationStatus(
+//                HttpStatus.CREATED.value(),
+//                "Update was Successful.");
+//        return new ResponseEntity<>(registrationStatus, HttpStatus.CREATED);
+//    }
 
-        userService.updateUserFields(userId, "firstName", firstName.getFirstName());
+//    @PatchMapping("/{userId}/last-name")
+//    public ResponseEntity<RegistrationStatus> updateUserLastName(@Valid @RequestBody UserUpdateLastName lastName,
+//                                                                 @PathVariable("userId") Long userId) {
+//
+////        userService.updateUserFields(userId, "lastName", lastName.getLastName());
+//
+//        generalLogg.getLoggerControllerInfo("UserController",
+//                "updateUserLastName",
+//                "/{userId}/last-name",
+//                "message (Update was Successful.) and update User last name to - " + lastName.getLastName() + " -. with userId: " + userId);
+//
+//        RegistrationStatus registrationStatus = new RegistrationStatus(
+//                HttpStatus.CREATED.value(),
+//                "Update was Successful.");
+//        return new ResponseEntity<>(registrationStatus, HttpStatus.CREATED);
+//    }
 
-        generalLogg.getLoggerControllerInfo("UserController",
-                "updateUserFirstName",
-                "/{userId}/first-name",
-                "message (Update was Successful.) and update User first name to - " + firstName.getFirstName() + " -. with userId: " + userId);
+//    @PatchMapping("/{userId}/email")
+//    public ResponseEntity<RegistrationStatus> updateUserEmail(@Valid @RequestBody UserUpdateEmail email,
+//                                                              @PathVariable("userId") Long userId) {
+//
+////        userService.updateUserFields(userId, "email", email.getEmail());
+//
+//        generalLogg.getLoggerControllerInfo("UserController",
+//                "updateUserEmail",
+//                "/{userId}/email",
+//                "message (Update was Successful.) and update User email to - " + email.getEmail() + " -. with userId: " + userId);
+//
+//        RegistrationStatus registrationStatus = new RegistrationStatus(
+//                HttpStatus.CREATED.value(),
+//                "Update was Successful.");
+//
+//        return new ResponseEntity<>(registrationStatus, HttpStatus.CREATED);
+//    }
 
-        RegistrationStatus registrationStatus = new RegistrationStatus(
-                HttpStatus.CREATED.value(),
-                "Update was Successful.");
-        return new ResponseEntity<>(registrationStatus, HttpStatus.CREATED);
-    }
-
-    @PatchMapping("/{userId}/last-name")
-    public ResponseEntity<RegistrationStatus> updateUserLastName(@Valid @RequestBody UserUpdateLastName lastName,
-                                                                 @PathVariable("userId") Long userId) {
-
-        userService.updateUserFields(userId, "lastName", lastName.getLastName());
-
-        generalLogg.getLoggerControllerInfo("UserController",
-                "updateUserLastName",
-                "/{userId}/last-name",
-                "message (Update was Successful.) and update User last name to - " + lastName.getLastName() + " -. with userId: " + userId);
-
-        RegistrationStatus registrationStatus = new RegistrationStatus(
-                HttpStatus.CREATED.value(),
-                "Update was Successful.");
-        return new ResponseEntity<>(registrationStatus, HttpStatus.CREATED);
-    }
-
-    @PatchMapping("/{userId}/email")
-    public ResponseEntity<RegistrationStatus> updateUserEmail(@Valid @RequestBody UserUpdateEmail email,
-                                                              @PathVariable("userId") Long userId) {
-
-        userService.updateUserFields(userId, "email", email.getEmail());
-
-        generalLogg.getLoggerControllerInfo("UserController",
-                "updateUserEmail",
-                "/{userId}/email",
-                "message (Update was Successful.) and update User email to - " + email.getEmail() + " -. with userId: " + userId);
-
-        RegistrationStatus registrationStatus = new RegistrationStatus(
-                HttpStatus.CREATED.value(),
-                "Update was Successful.");
-
-        return new ResponseEntity<>(registrationStatus, HttpStatus.CREATED);
-    }
-
-    @PatchMapping("/{userId}/phone-number")
-    public ResponseEntity<RegistrationStatus> updateUserPhoneNumber(@Valid @RequestBody UserUpdatePhoneNumber phoneNumber,
-                                                                    @PathVariable("userId") Long userId) {
-
-        userService.updateUserFields(userId, "phoneNumber", phoneNumber.getPhoneNumber());
-
-        generalLogg.getLoggerControllerInfo("UserController",
-                "updateUserPhoneNumber",
-                "/{userId}/phone-number",
-                "message (Update was Successful.) and update User phone number to - " + phoneNumber.getPhoneNumber() + " -. with userId: " + userId);
-
-        RegistrationStatus registrationStatus = new RegistrationStatus(
-                HttpStatus.CREATED.value(),
-                "Update was Successful.");
-        return new ResponseEntity<>(registrationStatus, HttpStatus.CREATED);
-    }
+//    @PatchMapping("/{userId}/phone-number")
+//    public ResponseEntity<RegistrationStatus> updateUserPhoneNumber(@Valid @RequestBody UserUpdatePhoneNumber phoneNumber,
+//                                                                    @PathVariable("userId") Long userId) {
+//
+////        userService.updateUserFields(userId, "phoneNumber", phoneNumber.getPhoneNumber());
+//
+//        generalLogg.getLoggerControllerInfo("UserController",
+//                "updateUserPhoneNumber",
+//                "/{userId}/phone-number",
+//                "message (Update was Successful.) and update User phone number to - " + phoneNumber.getPhoneNumber() + " -. with userId: " + userId);
+//
+//        RegistrationStatus registrationStatus = new RegistrationStatus(
+//                HttpStatus.CREATED.value(),
+//                "Update was Successful.");
+//        return new ResponseEntity<>(registrationStatus, HttpStatus.CREATED);
+//    }
 
     @PatchMapping("/{userId}/password")
     public ResponseEntity<RegistrationStatus> updateUserPassword(@Valid @RequestBody UserUpdatePassword password,
@@ -189,7 +193,7 @@ public class UserController {
     public ResponseEntity<RegistrationStatus> updateUserStatus(@RequestParam("status") Status status,
                                                                @PathVariable("userId") Long userId) {
 
-        userService.updateUserFields(userId, "status", status.toString());
+//        userService.updateUserFields(userId, "status", status.toString());
 
         generalLogg.getLoggerControllerInfo("UserController",
                 "updateUserStatus",
@@ -233,7 +237,7 @@ public class UserController {
 
     @GetMapping("/testAuth")
     public ResponseEntity<?> testAuth() {
-        UserDTO userDTO = UserDTO.builder()
+        UserRegistration userRegistration = UserRegistration.builder()
                 .typeRegistration(TypeRegistration.FORM_REGISTRATION)
                 .email("test.token.@work.com")
                 .firstName("TEST_TOKEN")
@@ -250,6 +254,6 @@ public class UserController {
                 "/testAuth",
                 "Test login and work jwt token return TEST_TOKEN User.");
 
-        return ResponseEntity.ok(userDTO);
+        return ResponseEntity.ok(userRegistration);
     }
 }
