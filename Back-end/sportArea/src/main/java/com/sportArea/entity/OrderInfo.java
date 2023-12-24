@@ -6,8 +6,6 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
-import java.time.LocalDateTime;
-import java.util.List;
 
 @Entity
 @Table(name = "OrderInfo")
@@ -51,7 +49,7 @@ public class OrderInfo {
 
     @ManyToOne
     @JoinColumn(name = "userId")
-    private User user;
+    private Customer customer;
 
 //    @OneToMany
 //    @JoinColumn(name = "productId")

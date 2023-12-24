@@ -1,6 +1,7 @@
 package com.sportArea.controller;
 
 
+import com.sportArea.dao.UserRepository;
 import com.sportArea.entity.Role;
 import com.sportArea.entity.Status;
 import com.sportArea.entity.TypeRegistration;
@@ -35,10 +36,14 @@ public class UserController {
 
     private RestTemplate restTemplate;
 
+    private UserRepository userRepository;
+
+
     @Autowired
-    public UserController(UserService userService, GeneralLogg generalLogg) {
+    public UserController(UserService userService, GeneralLogg generalLogg,UserRepository userRepository) {
         this.userService = userService;
         this.generalLogg = generalLogg;
+        this.userRepository=userRepository;
     }
 
     @GetMapping
@@ -103,22 +108,35 @@ public class UserController {
         return new ResponseEntity<>(registrationStatus, HttpStatus.CREATED);
     }
 
-//    @PatchMapping("/{userId}/first-name")
-//    public ResponseEntity<RegistrationStatus> updateUserFirstName(@Valid @RequestBody UserUpdateFirstName firstName,
-//                                                                  @PathVariable("userId") Long userId) {
-//
-////        userService.updateUserFields(userId, "firstName", firstName.getFirstName());
-//
-//        generalLogg.getLoggerControllerInfo("UserController",
-//                "updateUserFirstName",
-//                "/{userId}/first-name",
-//                "message (Update was Successful.) and update User first name to - " + firstName.getFirstName() + " -. with userId: " + userId);
-//
-//        RegistrationStatus registrationStatus = new RegistrationStatus(
-//                HttpStatus.CREATED.value(),
-//                "Update was Successful.");
-//        return new ResponseEntity<>(registrationStatus, HttpStatus.CREATED);
-//    }
+    @PostMapping("/forgot/password")
+    public ResponseEntity<String> forgotPassword(@RequestParam("email")String email){
+
+        userService.forgotPassword(email,12);
+
+        generalLogg.getLoggerControllerInfo("UserController",
+                "forgotPassword",
+                "/forgot/password",
+                "message (We have sent a new password to your email address.) and update User password");
+
+        return new ResponseEntity<>("We have sent a new password to your email address.", HttpStatus.OK);
+    }
+
+    @PatchMapping("/{userId}/first-name")
+    public ResponseEntity<RegistrationStatus> updateUserFirstName(@Valid @RequestBody UserUpdateFirstName firstName,
+                                                                  @PathVariable("userId") Long userId) {
+
+        userRepository.updateUserFirstName(userId, firstName.getFirstName());
+
+        generalLogg.getLoggerControllerInfo("UserController",
+                "updateUserFirstName",
+                "/{userId}/first-name",
+                "message (Update was Successful.) and update User first name to - " + firstName.getFirstName() + " -. with userId: " + userId);
+
+        RegistrationStatus registrationStatus = new RegistrationStatus(
+                HttpStatus.CREATED.value(),
+                "Update was Successful.");
+        return new ResponseEntity<>(registrationStatus, HttpStatus.CREATED);
+    }
 
 //    @PatchMapping("/{userId}/last-name")
 //    public ResponseEntity<RegistrationStatus> updateUserLastName(@Valid @RequestBody UserUpdateLastName lastName,

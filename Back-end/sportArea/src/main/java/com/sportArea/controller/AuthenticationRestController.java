@@ -1,7 +1,7 @@
 package com.sportArea.controller;
 
 
-import com.sportArea.entity.User;
+import com.sportArea.entity.Customer;
 import com.sportArea.entity.dto.logger.GeneralLogg;
 import com.sportArea.entity.dto.restJWT.AuthenticationRequestDTO;
 import com.sportArea.security.JwtTokenProvider;
@@ -52,14 +52,14 @@ public class AuthenticationRestController {
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword())
             );
-            User user = userService.findByEmail(request.getEmail()).orElseThrow(
+            Customer customer = userService.findByEmail(request.getEmail()).orElseThrow(
                     () -> new UsernameNotFoundException("User doesn't exists"));
 
-            String token = jwtTokenProvider.createToken(request.getEmail(), user.getRole().name(), user.getUserId());
+            String token = jwtTokenProvider.createToken(request.getEmail(), customer.getRole().name(), customer.getUserId());
             Map<Object, Object> response = new HashMap<>();
             response.put("email", request.getEmail());
             response.put("token", token);
-            response.put("userId", user.getUserId());
+            response.put("userId", customer.getUserId());
 
             // Make Logger info
             generalLogg.getLoggerControllerInfo("AuthenticationRestController",

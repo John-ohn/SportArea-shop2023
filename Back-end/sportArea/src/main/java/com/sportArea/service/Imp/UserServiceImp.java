@@ -1,15 +1,16 @@
 package com.sportArea.service.Imp;
 
 import com.sportArea.dao.UserRepository;
+import com.sportArea.entity.Customer;
 import com.sportArea.entity.Role;
 import com.sportArea.entity.Status;
 import com.sportArea.entity.TypeRegistration;
-import com.sportArea.entity.User;
 import com.sportArea.entity.dto.UserRegistration;
 import com.sportArea.entity.dto.UserDTOUpdate;
 import com.sportArea.entity.dto.UserUpdateRequest;
 import com.sportArea.exception.GeneralException;
 import com.sportArea.service.EmailService;
+import com.sportArea.service.PasswordGeneratorService;
 import com.sportArea.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,19 +42,25 @@ public class UserServiceImp implements UserService {
 
     private final EmailService emailService;
 
+    private final PasswordGeneratorService passwordGeneratorService;
+
     @Autowired
-    public UserServiceImp(UserRepository userRepository, PasswordEncoder passwordEncoder, @Qualifier("gmailSMTServiceImp") EmailService emailService) {
+    public UserServiceImp(UserRepository userRepository,
+                          PasswordEncoder passwordEncoder,
+                          @Qualifier("gmailSMTServiceImp") EmailService emailService,
+                          PasswordGeneratorService passwordGeneratorService) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.emailService = emailService;
+        this.passwordGeneratorService = passwordGeneratorService;
     }
 
     @Override
     public UserRegistration findById(Long userId) {
-        Optional<User> userOptional = userRepository.findById(userId);
+        Optional<Customer> userOptional = userRepository.findById(userId);
         if (userOptional.isPresent()) {
-            User user = userOptional.get();
-            UserRegistration userRegistration = createUserDTOFromUser(user);
+            Customer customer = userOptional.get();
+            UserRegistration userRegistration = createUserDTOFromUser(customer);
             logger.info("From UserServiceImp method -findById- return User by id: {} ", userId);
             return userRegistration;
         } else {
@@ -64,12 +71,12 @@ public class UserServiceImp implements UserService {
     }
 
     @Override
-    public User findByIdInUser(Long userId) {
-        Optional<User> userOptional = userRepository.findById(userId);
+    public Customer findByIdInUser(Long userId) {
+        Optional<Customer> userOptional = userRepository.findById(userId);
         if (userOptional.isPresent()) {
-            User user = userOptional.get();
+            Customer customer = userOptional.get();
             logger.info("From UserServiceImp method -findById- return User by id: {} ", userId);
-            return user;
+            return customer;
         } else {
             logger.warn("From UserServiceImp method -findById- send war message " +
                     "( User with userId: {} is not available. ({}))", userId, HttpStatus.NOT_FOUND);
@@ -79,16 +86,16 @@ public class UserServiceImp implements UserService {
 
     @Override
     public List<UserRegistration> findAll() {
-        List<User> userList = userRepository.findAll();
-        List<UserRegistration> userRegistrationList = userList.stream().map(this::createUserDTOFromUser).toList();
+        List<Customer> customerList = userRepository.findAll();
+        List<UserRegistration> userRegistrationList = customerList.stream().map(this::createUserDTOFromUser).toList();
 
         logger.info("From UserServiceImp method -findAll- return List of User .");
         return userRegistrationList;
     }
 
     @Override
-    public Optional<User> findByEmail(String email) {
-        Optional<User> user = userRepository.findByEmail(email);
+    public Optional<Customer> findByEmail(String email) {
+        Optional<Customer> user = userRepository.findByEmail(email);
         if (user.isPresent()) {
             logger.info("From UserServiceImp method -findByEmail- return User by email: {} ", email);
             return user;
@@ -101,8 +108,8 @@ public class UserServiceImp implements UserService {
     }
 
     @Override
-    public User findByEmailAndFirstName(String keyWord) {
-        Optional<User> user = Optional.ofNullable(userRepository.findByEmailAndFirstName(keyWord));
+    public Customer findByEmailAndFirstName(String keyWord) {
+        Optional<Customer> user = Optional.ofNullable(userRepository.findByEmailAndFirstName(keyWord));
         if (user.isPresent()) {
             logger.info("From UserServiceImp method -findByEmailAndFirstName- return User by keyWord: {} ", keyWord);
             return user.get();
@@ -120,27 +127,27 @@ public class UserServiceImp implements UserService {
 
         if (userRegistration != null) {
             if (userRegistration.getUserId() == null) {
-                Optional<User> optionalUser = userRepository.findByEmail(userRegistration.getEmail());
+                Optional<Customer> optionalUser = userRepository.findByEmail(userRegistration.getEmail());
                 if (optionalUser.isPresent()) {
                     logger.warn("From UserServiceImp method -save- send war message " +
                             "( Email already exists. ({})))", HttpStatus.NO_CONTENT.name());
                     throw new GeneralException("Email already exists", HttpStatus.BAD_REQUEST);
                 }
                 String encodedPassword = passwordEncoder.encode(userRegistration.getPassword());
-                User user = createUserFromUserDTO(userRegistration);
-                user.setPassword(encodedPassword);
-                user.setRole(Role.ROLE_USER);
-                user.setStatus(Status.ACTIVE);
-                user.setTypeRegistration(TypeRegistration.FORM_REGISTRATION);
-                userRepository.save(user);
+                Customer customer = createUserFromUserDTO(userRegistration);
+                customer.setPassword(encodedPassword);
+                customer.setRole(Role.ROLE_USER);
+                customer.setStatus(Status.ACTIVE);
+                customer.setTypeRegistration(TypeRegistration.FORM_REGISTRATION);
+                userRepository.save(customer);
 
                 logger.info("From UserServiceImp method -save- return new save User from Data Base.");
 
-                emailService.sendHtmlEmailRegistration(user.getEmail());
+                emailService.sendHtmlEmailRegistration(customer.getEmail());
 
                 logger.info("From UserServiceImp method -save- send Mail Registration .");
             } else {
-                Optional<User> optionalUser = userRepository.findById(userRegistration.getUserId());
+                Optional<Customer> optionalUser = userRepository.findById(userRegistration.getUserId());
                 if (optionalUser.isPresent()) {
                     logger.warn("From UserServiceImp method -save- send war message " +
                             "( User with this id already exists you can't save user twice. " +
@@ -165,9 +172,9 @@ public class UserServiceImp implements UserService {
                         "( User userId  is not available. ({}))", HttpStatus.NOT_FOUND);
                 throw new GeneralException("User userId  is not available ", HttpStatus.NOT_FOUND);
             }
-            User user = createUserFromUpdate2(updates);
+            Customer customer = createUserFromUpdate2(updates);
 
-            userRepository.save(user);
+            userRepository.save(customer);
 
             logger.info("From UserServiceImp method -updateUser- Made update User field in Data Base.");
 
@@ -187,9 +194,9 @@ public class UserServiceImp implements UserService {
 
     @Override
     public UserDTOUpdate createUserForUpdate(Long userId, UserUpdateRequest fieldName) {
-        User existingUser = userRepository.findById(userId)
+        Customer existingCustomer = userRepository.findById(userId)
                 .orElseThrow(() -> new GeneralException("User is not available or his is empty. ", HttpStatus.NOT_FOUND));
-        UserDTOUpdate user = createToUpdate2(existingUser);
+        UserDTOUpdate user = createToUpdate2(existingCustomer);
         if (fieldName != null) {
             // Update fields.
             if (fieldName.getFirstName() != null) {
@@ -217,7 +224,7 @@ public class UserServiceImp implements UserService {
     }
 
     public void updateUserPassword(Long userId, String newPassword, String oldPassword) {
-        Optional<User> user = userRepository.findById(userId);
+        Optional<Customer> user = userRepository.findById(userId);
         if (user.isPresent()) {
 
             boolean checkPassword = passwordEncoder.matches(oldPassword, user.get().getPassword());
@@ -226,7 +233,7 @@ public class UserServiceImp implements UserService {
                     checkPassword);
 
             if (checkPassword) {
-                if(oldPassword.equals(newPassword)){
+                if (oldPassword.equals(newPassword)) {
                     logger.warn("From UserServiceImp method -updateUserPassword- send war message " +
                             "(The new password is the same as the old one. ({}) )", HttpStatus.BAD_REQUEST);
                     throw new GeneralException("The new password is the same as the old one.", HttpStatus.BAD_REQUEST);
@@ -244,8 +251,34 @@ public class UserServiceImp implements UserService {
     }
 
     @Override
+    public void forgotPassword(String email, int length) {
+        if (email.isEmpty()) {
+            logger.warn("From UserServiceImp method -forgotPassword- send war message " +
+                    "( Email is  is empty. ({}))", HttpStatus.BAD_REQUEST);
+            throw new GeneralException("Email is  is empty. ", HttpStatus.BAD_REQUEST);
+        }
+        Optional<Customer> user = userRepository.findByEmail(email);
+        if (user.isPresent()) {
+
+            String randomPassword = passwordGeneratorService.generatePassword(length);
+            logger.info("From UserServiceImp method -forgotPassword- Generator new password to user {}, {}", email , randomPassword);
+
+            userRepository.updateUserPassword(user.get().getUserId(),passwordEncoder.encode(randomPassword));
+            logger.info("From UserServiceImp method -forgotPassword- save new password to user {}", email);
+
+            emailService.sendHtmlEmailForgotPassword(email, randomPassword);
+            logger.info("From UserServiceImp method -forgotPassword- send massage to email {}", email);
+        } else {
+            logger.warn("From UserServiceImp method -forgotPassword- send war message " +
+                    "( User with this email is not available. ({}) ({})))", email, HttpStatus.NOT_FOUND);
+
+            throw new GeneralException("User with this email is not available.", HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @Override
     public void delete(Long userId) {
-        Optional<User> user = userRepository.findById(userId);
+        Optional<Customer> user = userRepository.findById(userId);
         if (user.isPresent()) {
             userRepository.delete(user.get());
             logger.info("From UserServiceImp method -delete- return message (User with userId: {} was deleted.).", userId);
@@ -272,46 +305,46 @@ public class UserServiceImp implements UserService {
     }
 
     @Override
-    public User createUserFromUserDTO(UserRegistration userRegistration) {
+    public Customer createUserFromUserDTO(UserRegistration userRegistration) {
         if (userRegistration.getUserId() == null) {
-            User user = new User();
-            user.setFirstName(userRegistration.getFirstName());
-            user.setLastName(userRegistration.getLastName());
-            user.setEmail(userRegistration.getEmail());
-            user.setPhoneNumber(userRegistration.getPhoneNumber());
-            user.setPassword(userRegistration.getPassword());
-            return user;
+            Customer customer = new Customer();
+            customer.setFirstName(userRegistration.getFirstName());
+            customer.setLastName(userRegistration.getLastName());
+            customer.setEmail(userRegistration.getEmail());
+            customer.setPhoneNumber(userRegistration.getPhoneNumber());
+            customer.setPassword(userRegistration.getPassword());
+            return customer;
         } else {
-            User user = new User();
-            user.setUserId(userRegistration.getUserId());
-            user.setFirstName(userRegistration.getFirstName());
-            user.setLastName(userRegistration.getLastName());
-            user.setEmail(userRegistration.getEmail());
-            user.setPhoneNumber(userRegistration.getPhoneNumber());
-            user.setPassword(userRegistration.getPassword());
-            return user;
+            Customer customer = new Customer();
+            customer.setUserId(userRegistration.getUserId());
+            customer.setFirstName(userRegistration.getFirstName());
+            customer.setLastName(userRegistration.getLastName());
+            customer.setEmail(userRegistration.getEmail());
+            customer.setPhoneNumber(userRegistration.getPhoneNumber());
+            customer.setPassword(userRegistration.getPassword());
+            return customer;
         }
 
     }
 
     @Override
-    public UserRegistration createUserDTOFromUser(User user) {
+    public UserRegistration createUserDTOFromUser(Customer customer) {
         return UserRegistration
                 .builder()
-                .userId(user.getUserId())
-                .firstName(user.getFirstName())
-                .lastName(user.getLastName())
-                .email(user.getEmail())
-                .phoneNumber(user.getPhoneNumber())
+                .userId(customer.getUserId())
+                .firstName(customer.getFirstName())
+                .lastName(customer.getLastName())
+                .email(customer.getEmail())
+                .phoneNumber(customer.getPhoneNumber())
                 .password(null)
-                .role(user.getRole())
-                .status(user.getStatus())
-                .typeRegistration(user.getTypeRegistration())
+                .role(customer.getRole())
+                .status(customer.getStatus())
+                .typeRegistration(customer.getTypeRegistration())
                 .build();
     }
 
-    public User createUserFromUpdate2(UserDTOUpdate userUpdate) {
-        return User
+    public Customer createUserFromUpdate2(UserDTOUpdate userUpdate) {
+        return Customer
                 .builder()
                 .userId(userUpdate.getUserId())
                 .firstName(userUpdate.getFirstName())
@@ -325,19 +358,19 @@ public class UserServiceImp implements UserService {
                 .build();
     }
 
-    public UserDTOUpdate createToUpdate2(User userUpdate) {
+    public UserDTOUpdate createToUpdate2(Customer customerUpdate) {
 
         return UserDTOUpdate
                 .builder()
-                .userId(userUpdate.getUserId())
-                .firstName(userUpdate.getFirstName())
-                .lastName(userUpdate.getLastName())
-                .email(userUpdate.getEmail())
-                .phoneNumber(userUpdate.getPhoneNumber())
-                .password(userUpdate.getPassword())
-                .role(userUpdate.getRole())
-                .status(userUpdate.getStatus())
-                .typeRegistration(userUpdate.getTypeRegistration())
+                .userId(customerUpdate.getUserId())
+                .firstName(customerUpdate.getFirstName())
+                .lastName(customerUpdate.getLastName())
+                .email(customerUpdate.getEmail())
+                .phoneNumber(customerUpdate.getPhoneNumber())
+                .password(customerUpdate.getPassword())
+                .role(customerUpdate.getRole())
+                .status(customerUpdate.getStatus())
+                .typeRegistration(customerUpdate.getTypeRegistration())
                 .build();
 
     }

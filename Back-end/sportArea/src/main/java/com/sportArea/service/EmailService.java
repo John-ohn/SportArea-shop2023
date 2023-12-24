@@ -11,6 +11,9 @@ public interface EmailService {
     void sendMimeMessageWithEmbeddedFiles(String name, String to);
     void sendHtmlEmailRegistration(String to) throws MessagingException, IOException;
     void sendHtmlEmailSubscription(String to) throws MessagingException, IOException;
+
+    void sendHtmlEmailForgotPassword(String to, String password);
+
     void sendHtmlEmailWithEmbeddedFiles(String name, String to);
 
 }

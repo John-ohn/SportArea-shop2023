@@ -1,7 +1,6 @@
 package com.sportArea.entity;
 
 import lombok.*;
-import org.hibernate.annotations.Cascade;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -36,7 +35,7 @@ public class Comment {
 
     @ManyToOne()
     @JoinColumn(name = "userId", nullable = true)
-    private User user;
+    private Customer customer;
 
     @ManyToOne()
     @JoinColumn(name = "productId", nullable = true)

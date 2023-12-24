@@ -14,6 +14,7 @@ import org.thymeleaf.context.Context;
 
 import javax.mail.internet.MimeMessage;
 import java.io.File;
+import java.util.Map;
 
 
 @Service
@@ -23,9 +24,11 @@ public class GmailSMTServiceImp implements EmailService {
 
     public static final String SUB_REGISTRATION = "Дякуємо за реєстрацію в магазині Sport Are.";
     public static final String SUB_SUBSCRIPTION = "Дякуємо за підписку в магазині Sport Are.";
+    public static final String SUB_FORGOT_PASSWORD = "Відновлення паролю в магазині Sport Are.";
     public static final String UTF_8_ENCODING = "UTF-8";
     public static final String TEMPLATE_SUBSCRIPTION = "email-template-subscription";
     public static final String TEMPLATE_REGISTRATION = "email-template-registration";
+    public static final String TEMPLATE_FORGOT_PASSWORD = "email-template-forgot-password";
     public static final String TEXT_HTML_ENCONDING = "text/html";
 
     private final JavaMailSender emailSender;
@@ -125,6 +128,28 @@ public class GmailSMTServiceImp implements EmailService {
             System.out.println(exception.getMessage());
             throw new RuntimeException(exception.getMessage());
         }
+    }
+
+    @Override
+    public void sendHtmlEmailForgotPassword(String to, String password) {
+
+        try {
+            Context context = new Context();
+            context.setVariables(Map.of("password", password));
+            String text = templateEngine.process(TEMPLATE_FORGOT_PASSWORD, context);
+            MimeMessage message = getMimeMessage();
+            MimeMessageHelper helper = new MimeMessageHelper(message, true, UTF_8_ENCODING);
+            helper.setPriority(1);
+            helper.setSubject(SUB_FORGOT_PASSWORD);
+            helper.setFrom(fromEmail);
+            helper.setTo(to);
+            helper.setText(text, true);
+            emailSender.send(message);
+        } catch (Exception exception) {
+            System.out.println(exception.getMessage());
+            throw new RuntimeException(exception.getMessage());
+        }
+
     }
 
     @Override

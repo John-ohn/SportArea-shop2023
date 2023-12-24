@@ -18,7 +18,7 @@ public class TargetCategory {
     @Column(name = "categoryId")
     private Long categoryId;
 
-    @Column(name = "nameCategory")
+    @Column(name = "nameCategory", nullable = false)
     private String  nameCategory;
 
     @Column(name = "translateName")

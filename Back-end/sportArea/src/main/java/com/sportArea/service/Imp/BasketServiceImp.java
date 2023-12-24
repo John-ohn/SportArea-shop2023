@@ -95,12 +95,12 @@ public class BasketServiceImp implements BasketService {
         Optional<Basket> basketCheck = basketRepository.findByUserId(userId);
         if (basketCheck.isEmpty()) {
             BasketItem basketItem = createBasketItem(productId, productQuantity);
-            User user = userService.findByIdInUser(userId);
+            Customer customer = userService.findByIdInUser(userId);
 
 
             BasketItem saveBasketItem = basketItemRepository.save(basketItem);
             Basket newBasket = new Basket();
-            newBasket.setUser(user);
+            newBasket.setCustomer(customer);
             newBasket.addBasketItemToBasket(saveBasketItem);
             Integer productListSize = newBasket.getProducts().size();
             newBasket.setProductQuantity(productListSize);
@@ -158,7 +158,7 @@ public class BasketServiceImp implements BasketService {
         basketItemRepository.save(basketItem);
         basketRepository.update(basket.getBasketTotalPrice(),
                 basket.getProductQuantity(),
-                basket.getUser().getUserId());
+                basket.getCustomer().getUserId());
 
 
         return convertToDTO(basket);
@@ -209,14 +209,14 @@ public class BasketServiceImp implements BasketService {
         if (basket.getBasketId() != null) {
             return Basket.builder()
                     .basketId(basket.getBasketId())
-                    .user(userService.createUserFromUserDTO(basket.getUser()))
+                    .customer(userService.createUserFromUserDTO(basket.getUser()))
                     .productQuantity(basket.getProductQuantity())
                     .basketTotalPrice(basket.getBasketTotalPrice())
                     .products(convertToList(basket.getProducts()))
                     .build();
         } else {
             return Basket.builder()
-                    .user(userService.createUserFromUserDTO(basket.getUser()))
+                    .customer(userService.createUserFromUserDTO(basket.getUser()))
                     .productQuantity(basket.getProductQuantity())
                     .basketTotalPrice(basket.getBasketTotalPrice())
                     .products(convertToList(basket.getProducts()))
@@ -228,14 +228,14 @@ public class BasketServiceImp implements BasketService {
         if (basket.getBasketId() != null) {
             return BasketDTO.builder()
                     .basketId(basket.getBasketId())
-                    .user(userService.createUserDTOFromUser(basket.getUser()))
+                    .user(userService.createUserDTOFromUser(basket.getCustomer()))
                     .productQuantity(basket.getProductQuantity())
                     .basketTotalPrice(basket.getBasketTotalPrice())
                     .products(convertToItemDTOList(basket.getProducts()))
                     .build();
         } else {
             return BasketDTO.builder()
-                    .user(userService.createUserDTOFromUser(basket.getUser()))
+                    .user(userService.createUserDTOFromUser(basket.getCustomer()))
                     .productQuantity(basket.getProductQuantity())
                     .basketTotalPrice(basket.getBasketTotalPrice())
                     .products(convertToItemDTOList(basket.getProducts()))

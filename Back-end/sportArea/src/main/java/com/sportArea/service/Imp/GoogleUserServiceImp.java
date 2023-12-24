@@ -4,7 +4,7 @@ import com.sportArea.dao.UserRepository;
 import com.sportArea.entity.Role;
 import com.sportArea.entity.Status;
 import com.sportArea.entity.TypeRegistration;
-import com.sportArea.entity.User;
+import com.sportArea.entity.Customer;
 import com.sportArea.entity.dto.GoogleUserDTO;
 import com.sportArea.exception.GeneralException;
 import com.sportArea.security.JwtTokenProvider;
@@ -20,7 +20,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -40,14 +39,14 @@ public class GoogleUserServiceImp implements GoogleUserService {
     public void saveUserGoogle(GoogleUserDTO googleUser) {
 
         if (googleUser != null) {
-            Optional<User> optionalUser = userRepository.findByEmail(googleUser.getEmail());
+            Optional<Customer> optionalUser = userRepository.findByEmail(googleUser.getEmail());
             if (optionalUser.isPresent()) {
                 logger.info("From GoogleUserServiceImp method -saveUserGoogle- send war message " +
                         "( Email already exists. ({})))", HttpStatus.NOT_FOUND.name());
             } else {
 
-                User user = createUserFromGoogleUser(googleUser);
-                userRepository.save(user);
+                Customer customer = createUserFromGoogleUser(googleUser);
+                userRepository.save(customer);
 
                 logger.info("From UserServiceImp method -save- return new save User from Data Base.");
             }
@@ -66,28 +65,28 @@ public class GoogleUserServiceImp implements GoogleUserService {
         GoogleUserDTO googleUse = createGoogleUserFromOAuth2User(oauth2User);
 
         saveUserGoogle(googleUse);
-        User user = userRepository.findByEmail(googleUse.getEmail()).orElseThrow(
+        Customer customer = userRepository.findByEmail(googleUse.getEmail()).orElseThrow(
                 () -> new UsernameNotFoundException("User doesn't exists"));
-        String token = jwtTokenProvider.createToken(googleUse.getEmail(), googleUse.getRole().name(), user.getUserId());
+        String token = jwtTokenProvider.createToken(googleUse.getEmail(), googleUse.getRole().name(), customer.getUserId());
 
         Map<Object, Object> response = new HashMap<>();
         response.put("email", googleUse.getEmail());
         response.put("token", token);
-        response.put("userId", user.getUserId());
+        response.put("userId", customer.getUserId());
 
         return response;
     }
 
-    public User createUserFromGoogleUser(GoogleUserDTO googleUser) {
-        User user = new User();
-        user.setFirstName(googleUser.getFirstName());
-        user.setLastName(googleUser.getLastName());
-        user.setEmail(googleUser.getEmail());
-        user.setPassword(googleUser.getPassword());
-        user.setRole(googleUser.getRole());
-        user.setStatus(googleUser.getStatus());
-        user.setTypeRegistration(googleUser.getTypeRegistration());
-        return user;
+    public Customer createUserFromGoogleUser(GoogleUserDTO googleUser) {
+        Customer customer = new Customer();
+        customer.setFirstName(googleUser.getFirstName());
+        customer.setLastName(googleUser.getLastName());
+        customer.setEmail(googleUser.getEmail());
+        customer.setPassword(googleUser.getPassword());
+        customer.setRole(googleUser.getRole());
+        customer.setStatus(googleUser.getStatus());
+        customer.setTypeRegistration(googleUser.getTypeRegistration());
+        return customer;
     }
 
     public GoogleUserDTO createGoogleUserFromOAuth2User(OAuth2User oAuth2User) {

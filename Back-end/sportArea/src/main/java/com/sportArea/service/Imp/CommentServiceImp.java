@@ -150,7 +150,7 @@ public class CommentServiceImp implements CommentService {
         return Comment.builder()
                 .message(commentDTO.getMessage())
                 .note(commentDTO.getNote())
-                .user(userService.createUserFromUserDTO(commentDTO.getUserRegistration()))
+                .customer(userService.createUserFromUserDTO(commentDTO.getUserRegistration()))
                 .product(productUAService.createProductFromProductUaDTO(commentDTO.getProductDTO()))
                 .productRating(commentDTO.getProductRating())
                 .build();
@@ -164,7 +164,7 @@ public class CommentServiceImp implements CommentService {
                     .commentId(comment.getCommentId())
                     .message(comment.getMessage())
                     .note(comment.getNote())
-                    .userRegistration(userService.createUserDTOFromUser(comment.getUser()))
+                    .userRegistration(userService.createUserDTOFromUser(comment.getCustomer()))
                     .build();
         } else {
             return CommentDTO
@@ -173,7 +173,7 @@ public class CommentServiceImp implements CommentService {
                     .message(comment.getMessage())
                     .note(comment.getNote())
                     .productRating(comment.getProductRating())
-                    .userRegistration(userService.createUserDTOFromUser(comment.getUser()))
+                    .userRegistration(userService.createUserDTOFromUser(comment.getCustomer()))
                     .productDTO(productUAService.createProductDTOFromProductUA(comment.getProduct()))
                     .build();
         }

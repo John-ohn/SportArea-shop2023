@@ -14,11 +14,11 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
 
 
     @QueryHints(@QueryHint(name = org.hibernate.jpa.QueryHints.HINT_READONLY, value = "true"))
-    @Query("SELECT o FROM Order o LEFT JOIN FETCH o.orderInfo oi LEFT JOIN FETCH o.products WHERE oi.user.userId =:userId")
+    @Query("SELECT o FROM Order o LEFT JOIN FETCH o.orderInfo oi LEFT JOIN FETCH o.products WHERE oi.customer.userId =:userId")
     Optional<Order> findByUserId(@Param("userId") Long userId);
 
     @QueryHints(@QueryHint(name = org.hibernate.jpa.QueryHints.HINT_READONLY, value = "true"))
-    @Query("SELECT DISTINCT o FROM Order o LEFT JOIN FETCH o.orderInfo oi LEFT JOIN FETCH o.products WHERE oi.user.userId =:userId")
+    @Query("SELECT DISTINCT o FROM Order o LEFT JOIN FETCH o.orderInfo oi LEFT JOIN FETCH o.products WHERE oi.customer.userId =:userId")
     List<Order> findAllByUserId(@Param("userId") Long userId);
 
 //    @QueryHints(@QueryHint(name = org.hibernate.jpa.QueryHints.HINT_READONLY, value = "true"))

@@ -20,12 +20,6 @@ public class DeliveryAddress {
     @Column(name = "deliveryId")
     private Long deliveryId;
 
-//    @Column(name = "name")
-//    private String name;
-
-//    @Column(name = "phoneNumber")
-//    private String phoneNumber;
-
     @Column(name = "region")
     private String region;
 
@@ -34,9 +28,5 @@ public class DeliveryAddress {
 
     @Column(name = "department")
     private String department;
-
-//    @ManyToOne
-//    @JoinColumn( name = "userId")
-//    private User user;
 
 }

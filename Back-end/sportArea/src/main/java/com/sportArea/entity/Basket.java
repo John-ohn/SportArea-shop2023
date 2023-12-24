@@ -24,7 +24,7 @@ public class Basket {
 
     @ManyToOne
     @JoinColumn(name = "userId")
-    private User user;
+    private Customer customer;
 
     @Column(name = "productQuantity")
     private Integer productQuantity;
@@ -45,11 +45,11 @@ public class Basket {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Basket basket = (Basket) o;
-        return Objects.equals(basketId, basket.basketId) && Objects.equals(user, basket.user) && Objects.equals(productQuantity, basket.productQuantity) && Objects.equals(basketTotalPrice, basket.basketTotalPrice) && Objects.equals(products, basket.products);
+        return Objects.equals(basketId, basket.basketId) && Objects.equals(customer, basket.customer) && Objects.equals(productQuantity, basket.productQuantity) && Objects.equals(basketTotalPrice, basket.basketTotalPrice) && Objects.equals(products, basket.products);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(basketId, user, productQuantity, basketTotalPrice, products);
+        return Objects.hash(basketId, customer, productQuantity, basketTotalPrice, products);
     }
 }

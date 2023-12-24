@@ -1,12 +1,17 @@
 package com.sportArea.controller;
 
 import com.sportArea.entity.dto.DeliveryAddressDTO;
+import com.sportArea.entity.dto.delivery.DeliveryAddressRequest;
+import com.sportArea.entity.dto.delivery.DeliveryAddressUpdate;
 import com.sportArea.entity.dto.logger.GeneralLogg;
 import com.sportArea.service.DeliveryAddressService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 
 @RestController
 @RequestMapping("/api/v1/delivery/address")
@@ -19,7 +24,7 @@ public class DeliveryAddressController {
     @Autowired
     public DeliveryAddressController(DeliveryAddressService deliveryAddressService, GeneralLogg generalLogg) {
         this.deliveryAddressService = deliveryAddressService;
-        this.generalLogg=generalLogg;
+        this.generalLogg = generalLogg;
     }
 
     @GetMapping("/users/{userId}")
@@ -47,15 +52,18 @@ public class DeliveryAddressController {
         return new ResponseEntity<>("Your delivery address was successful added.", HttpStatus.CREATED);
     }
 
-    @PutMapping
-    public ResponseEntity<String> updateDeliveryAddress(@RequestBody DeliveryAddressDTO deliveryAddressDTO) {
+    @PatchMapping("/{deliveryId}")
+    public ResponseEntity<String> updateDeliveryAddress(@PathVariable("deliveryId") Long deliveryId,
+                                                        @RequestBody DeliveryAddressRequest updateRequest) {
 
-        deliveryAddressService.save(deliveryAddressDTO);
+        DeliveryAddressUpdate deliveryUpdate = deliveryAddressService.createForUpdateRequest(deliveryId, updateRequest);
+
+        deliveryAddressService.validAndUpdateAddress( deliveryUpdate);
 
         generalLogg.getLoggerControllerInfo("DeliveryAddressController",
                 "updateDeliveryAddress",
                 "delivery/address",
-                "message (Your delivery address was successful updated.) and update Delivery Address with deliveryId: "+deliveryAddressDTO.getDeliveryId());
+                "message (Your delivery address was successful updated.) and update Delivery Address with deliveryId: " + deliveryUpdate.getDeliveryId());
 
         return new ResponseEntity<>("Your delivery address was successful updated.", HttpStatus.CREATED);
     }

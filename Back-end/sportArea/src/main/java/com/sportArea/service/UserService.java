@@ -1,6 +1,6 @@
 package com.sportArea.service;
 
-import com.sportArea.entity.User;
+import com.sportArea.entity.Customer;
 import com.sportArea.entity.dto.UserRegistration;
 import com.sportArea.entity.dto.UserDTOUpdate;
 import com.sportArea.entity.dto.UserUpdateRequest;
@@ -15,13 +15,13 @@ public interface UserService {
 
     UserRegistration findById(Long userId);
 
-    User findByIdInUser(Long userId);
+    Customer findByIdInUser(Long userId);
 
     List<UserRegistration> findAll();
 
-    Optional<User> findByEmail(String email);
+    Optional<Customer> findByEmail(String email);
 
-    User findByEmailAndFirstName(String keyWord);
+    Customer findByEmailAndFirstName(String keyWord);
 
     void delete(Long userId);
 
@@ -29,14 +29,16 @@ public interface UserService {
 
     void save(UserRegistration user) throws MessagingException, IOException;
 
-    User createUserFromUserDTO(UserRegistration userRegistration);
+    Customer createUserFromUserDTO(UserRegistration userRegistration);
 
-    UserRegistration createUserDTOFromUser(User user);
+    UserRegistration createUserDTOFromUser(Customer customer);
 
     UserDTOUpdate createUserForUpdate(Long userId, UserUpdateRequest fieldName);
 
      void validAndUpdateUser(@Valid UserDTOUpdate updates);
 
     void updateUserPassword(Long userId, String newPassword, String oldPassword);
+
+    void forgotPassword(String email, int length);
 
 }

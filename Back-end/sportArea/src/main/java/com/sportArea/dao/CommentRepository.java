@@ -16,24 +16,24 @@ import java.util.List;
 public interface CommentRepository extends JpaRepository<Comment,Long> {
 
     @QueryHints(@QueryHint(name = org.hibernate.jpa.QueryHints.HINT_READONLY, value = "true"))
-    @Query("SELECT c FROM Comment c LEFT JOIN FETCH c.user u LEFT JOIN FETCH c.product p")
+    @Query("SELECT c FROM Comment c LEFT JOIN FETCH c.customer u LEFT JOIN FETCH c.product p")
     List<Comment> findAllComment();
 
     @QueryHints(@QueryHint(name = org.hibernate.jpa.QueryHints.HINT_READONLY, value = "true"))
-    @Query("SELECT c FROM Comment c LEFT JOIN FETCH c.user  " +
+    @Query("SELECT c FROM Comment c LEFT JOIN FETCH c.customer  " +
             "LEFT JOIN FETCH c.product WHERE c.note = 'FOR_COMPANY'" )
     List<Comment> findCompanyComments();
 
     @QueryHints(@QueryHint(name = org.hibernate.jpa.QueryHints.HINT_READONLY, value = "true"))
     @Query("SELECT c FROM Comment c " +
-            "LEFT JOIN FETCH c.user u " +
+            "LEFT JOIN FETCH c.customer u " +
             "LEFT JOIN FETCH c.product " +
             "WHERE u.userId =:Id " )
     List<Comment> findAllUserComments(@Param("Id") Long userId);
 
     @QueryHints(@QueryHint(name = org.hibernate.jpa.QueryHints.HINT_READONLY, value = "true"))
     @Query("SELECT c FROM Comment c " +
-            "LEFT JOIN FETCH c.user " +
+            "LEFT JOIN FETCH c.customer " +
             "LEFT JOIN FETCH c.product p " +
             "WHERE p.productId =:productId")
     List<Comment> findAllProductComments(@Param("productId") Long productId);

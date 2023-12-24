@@ -19,7 +19,7 @@ public interface BasketRepository extends JpaRepository<Basket, Long> {
 
 
     @QueryHints(@QueryHint(name = org.hibernate.jpa.QueryHints.HINT_READONLY, value = "true"))
-    @Query("SELECT b FROM Basket b left join fetch b.user left join fetch b.products WHERE b.user.userId=:userId")
+    @Query("SELECT b FROM Basket b left join fetch b.customer left join fetch b.products WHERE b.customer.userId=:userId")
     Optional<Basket> findByUserId(@Param("userId") Long guestId);
 
 
@@ -27,7 +27,7 @@ public interface BasketRepository extends JpaRepository<Basket, Long> {
     @Modifying
     @Query("UPDATE Basket b SET " +
             "b.basketTotalPrice=:totalPrice," +
-            " b.productQuantity=:quantity WHERE b.user.userId=:userId")
+            " b.productQuantity=:quantity WHERE b.customer.userId=:userId")
      void update(@Param("totalPrice")BigDecimal totalPrice,
                    @Param("quantity") Integer quantity,
                    @Param("userId") Long userId);

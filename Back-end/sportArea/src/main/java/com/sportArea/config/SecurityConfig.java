@@ -72,7 +72,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         "/api/v1/users/**",
                         "/api/v1/delivery/address/**").permitAll()
                 .antMatchers(HttpMethod.PATCH,
-                        "/api/v1/users/**").permitAll()
+                        "/api/v1/users/**",
+                        "/api/v1/delivery/address/**").permitAll()
                 .antMatchers(HttpMethod.DELETE, "/api/v1/users/**",
                         "/api/v1/products/**",
                         "/api/v1/orders/**",
@@ -85,8 +86,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 //                .antMatchers(HttpMethod.DELETE, "/user/**").hasAuthority(Permission.DEVELOPERS_WRITE.getPermission())
                 .anyRequest()
                 .authenticated()
-                .and()
-                .apply(jwtConfigurer)
+//                .and()
+//                .apply(jwtConfigurer)
                 .and()
                 .oauth2Login()
                 .authorizationEndpoint()
