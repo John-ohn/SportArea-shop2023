@@ -1,15 +1,9 @@
 package com.sportArea.controller;
 
-import com.sportArea.entity.Role;
-import com.sportArea.entity.User;
-import com.sportArea.entity.dto.GoogleUserDTO;
-import com.sportArea.entity.dto.UserDTO;
+import com.sportArea.entity.dto.logger.GeneralLogg;
 import com.sportArea.security.JwtTokenProvider;
 
 import com.sportArea.service.GoogleUserService;
-import com.sportArea.service.UserService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,10 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
 
-import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 @RestController
 public class OAuth2CallbackController {
@@ -34,7 +25,9 @@ public class OAuth2CallbackController {
 
     @Autowired
     private GoogleUserService googleUserService;
-    Logger logger = LoggerFactory.getLogger(OAuth2CallbackController.class);
+
+    @Autowired
+    private  GeneralLogg generalLogg;
 
 
     @GetMapping("/")
@@ -66,15 +59,26 @@ public class OAuth2CallbackController {
     }
 
     @GetMapping("/oauth2/authorization/google")
-    public ResponseEntity<?> user(@AuthenticationPrincipal OAuth2User principal) {
-        String reactHomePageUrl = "http://localhost:3000/";
+    public ResponseEntity<?> googleAuthorization(@AuthenticationPrincipal OAuth2User principal) {
+//        String reactHomePageUrl = "http://localhost:3000";
 
-        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(reactHomePageUrl);
+//        generalLogg.getLoggerControllerInfo("OAuth2CallbackController",
+//                "googleAuthorization",
+//                "/oauth2/authorization/google",
+//                "message (Try get OAuth2User.)");
+
+//        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(reactHomePageUrl);
 
         Map<Object,Object> response = googleUserService.getJwtTokenFromGoogle(principal);
 
-//        return ResponseEntity.ok(response);
-        return ResponseEntity.status(HttpStatus.FOUND)
-                .location(builder.queryParam("jwt", response).build().toUri()).build();
+        generalLogg.getLoggerControllerInfo("OAuth2CallbackController",
+                "googleAuthorization",
+                "/oauth2/authorization/google",
+                "JWT Token from google authorization form. And redirect on home page."+response.toString());
+
+        return ResponseEntity.ok("JWT Token");
+//
+//        return ResponseEntity.status(HttpStatus.FOUND)
+//                .location(builder.queryParam("jwt", response).build().toUri()).build();
     }
 }

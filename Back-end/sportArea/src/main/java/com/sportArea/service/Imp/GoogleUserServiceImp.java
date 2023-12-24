@@ -4,7 +4,7 @@ import com.sportArea.dao.UserRepository;
 import com.sportArea.entity.Role;
 import com.sportArea.entity.Status;
 import com.sportArea.entity.TypeRegistration;
-import com.sportArea.entity.User;
+import com.sportArea.entity.Customer;
 import com.sportArea.entity.dto.GoogleUserDTO;
 import com.sportArea.exception.GeneralException;
 import com.sportArea.security.JwtTokenProvider;
@@ -13,6 +13,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
@@ -38,14 +39,14 @@ public class GoogleUserServiceImp implements GoogleUserService {
     public void saveUserGoogle(GoogleUserDTO googleUser) {
 
         if (googleUser != null) {
-            Optional<User> optionalUser = userRepository.findByEmail(googleUser.getEmail());
+            Optional<Customer> optionalUser = userRepository.findByEmail(googleUser.getEmail());
             if (optionalUser.isPresent()) {
                 logger.info("From GoogleUserServiceImp method -saveUserGoogle- send war message " +
                         "( Email already exists. ({})))", HttpStatus.NOT_FOUND.name());
             } else {
 
-                User user = createUserFromGoogleUser(googleUser);
-                userRepository.save(user);
+                Customer customer = createUserFromGoogleUser(googleUser);
+                userRepository.save(customer);
 
                 logger.info("From UserServiceImp method -save- return new save User from Data Base.");
             }
@@ -64,26 +65,28 @@ public class GoogleUserServiceImp implements GoogleUserService {
         GoogleUserDTO googleUse = createGoogleUserFromOAuth2User(oauth2User);
 
         saveUserGoogle(googleUse);
-
-        String token = jwtTokenProvider.createToken(googleUse.getEmail(), googleUse.getRole().name());
+        Customer customer = userRepository.findByEmail(googleUse.getEmail()).orElseThrow(
+                () -> new UsernameNotFoundException("User doesn't exists"));
+        String token = jwtTokenProvider.createToken(googleUse.getEmail(), googleUse.getRole().name(), customer.getUserId());
 
         Map<Object, Object> response = new HashMap<>();
         response.put("email", googleUse.getEmail());
         response.put("token", token);
+        response.put("userId", customer.getUserId());
 
         return response;
     }
 
-    public User createUserFromGoogleUser(GoogleUserDTO googleUser) {
-        User user = new User();
-        user.setFirstName(googleUser.getFirstName());
-        user.setLastName(googleUser.getLastName());
-        user.setEmail(googleUser.getEmail());
-        user.setPassword(googleUser.getPassword());
-        user.setRole(googleUser.getRole());
-        user.setStatus(googleUser.getStatus());
-        user.setTypeRegistration(googleUser.getTypeRegistration());
-        return user;
+    public Customer createUserFromGoogleUser(GoogleUserDTO googleUser) {
+        Customer customer = new Customer();
+        customer.setFirstName(googleUser.getFirstName());
+        customer.setLastName(googleUser.getLastName());
+        customer.setEmail(googleUser.getEmail());
+        customer.setPassword(googleUser.getPassword());
+        customer.setRole(googleUser.getRole());
+        customer.setStatus(googleUser.getStatus());
+        customer.setTypeRegistration(googleUser.getTypeRegistration());
+        return customer;
     }
 
     public GoogleUserDTO createGoogleUserFromOAuth2User(OAuth2User oAuth2User) {
@@ -94,8 +97,8 @@ public class GoogleUserServiceImp implements GoogleUserService {
         GoogleUserDTO googleUse = new GoogleUserDTO();
         googleUse.setEmail(oAuth2User.getAttribute("email"));
         googleUse.setPassword(passwordEncoder.encode(passwordStub));
-        googleUse.setFirstName(mapFirstLastName.get("FirstName"));
-        googleUse.setLastName(mapFirstLastName.get("LastName"));
+        googleUse.setFirstName(mapFirstLastName.get("firstName"));
+        googleUse.setLastName(mapFirstLastName.get("lastName"));
         googleUse.setRole(Role.ROLE_USER);
         googleUse.setStatus(Status.ACTIVE);
         googleUse.setTypeRegistration(TypeRegistration.GOOGLE);
@@ -114,7 +117,14 @@ public class GoogleUserServiceImp implements GoogleUserService {
                 .toString()
                 .split(" ");
 
-        return Map.of("FirstName", firstLastName[0],
-                "LastName", firstLastName[1]);
+        Map<String, String> googleAccount = new HashMap<>();
+        googleAccount.put("firstName", firstLastName[0]);
+
+        if (firstLastName.length <= 1) {
+            return googleAccount;
+        } else {
+            googleAccount.put("lastName", firstLastName[1]);
+            return googleAccount;
+        }
     }
 }

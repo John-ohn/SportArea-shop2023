@@ -1,15 +1,17 @@
 package com.sportArea.entity;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
 @Entity
 @Table(name = "Basket")
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -20,10 +22,34 @@ public class Basket {
     @Column(name = "basketId")
     private Long basketId;
 
-    @Column(name = "guestId")
-    private Long guestId;
+    @ManyToOne
+    @JoinColumn(name = "userId")
+    private Customer customer;
 
-    @ManyToOne()
-    @JoinColumn(name = "productId")
-    private ProductUA productUA;
+    @Column(name = "productQuantity")
+    private Integer productQuantity;
+
+    @Column(name = "basketTotalPrice")
+    private BigDecimal basketTotalPrice;
+
+    @OneToMany(mappedBy = "basket", cascade = CascadeType.ALL)
+    private List<BasketItem> products= new ArrayList<>();
+
+    public void addBasketItemToBasket(BasketItem basketItem){
+        basketItem.setBasket(this);
+        this.products.add(basketItem);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Basket basket = (Basket) o;
+        return Objects.equals(basketId, basket.basketId) && Objects.equals(customer, basket.customer) && Objects.equals(productQuantity, basket.productQuantity) && Objects.equals(basketTotalPrice, basket.basketTotalPrice) && Objects.equals(products, basket.products);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(basketId, customer, productQuantity, basketTotalPrice, products);
+    }
 }

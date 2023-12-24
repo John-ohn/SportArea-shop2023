@@ -16,6 +16,8 @@ public class BlogDTO {
 
     private String title;
 
+    private String subTitle;
+
     private String text;
 
     private String urlMainImage;

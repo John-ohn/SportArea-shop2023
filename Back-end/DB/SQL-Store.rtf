@@ -2,10 +2,10 @@
 \cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fmodern\fcharset0 Courier;}
 {\colortbl;\red255\green255\blue255;\red195\green123\blue90;\red23\green23\blue26;\red174\green176\blue183;
 \red185\green101\blue173;\red38\green157\blue169;\red89\green158\blue96;\red195\green123\blue90;\red23\green23\blue26;
-\red174\green176\blue183;\red185\green101\blue173;\red38\green157\blue169;}
+\red174\green176\blue183;\red38\green157\blue169;\red89\green158\blue96;}
 {\*\expandedcolortbl;;\csgenericrgb\c76471\c48235\c35294;\csgenericrgb\c9020\c9020\c10196;\csgenericrgb\c68235\c69020\c71765;
 \csgenericrgb\c72549\c39608\c67843;\csgenericrgb\c14902\c61569\c66275;\csgenericrgb\c34902\c61961\c37647;\csgenericrgb\c76471\c48235\c35294;\csgenericrgb\c9020\c9020\c10196;
-\csgenericrgb\c68235\c69020\c71765;\csgenericrgb\c72549\c39608\c67843;\csgenericrgb\c14902\c61569\c66275;}
+\csgenericrgb\c68235\c69020\c71765;\csgenericrgb\c14902\c61569\c66275;\csgenericrgb\c34902\c61961\c37647;}
 \paperw11900\paperh16840\margl1440\margr1440\vieww11520\viewh8400\viewkind0
 \pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
 
@@ -101,15 +101,163 @@ values \cf4 (\cf6 1\cf4 , \cf7 'Tery'\cf4 , \cf7 'Dre'\cf4 , \cf7 'TD'\cf4 , \cf
     \cf2 FOREIGN KEY \cf4 (\cf5 productId\cf4 ) \cf2 REFERENCES \cf4 ProductUA(\cf5 productId\cf4 )\
 );\
 \
-\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
-\cf8 \cb9 CREATE TABLE \cf10 Blog(\
-    \cf11 blogId \cf8 BIGINT NOT NULL AUTO_INCREMENT\cf10 ,\
-    \cf11 title  \cf8 VARCHAR\cf10 (\cf12 110\cf10 ) \cf8 NOT NULL\cf10 ,\
-    \cf11 text  \cf8 TEXT NOT NULL\cf10 ,\
-    \cf11 urlMainImage \cf8 VARCHAR\cf10 (\cf12 100\cf10 ) \cf8 NOT NULL\cf10 ,\
-    \cf8 PRIMARY KEY \cf10 (\cf11 blogId\cf10 )\
+\cf2 CREATE TABLE \cf4 Blog(\
+    \cf5 blogId \cf2 BIGINT NOT NULL AUTO_INCREMENT\cf4 ,\
+    \cf5 title  \cf2 VARCHAR\cf4 (\cf6 110\cf4 ) \cf2 NOT NULL\cf4 ,\
+    \cf5 text  \cf2 TEXT NOT NULL\cf4 ,\
+    \cf5 urlMainImage \cf2 VARCHAR\cf4 (\cf6 100\cf4 ) \cf2 NOT NULL\cf4 ,\
+    \cf2 PRIMARY KEY \cf4 (\cf5 blogId\cf4 )\
 );\
+\
+_________________________________________________________\
+\pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
+\cf8 \cb9 create table if not exists \cf10 Blog\
+(\
+    blogId       \cf8 bigint auto_increment\
+        primary key\cf10 ,\
+    title        \cf8 varchar\cf10 (\cf11 110\cf10 ) \cf8 not null\cf10 ,\
+    \cf8 text         text         not null\cf10 ,\
+    urlMainImage \cf8 varchar\cf10 (\cf11 200\cf10 ) \cf8 not null\
+\cf10 );\
+\
+\cf8 create table if not exists \cf10 Guest\
+(\
+    guestId \cf8 bigint                           not null\
+        primary key\cf10 ,\
+    \cf8 role    varchar\cf10 (\cf11 10\cf10 ) \cf8 default \cf12 'ROLE_GUEST' \cf8 not null\
+\cf10 );\
+\
+\cf8 create table if not exists \cf10 Ordering\
+(\
+    orderId       \cf8 bigint auto_increment\
+        primary key\cf10 ,\
+    firstName     \cf8 varchar\cf10 (\cf11 45\cf10 )  \cf8 not null\cf10 ,\
+    lastName      \cf8 varchar\cf10 (\cf11 45\cf10 )  \cf8 not null\cf10 ,\
+    email         \cf8 varchar\cf10 (\cf11 100\cf10 ) \cf8 null\cf10 ,\
+    phoneNumber   \cf8 varchar\cf10 (\cf11 13\cf10 )  \cf8 null\cf10 ,\
+    paymentMethod \cf8 varchar\cf10 (\cf11 45\cf10 )  \cf8 not null\cf10 ,\
+    delivery      \cf8 varchar\cf10 (\cf11 45\cf10 )  \cf8 not null\cf10 ,\
+    amount        \cf8 int          null\cf10 ,\
+    orderDate     \cf8 datetime     not null\cf10 ,\
+    userId        \cf8 bigint       null\cf10 ,\
+    productId     \cf8 bigint       not null\
+\cf10 );\
+\
+\cf8 create table if not exists \cf10 ProductUA\
+(\
+    productId        \cf8 bigint auto_increment\
+        primary key\cf10 ,\
+    productName      \cf8 varchar\cf10 (\cf11 100\cf10 )         \cf8 not null\cf10 ,\
+    brands           \cf8 varchar\cf10 (\cf11 45\cf10 )          \cf8 not null\cf10 ,\
+    type             \cf8 varchar\cf10 (\cf11 45\cf10 )          \cf8 not null\cf10 ,\
+    subtype          \cf8 varchar\cf10 (\cf11 45\cf10 )          \cf8 not null\cf10 ,\
+    formOfIssue      \cf8 varchar\cf10 (\cf11 45\cf10 )          \cf8 not null\cf10 ,\
+    producingCountry \cf8 varchar\cf10 (\cf11 45\cf10 )          \cf8 not null\cf10 ,\
+    taste            \cf8 varchar\cf10 (\cf11 45\cf10 )          \cf8 not null\cf10 ,\
+    price            \cf8 decimal              not null\cf10 ,\
+    promotionPrice   \cf8 decimal              null\cf10 ,\
+    currency         \cf8 varchar\cf10 (\cf11 2\cf10 )           \cf8 not null\cf10 ,\
+    weight           \cf8 varchar\cf10 (\cf11 50\cf10 )          \cf8 not null\cf10 ,\
+    article          \cf8 bigint               not null\cf10 ,\
+    productAmount    \cf8 int                  not null\cf10 ,\
+    \cf8 description      varchar\cf10 (\cf11 500\cf10 )         \cf8 not null\cf10 ,\
+    productConsist   \cf8 varchar\cf10 (\cf11 400\cf10 )         \cf8 not null\cf10 ,\
+    rating           \cf8 float      default \cf11 0 \cf8 null\cf10 ,\
+    \cf8 status           varchar\cf10 (\cf11 45\cf10 )          \cf8 null\cf10 ,\
+    promotion        \cf8 tinyint\cf10 (\cf11 1\cf10 ) \cf8 default \cf11 0 \cf8 null\cf10 ,\
+    numberOfOrders   \cf8 int        default \cf11 0 \cf8 null\cf10 ,\
+    dateCreation     \cf8 datetime             null\cf10 ,\
+    urlImage         \cf8 varchar\cf10 (\cf11 200\cf10 )         \cf8 not null\
+\cf10 );\
+\
+\cf8 create table if not exists \cf10 TargetCategory\
+(\
+    categoryId    \cf8 bigint auto_increment\
+        primary key\cf10 ,\
+    nameCategory  \cf8 varchar\cf10 (\cf11 25\cf10 )  \cf8 not null\cf10 ,\
+    translateName \cf8 varchar\cf10 (\cf11 25\cf10 )  \cf8 not null\cf10 ,\
+    iconHttp      \cf8 varchar\cf10 (\cf11 100\cf10 ) \cf8 null\
+\cf10 );\
+\
+\cf8 create table if not exists User\
+\cf10 (\
+    userId           \cf8 bigint auto_increment\
+        primary key\cf10 ,\
+    firstName        \cf8 varchar\cf10 (\cf11 45\cf10 )  \cf8 not null\cf10 ,\
+    lastName         \cf8 varchar\cf10 (\cf11 45\cf10 )  \cf8 not null\cf10 ,\
+    email            \cf8 varchar\cf10 (\cf11 100\cf10 ) \cf8 not null\cf10 ,\
+    phoneNumber      \cf8 varchar\cf10 (\cf11 13\cf10 )  \cf8 null\cf10 ,\
+    \cf8 password         varchar\cf10 (\cf11 70\cf10 )  \cf8 null\cf10 ,\
+    \cf8 role             varchar\cf10 (\cf11 15\cf10 )  \cf8 not null\cf10 ,\
+    \cf8 status           varchar\cf10 (\cf11 15\cf10 )  \cf8 not null\cf10 ,\
+    typeRegistration \cf8 varchar\cf10 (\cf11 20\cf10 )  \cf8 not null\
+\cf10 );\
+\
+\cf8 create table if not exists \cf10 Basket\
+(\
+    basketId        \cf8 bigint auto_increment\
+        primary key\cf10 ,\
+    guestId         \cf8 bigint        null\cf10 ,\
+    productId       \cf8 bigint        not null\cf10 ,\
+    userId          \cf8 bigint        null\cf10 ,\
+    productQuantity \cf8 int default \cf11 1 \cf8 not null\cf10 ,\
+    \cf8 constraint \cf10 guestId_fk\
+        \cf8 foreign key \cf10 (guestId) \cf8 references \cf10 Guest (guestId),\
+    \cf8 constraint \cf10 product_fk\
+        \cf8 foreign key \cf10 (productId) \cf8 references \cf10 ProductUA (productId),\
+    \cf8 constraint \cf10 user_fk\
+        \cf8 foreign key \cf10 (userId) \cf8 references User \cf10 (userId)\
+);\
+\
+\cf8 create table if not exists Comment\
+\cf10 (\
+    commentId     \cf8 bigint auto_increment\
+        primary key\cf10 ,\
+    message       \cf8 varchar\cf10 (\cf11 200\cf10 )                      \cf8 not null\cf10 ,\
+    note          \cf8 varchar\cf10 (\cf11 20\cf10 ) \cf8 default \cf12 'FOR_PRODUCT' \cf8 not null\cf10 ,\
+    userId        \cf8 bigint                            not null\cf10 ,\
+    productId     \cf8 bigint                            null\cf10 ,\
+    productRating \cf8 float                             null\cf10 ,\
+    \cf8 constraint \cf10 Comment_ibfk_1\
+        \cf8 foreign key \cf10 (userId) \cf8 references User \cf10 (userId),\
+    \cf8 constraint \cf10 Comment_ibfk_2\
+        \cf8 foreign key \cf10 (productId) \cf8 references \cf10 ProductUA (productId)\
+);\
+\
+\cf8 create index \cf10 productId\
+    \cf8 on Comment \cf10 (productId);\
+\
+\cf8 create index \cf10 userId\
+    \cf8 on Comment \cf10 (userId);\
+\
+\cf8 create table if not exists \cf10 DeliveryAddress\
+(\
+    deliveryId  \cf8 bigint      not null\
+        primary key\cf10 ,\
+    \cf8 name        varchar\cf10 (\cf11 35\cf10 ) \cf8 not null\cf10 ,\
+    phoneNumber \cf8 varchar\cf10 (\cf11 13\cf10 ) \cf8 not null\cf10 ,\
+    region      \cf8 varchar\cf10 (\cf11 30\cf10 ) \cf8 not null\cf10 ,\
+    city        \cf8 varchar\cf10 (\cf11 30\cf10 ) \cf8 not null\cf10 ,\
+    department  \cf8 varchar\cf10 (\cf11 50\cf10 ) \cf8 not null\cf10 ,\
+    userId      \cf8 bigint      null\cf10 ,\
+    \cf8 constraint \cf10 DeliveryAddress_ibfk_1\
+        \cf8 foreign key \cf10 (userId) \cf8 references User \cf10 (userId)\
+);\
+\
+\cf8 create index \cf10 userId\
+    \cf8 on \cf10 DeliveryAddress (userId);\
+\
+\cf8 create table if not exists \cf10 costume_email_table\
+(\
+    id    \cf8 bigint auto_increment\
+        primary key\cf10 ,\
+    email \cf8 varchar\cf10 (\cf11 255\cf10 ) \cf8 null\cf10 ,\
+    \cf8 name  varchar\cf10 (\cf11 255\cf10 ) \cf8 null\
+\cf10 );\
+\
+\
 \pard\tx566\tx1133\tx1700\tx2267\tx2834\tx3401\tx3968\tx4535\tx5102\tx5669\tx6236\tx6803\pardirnatural\partightenfactor0
 \cf4 \cb3 \
+\
 \
 }

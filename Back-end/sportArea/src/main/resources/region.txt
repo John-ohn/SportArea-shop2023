@@ -1,0 +1,48 @@
+AreaDescription:Івано-Франківська область
+Area:dcaadac6-4b33-11e4-ab6d-005056801329
+AreaDescription:Волинська область
+Area:dcaad676-4b33-11e4-ab6d-005056801329
+AreaDescription:Вінницька область
+Area:71508129-9b87-11de-822f-000c2965ae0e
+AreaDescription:Дніпропетровська область
+Area:7150812b-9b87-11de-822f-000c2965ae0e
+AreaDescription:Донецька область
+Area:7150812c-9b87-11de-822f-000c2965ae0e
+AreaDescription:Житомирська область
+Area:7150812d-9b87-11de-822f-000c2965ae0e
+AreaDescription:Закарпатська область
+Area:7150812e-9b87-11de-822f-000c2965ae0e
+AreaDescription:Запорізька область
+Area:7150812f-9b87-11de-822f-000c2965ae0e
+AreaDescription:Київська область
+Area:71508131-9b87-11de-822f-000c2965ae0e
+AreaDescription:Кіровоградська область
+Area:71508132-9b87-11de-822f-000c2965ae0e
+AreaDescription:Луганська область
+Area:71508133-9b87-11de-822f-000c2965ae0e
+AreaDescription:Львівська область
+Area:71508134-9b87-11de-822f-000c2965ae0e
+AreaDescription:Миколаївська область
+Area:71508135-9b87-11de-822f-000c2965ae0e
+AreaDescription:Одеська область
+Area:71508136-9b87-11de-822f-000c2965ae0e
+AreaDescription:Полтавська область
+Area:71508137-9b87-11de-822f-000c2965ae0e
+AreaDescription:Рівненська область
+Area:71508138-9b87-11de-822f-000c2965ae0e
+AreaDescription:Сумська область
+Area:71508139-9b87-11de-822f-000c2965ae0e
+AreaDescription:Тернопільська область
+Area:7150813a-9b87-11de-822f-000c2965ae0e
+AreaDescription:Харківська область
+Area:7150813b-9b87-11de-822f-000c2965ae0e
+AreaDescription:Херсонська область
+Area:7150813c-9b87-11de-822f-000c2965ae0e
+AreaDescription:Хмельницька область
+Area:7150813d-9b87-11de-822f-000c2965ae0e
+AreaDescription:Черкаська область
+Area:7150813e-9b87-11de-822f-000c2965ae0e
+AreaDescription:Чернівецька область
+Area:7150813f-9b87-11de-822f-000c2965ae0e
+AreaDescription:Чернігівська область
+Area:71508140-9b87-11de-822f-000c2965ae0e

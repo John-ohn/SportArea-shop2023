@@ -1,6 +1,6 @@
 package com.sportArea.security;
 
-import com.sportArea.entity.User;
+import com.sportArea.entity.Customer;
 import com.sportArea.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,11 +25,11 @@ public class UserDetailsServiceImp implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userService.findByEmail(username).orElseThrow(
+        Customer customer = userService.findByEmail(username).orElseThrow(
                 () -> new UsernameNotFoundException("User with this email doesn't exists, you can't get Authentication ")
         );
         logger.info("From UserDetailsServiceImp method -loadUserByUsername- check if email exists: {} ", username);
 
-        return SecurityUser.fromUser(user);
+        return SecurityUser.fromUser(customer);
     }
 }

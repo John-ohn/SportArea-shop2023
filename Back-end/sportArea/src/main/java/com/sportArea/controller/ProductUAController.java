@@ -2,10 +2,8 @@ package com.sportArea.controller;
 
 
 import com.sportArea.entity.dto.ProductUaDTO;
+import com.sportArea.entity.dto.logger.GeneralLogg;
 import com.sportArea.service.ProductUAService;
-import com.sportArea.service.TargetCategoryService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -17,26 +15,37 @@ import java.util.List;
 @RequestMapping("/api/v1/products")
 public class ProductUAController {
 
-    Logger logger = LoggerFactory.getLogger(ProductUAController.class);
+
+    private final GeneralLogg generalLogg;
 
     private final ProductUAService productService;
 
     @Autowired
-    public ProductUAController(ProductUAService productService, TargetCategoryService targetCategoryService) {
+    public ProductUAController(ProductUAService productService, GeneralLogg generalLogg) {
         this.productService = productService;
+        this.generalLogg = generalLogg;
     }
 
     @GetMapping
     public List<ProductUaDTO> findAll() {
         List<ProductUaDTO> productList = productService.findAll();
-        logger.info("From ProductUAController method -findAll- /product/list. Return List of ProductDTO");
+
+        generalLogg.getLoggerControllerInfo("ProductUAController",
+                "findAll",
+                "/products",
+                "List of Product");
+
         return productList;
     }
 
     @GetMapping("/{productId}")
     public ProductUaDTO getProductById(@PathVariable("productId") Long productId) {
         ProductUaDTO productDTO = productService.findById(productId);
-        logger.info("From ProductUAController method -getProductById- /product/{productId}. Return ProductUA");
+
+        generalLogg.getLoggerControllerInfo("ProductUAController",
+                "getProductById",
+                "/products/{productId}",
+                "Product with productId: " + productId);
 
         return productDTO;
     }
@@ -44,6 +53,11 @@ public class ProductUAController {
     @PostMapping
     public ResponseEntity<String> addProductUA(@RequestBody ProductUaDTO product) {
         productService.save(product);
+
+        generalLogg.getLoggerControllerInfo("ProductUAController",
+                "addProductUA",
+                "/products",
+                "message (Product was added successfully.) and save new Product.");
 
         return ResponseEntity.ok("Product was added successfully.");
     }
@@ -53,24 +67,12 @@ public class ProductUAController {
                                              @RequestParam("searchLocation") String searchLocation) {
 
         List<ProductUaDTO> productList = productService.searchProducts(keyWord, searchLocation);
-        logger.info("From ProductUAController method -searchAndSortKeyWordDescriptionFromDataBase- /product/searchProduct. Return List of Products");
+
+        generalLogg.getLoggerControllerInfo("ProductUAController",
+                "searchProducts",
+                "/search",
+                "List of Products by keyWord: " + keyWord + ". searchLocation: " + searchLocation);
+
         return productList;
     }
-
-//    @GetMapping("/search")
-//    public List<ProductUaDTO> searchAndSortKeyWordDescriptionFromDataBase(@RequestParam("keyWord") String keyWord,
-//                                                                          @RequestParam("sortBy") String sortBy,
-//                                                                          @RequestParam("searchLocation") String searchLocation,
-//                                                                          @RequestParam("priceBetween") String priceBetween,
-//                                                                          @RequestParam("lowPrice") BigDecimal lowPrice,
-//                                                                          @RequestParam("highPrice") BigDecimal highPrice) {
-//
-//        List<ProductUaDTO> productList = productService.searchAndSort(keyWord, sortBy, searchLocation, priceBetween, lowPrice, highPrice);
-//        logger.info("From ProductUAController method -searchAndSortKeyWordDescriptionFromDataBase- /product/searchProduct. Return List of Products");
-//        return productList;
-//    }
-
-
-
-
 }

@@ -19,7 +19,7 @@ public class WishesList {
 
     @ManyToOne
     @JoinColumn(name = "userId")
-    private User user;
+    private Customer customer;
 
     @ManyToOne
     @JoinColumn(name = "productId")

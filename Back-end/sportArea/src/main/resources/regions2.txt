@@ -1,0 +1,48 @@
+Area:Івано-Франківська область
+AreaDescription:dcaadac6-4b33-11e4-ab6d-005056801329
+Area:Волинська область
+AreaDescription:dcaad676-4b33-11e4-ab6d-005056801329
+Area:Вінницька область
+AreaDescription:dcaad5a7-4b33-11e4-ab6d-005056801329
+Area:Дніпропетровська область
+AreaDescription:dcaad735-4b33-11e4-ab6d-005056801329
+Area:Донецька область
+AreaDescription:dcaad81c-4b33-11e4-ab6d-005056801329
+Area:Житомирська область
+AreaDescription:dcaad8fb-4b33-11e4-ab6d-005056801329
+Area:Закарпатська область
+AreaDescription:dcaad993-4b33-11e4-ab6d-005056801329
+Area:Запорізька область
+AreaDescription:dcaada26-4b33-11e4-ab6d-005056801329
+Area:Київська область
+AreaDescription:dcaadb64-4b33-11e4-ab6d-005056801329
+Area:Кіровоградська область
+AreaDescription:dcaadbf9-4b33-11e4-ab6d-005056801329
+Area:Луганська область
+AreaDescription:dcaadc91-4b33-11e4-ab6d-005056801329
+Area:Львівська область
+AreaDescription:dcaadd3a-4b33-11e4-ab6d-005056801329
+Area:Миколаївська область
+AreaDescription:dcaaddd7-4b33-11e4-ab6d-005056801329
+Area:Одеська область
+AreaDescription:dcaade6d-4b33-11e4-ab6d-005056801329
+Area:Полтавська область
+AreaDescription:dcaadf02-4b33-11e4-ab6d-005056801329
+Area:Рівненська область
+AreaDescription:dcaadfa0-4b33-11e4-ab6d-005056801329
+Area:Сумська область
+AreaDescription:dcaae036-4b33-11e4-ab6d-005056801329
+Area:Тернопільська область
+AreaDescription:dcaae303-4b33-11e4-ab6d-005056801329
+Area:Харківська область
+AreaDescription:dcaae3a1-4b33-11e4-ab6d-005056801329
+Area:Херсонська область
+AreaDescription:dcaae44b-4b33-11e4-ab6d-005056801329
+Area:Хмельницька область
+AreaDescription:dcaae4e5-4b33-11e4-ab6d-005056801329
+Area:Черкаська область
+AreaDescription:dcaae57c-4b33-11e4-ab6d-005056801329
+Area:Чернівецька область
+AreaDescription:dcaae60e-4b33-11e4-ab6d-005056801329
+Area:Чернігівська область
+AreaDescription:dcaae6a8-4b33-11e4-ab6d-005056801329
