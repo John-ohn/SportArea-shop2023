@@ -1,10 +1,8 @@
 package com.sportArea.controller;
 
-import com.sportArea.entity.Blog;
 import com.sportArea.entity.dto.BlogDTO;
+import com.sportArea.entity.dto.logger.GeneralLogg;
 import com.sportArea.service.BlogService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,19 +16,23 @@ import java.util.List;
 @RequestMapping("/api/v1/blogs")
 public class BlogController {
 
-    Logger logger = LoggerFactory.getLogger(BlogController.class);
+    private final GeneralLogg generalLogg;
     private final BlogService blogService;
 
     @Autowired
-    public BlogController(BlogService blogService) {
+    public BlogController(BlogService blogService, GeneralLogg generalLogg) {
         this.blogService = blogService;
+        this.generalLogg = generalLogg;
     }
 
     @GetMapping
     public List<BlogDTO> findAll() {
         List<BlogDTO> blogList = blogService.findAll();
 
-        logger.info("From BlogController method -findAll- /blog/list. Return List of Blog");
+        generalLogg.getLoggerControllerInfo("BlogController",
+                "findAll",
+                "/blog/list",
+                "List of Blog");
 
         return blogList;
     }
@@ -38,7 +40,12 @@ public class BlogController {
     @GetMapping("/{blogId}")
     public BlogDTO findById(@PathVariable("blogId") Long blogId) {
         BlogDTO blog = blogService.findById(blogId);
-        logger.info("From BlogController method -findById- /blog/{blogId}. Return Blog");
+
+        generalLogg.getLoggerControllerInfo("BlogController",
+                "findById",
+                "/blog/{blogId}",
+                "Blog with id" + blogId);
+
         return blog;
     }
 

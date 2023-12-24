@@ -9,8 +9,12 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 
+import javax.validation.ConstraintViolation;
+import javax.validation.ConstraintViolationException;
 import java.sql.Timestamp;
 import java.util.Objects;
+import java.util.Optional;
+import java.util.Set;
 
 @ControllerAdvice
 public class ValidExceptionHandler {
@@ -27,6 +31,24 @@ public class ValidExceptionHandler {
                 userErrorResponse.getMessage());
 
         return new ResponseEntity<>(userErrorResponse, HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler
+    public ResponseEntity<ErrorResponse> handlerConstraintViolationException(ConstraintViolationException exc) {
+        ErrorResponse userErrorResponse = new ErrorResponse();
+        userErrorResponse.setStatus(HttpStatus.BAD_REQUEST.value());
+
+        //Take error message from ConstraintViolationException (Set<ConstraintViolation<?>> constraintViolations)
+        Set<ConstraintViolation<?>> violations = exc.getConstraintViolations();
+        Optional<String> message = violations.stream().map(ConstraintViolation::getMessage).findFirst();
+
+        userErrorResponse.setMessage(Objects.requireNonNull(message.orElse(exc.getMessage())));
+        userErrorResponse.setTimeStamp(new Timestamp(System.currentTimeMillis()));
+        logger.warn("From ValidExceptionHandler method -handlerConstraintViolationException- send message error ({})",
+                userErrorResponse.getMessage());
+
+        return new ResponseEntity<>(userErrorResponse, HttpStatus.BAD_REQUEST);
+
     }
 
 }

@@ -1,14 +1,19 @@
 package com.sportArea.entity.dto;
 
-import com.sportArea.entity.ProductUA;
-import com.sportArea.entity.User;
+import com.sportArea.entity.DeliveryAddress;
+import com.sportArea.entity.OrderInfo;
+import com.sportArea.entity.OrderItem;
+import com.sportArea.entity.OrderStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 
+import javax.persistence.*;
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
@@ -18,23 +23,19 @@ public class OrderDTO {
 
     private Long orderId;
 
-    private String firstName;
-
-    private String lastName;
-
-    private String email;
-
-    private Long phoneNumber;
+    private OrderInfo orderInfo;
 
     private String paymentMethod;
 
-    private String delivery;
-
     private Integer amount;
+
+    private BigDecimal orderTotalPrice;
 
     private LocalDateTime orderDate;
 
-    private UserDTO user;
+    private OrderStatus orderStratus;
 
-    private ProductUaDTO product;
+    private List<OrderItem> products;
+
+
 }

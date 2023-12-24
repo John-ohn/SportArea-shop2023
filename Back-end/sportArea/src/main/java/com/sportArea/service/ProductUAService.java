@@ -14,6 +14,8 @@ public interface ProductUAService {
 
     List<ProductUaDTO> findAll();
 
+    ProductUA findByIdInProduct(Long productId);
+
     List<ProductUaDTO> searchByKeyWordInDescription(String keyWord);
 
     List<ProductUaDTO> searchByKeyWordInTypeSubtype(String keyWord);
@@ -39,4 +41,8 @@ public interface ProductUAService {
 
     List<ProductUaDTO> searchProducts(String keyWord,
                                       String searchLocation);
+
+    List<ProductUA> convertToProductList(List<ProductUaDTO> productList);
+
+    List<ProductUaDTO> convertToProductDTOList(List<ProductUA> productList);
 }

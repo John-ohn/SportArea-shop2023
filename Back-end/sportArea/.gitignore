@@ -31,3 +31,8 @@ build/
 
 ### VS Code ###
 .vscode/
+
+# DataBase folder ignored files
+/SportArea-shop2023/Back-end/DB/*
+
+client_secret_126377207542-mgkopumi2nsgah58ianjcuv67ldts317.apps.googleusercontent.com.json

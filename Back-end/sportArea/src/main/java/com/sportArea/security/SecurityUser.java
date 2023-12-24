@@ -1,7 +1,7 @@
 package com.sportArea.security;
 
+import com.sportArea.entity.Customer;
 import com.sportArea.entity.Status;
-import com.sportArea.entity.User;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
@@ -56,15 +56,15 @@ public class SecurityUser implements UserDetails {
         return isActive;
     }
 
-    public static UserDetails fromUser(User user) {
+    public static UserDetails fromUser(Customer customer) {
         return new org.springframework.security.core.userdetails.User(
-                user.getEmail(),
-                user.getPassword(),
-                user.getStatus().equals(Status.ACTIVE),
-                user.getStatus().equals(Status.ACTIVE),
-                user.getStatus().equals(Status.ACTIVE),
-                user.getStatus().equals(Status.ACTIVE),
-                user.getRole().getAutorities()
+                customer.getEmail(),
+                customer.getPassword(),
+                customer.getStatus().equals(Status.ACTIVE),
+                customer.getStatus().equals(Status.ACTIVE),
+                customer.getStatus().equals(Status.ACTIVE),
+                customer.getStatus().equals(Status.ACTIVE),
+                customer.getRole().getAutorities()
         );
     }
 }

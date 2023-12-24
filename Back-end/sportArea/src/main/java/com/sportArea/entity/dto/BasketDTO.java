@@ -1,10 +1,13 @@
 package com.sportArea.entity.dto;
 
-import com.sportArea.entity.ProductUA;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 
 @Data
@@ -15,7 +18,11 @@ public class BasketDTO {
 
     private Long basketId;
 
-    private Long guestId;
+    private UserRegistration user;
 
-    private ProductUaDTO product;
+    private List<BasketItemDTO> products = new ArrayList<>();;
+
+    private Integer productQuantity;
+
+    private BigDecimal basketTotalPrice;
 }
