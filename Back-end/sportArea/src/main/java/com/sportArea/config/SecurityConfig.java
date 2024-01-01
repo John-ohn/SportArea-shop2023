@@ -8,12 +8,18 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.oauth2.client.registration.ClientRegistration;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
+import org.springframework.security.oauth2.client.registration.InMemoryClientRegistrationRepository;
 import org.springframework.security.oauth2.client.web.HttpSessionOAuth2AuthorizedClientRepository;
 import org.springframework.security.oauth2.client.web.OAuth2AuthorizedClientRepository;
+import org.springframework.security.oauth2.core.AuthorizationGrantType;
+import org.springframework.security.oauth2.core.oidc.IdTokenClaimNames;
 
 
 @Configuration
@@ -32,9 +38,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .csrf().disable()
-//                .sessionManagement()
-//                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-//                .and()
+                .sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and()
                 .authorizeRequests()
                 .antMatchers("/").permitAll()
                 .antMatchers("/user/auth/login").permitAll()
@@ -89,12 +95,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 //                .and()
 //                .apply(jwtConfigurer)
                 .and()
+                .oauth2Client(Customizer.withDefaults())
                 .oauth2Login()
                 .authorizationEndpoint()
                 .baseUri("/oauth2/authorization/google")
                 .and()
                 .redirectionEndpoint()
                 .baseUri("/login/oauth2/code/google");
+
     }
 
 
@@ -109,5 +117,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             ClientRegistrationRepository clientRegistrationRepository) {
         return new HttpSessionOAuth2AuthorizedClientRepository();
     }
+
+
+
+
+
+
+
 
 }

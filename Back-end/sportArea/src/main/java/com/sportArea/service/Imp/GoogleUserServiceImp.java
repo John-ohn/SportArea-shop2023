@@ -1,6 +1,6 @@
 package com.sportArea.service.Imp;
 
-import com.sportArea.dao.UserRepository;
+import com.sportArea.dao.CustomerRepository;
 import com.sportArea.entity.Role;
 import com.sportArea.entity.Status;
 import com.sportArea.entity.TypeRegistration;
@@ -29,7 +29,7 @@ public class GoogleUserServiceImp implements GoogleUserService {
     private JwtTokenProvider jwtTokenProvider;
 
     @Autowired
-    private UserRepository userRepository;
+    private CustomerRepository customerRepository;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -39,14 +39,14 @@ public class GoogleUserServiceImp implements GoogleUserService {
     public void saveUserGoogle(GoogleUserDTO googleUser) {
 
         if (googleUser != null) {
-            Optional<Customer> optionalUser = userRepository.findByEmail(googleUser.getEmail());
+            Optional<Customer> optionalUser = customerRepository.findByEmail(googleUser.getEmail());
             if (optionalUser.isPresent()) {
                 logger.info("From GoogleUserServiceImp method -saveUserGoogle- send war message " +
                         "( Email already exists. ({})))", HttpStatus.NOT_FOUND.name());
             } else {
 
                 Customer customer = createUserFromGoogleUser(googleUser);
-                userRepository.save(customer);
+                customerRepository.save(customer);
 
                 logger.info("From UserServiceImp method -save- return new save User from Data Base.");
             }
@@ -65,7 +65,7 @@ public class GoogleUserServiceImp implements GoogleUserService {
         GoogleUserDTO googleUse = createGoogleUserFromOAuth2User(oauth2User);
 
         saveUserGoogle(googleUse);
-        Customer customer = userRepository.findByEmail(googleUse.getEmail()).orElseThrow(
+        Customer customer = customerRepository.findByEmail(googleUse.getEmail()).orElseThrow(
                 () -> new UsernameNotFoundException("User doesn't exists"));
         String token = jwtTokenProvider.createToken(googleUse.getEmail(), googleUse.getRole().name(), customer.getUserId());
 

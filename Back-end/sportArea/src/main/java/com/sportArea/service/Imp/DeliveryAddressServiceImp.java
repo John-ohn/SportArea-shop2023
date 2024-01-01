@@ -2,17 +2,13 @@ package com.sportArea.service.Imp;
 
 import com.sportArea.dao.DeliveryAddressRepository;
 import com.sportArea.dao.OrderInfoRepository;
-import com.sportArea.entity.Customer;
 import com.sportArea.entity.DeliveryAddress;
 import com.sportArea.entity.OrderInfo;
 import com.sportArea.entity.dto.DeliveryAddressDTO;
-import com.sportArea.entity.dto.UserDTOUpdate;
-import com.sportArea.entity.dto.UserUpdateRequest;
 import com.sportArea.entity.dto.delivery.DeliveryAddressRequest;
 import com.sportArea.entity.dto.delivery.DeliveryAddressUpdate;
 import com.sportArea.exception.GeneralException;
 import com.sportArea.service.DeliveryAddressService;
-import com.sportArea.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +25,7 @@ import java.util.Optional;
 @Transactional
 public class DeliveryAddressServiceImp implements DeliveryAddressService {
 
-    Logger logger = LoggerFactory.getLogger(UserServiceImp.class);
+    Logger logger = LoggerFactory.getLogger(CustomerServiceImp.class);
 
     private final DeliveryAddressRepository deliveryAddressRepository;
 

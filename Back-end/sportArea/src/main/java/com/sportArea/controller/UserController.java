@@ -1,7 +1,7 @@
 package com.sportArea.controller;
 
 
-import com.sportArea.dao.UserRepository;
+import com.sportArea.dao.CustomerRepository;
 import com.sportArea.entity.Role;
 import com.sportArea.entity.Status;
 import com.sportArea.entity.TypeRegistration;
@@ -11,7 +11,7 @@ import com.sportArea.entity.dto.UserDTOUpdate;
 import com.sportArea.entity.dto.UserUpdateRequest;
 import com.sportArea.entity.dto.logger.GeneralLogg;
 import com.sportArea.entity.dto.userFeilds.*;
-import com.sportArea.service.UserService;
+import com.sportArea.service.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -32,24 +32,24 @@ public class UserController {
 
     private final GeneralLogg generalLogg;
 
-    private final UserService userService;
+    private final CustomerService customerService;
 
     private RestTemplate restTemplate;
 
-    private UserRepository userRepository;
+    private final CustomerRepository customerRepository;
 
 
     @Autowired
-    public UserController(UserService userService, GeneralLogg generalLogg,UserRepository userRepository) {
-        this.userService = userService;
+    public UserController(CustomerService customerService, GeneralLogg generalLogg, CustomerRepository customerRepository) {
+        this.customerService = customerService;
         this.generalLogg = generalLogg;
-        this.userRepository=userRepository;
+        this.customerRepository = customerRepository;
     }
 
     @GetMapping
     public List<UserRegistration> showAllUser() {
 
-        List<UserRegistration> userList = userService.findAll();
+        List<UserRegistration> userList = customerService.findAll();
 
         generalLogg.getLoggerControllerInfo("UserController",
                 "showAllUser",
@@ -61,7 +61,7 @@ public class UserController {
 
     @GetMapping("/{userId}")
     public ResponseEntity<UserRegistration> getUserById(@PathVariable long userId) {
-        UserRegistration user = userService.findById(userId);
+        UserRegistration user = customerService.findById(userId);
 
         generalLogg.getLoggerControllerInfo("UserController",
                 "getUserById",
@@ -73,7 +73,7 @@ public class UserController {
 
     @PostMapping("/registration")
     public ResponseEntity<RegistrationStatus> addUser(@Valid @RequestBody UserRegistration user) throws MessagingException, IOException {
-        userService.save(user);
+        customerService.save(user);
 
         generalLogg.getLoggerControllerInfo("UserController",
                 "addUser",
@@ -92,9 +92,9 @@ public class UserController {
     public ResponseEntity<RegistrationStatus> updateUser(@PathVariable("userId") Long userId,
                                                          @RequestBody UserUpdateRequest user) {
 
-        UserDTOUpdate userDTOUpdate = userService.createUserForUpdate(userId, user);
+        UserDTOUpdate userDTOUpdate = customerService.createUserForUpdate(userId, user);
 
-        userService.validAndUpdateUser(userDTOUpdate);
+        customerService.validAndUpdateUser(userDTOUpdate);
 
         generalLogg.getLoggerControllerInfo("UserController",
                 "updateUser",
@@ -111,7 +111,7 @@ public class UserController {
     @PostMapping("/forgot/password")
     public ResponseEntity<String> forgotPassword(@RequestParam("email")String email){
 
-        userService.forgotPassword(email,12);
+        customerService.forgotPassword(email,12);
 
         generalLogg.getLoggerControllerInfo("UserController",
                 "forgotPassword",
@@ -125,7 +125,7 @@ public class UserController {
     public ResponseEntity<RegistrationStatus> updateUserFirstName(@Valid @RequestBody UserUpdateFirstName firstName,
                                                                   @PathVariable("userId") Long userId) {
 
-        userRepository.updateUserFirstName(userId, firstName.getFirstName());
+        customerRepository.updateUserFirstName(userId, firstName.getFirstName());
 
         generalLogg.getLoggerControllerInfo("UserController",
                 "updateUserFirstName",
@@ -194,7 +194,7 @@ public class UserController {
     public ResponseEntity<RegistrationStatus> updateUserPassword(@Valid @RequestBody UserUpdatePassword password,
                                                                  @PathVariable("userId") Long userId) {
 
-        userService.updateUserPassword(userId, password.getNewPassword(), password.getOldPassword());
+        customerService.updateUserPassword(userId, password.getNewPassword(), password.getOldPassword());
 
         generalLogg.getLoggerControllerInfo("UserController",
                 "updateUserPassword",
@@ -227,7 +227,7 @@ public class UserController {
 
     @DeleteMapping("/{userId}")
     public ResponseEntity<String> deleteUser(@PathVariable long userId) {
-        userService.delete(userId);
+        customerService.delete(userId);
 
         generalLogg.getLoggerControllerInfo("UserController",
                 "deleteUser",
@@ -242,7 +242,7 @@ public class UserController {
             @RequestParam("startId") Long startId,
             @RequestParam("endId") Long endId) {
 
-        userService.deleteUsersBetweenIds(startId, endId);
+        customerService.deleteUsersBetweenIds(startId, endId);
 
         generalLogg.getLoggerControllerInfo("UserController",
                 "deleteUsersBetweenIds",

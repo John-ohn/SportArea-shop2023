@@ -1,7 +1,7 @@
 package com.sportArea.security;
 
 import com.sportArea.exception.JwtAuthenticationException;
-import com.sportArea.service.UserService;
+import com.sportArea.service.CustomerService;
 import io.jsonwebtoken.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -33,13 +33,13 @@ public class JwtTokenProvider {
     private long validityMilliseconds;
 
     private final UserDetailsService userDetailsService;
-    private final UserService userService;
+    private final CustomerService customerService;
 
     @Autowired
     public JwtTokenProvider(@Qualifier("userDetailsServiceImpl") UserDetailsService userDetailsService,
-                            UserService userService) {
+                            CustomerService customerService) {
         this.userDetailsService = userDetailsService;
-        this.userService = userService;
+        this.customerService = customerService;
 
 
     }
