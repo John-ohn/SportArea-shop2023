@@ -8,9 +8,7 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "ProductUA")
-@ToString(exclude ="response" )
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder

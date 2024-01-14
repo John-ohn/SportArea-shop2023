@@ -252,7 +252,7 @@ public class UserController {
         return new ResponseEntity<String>(
                 "Users between userIds: " + startId + " and " + endId + " was deleted.", HttpStatus.CREATED);
     }
-
+            // /api/v1/users/testAuth
     @GetMapping("/testAuth")
     public ResponseEntity<?> testAuth() {
         UserRegistration userRegistration = UserRegistration.builder()

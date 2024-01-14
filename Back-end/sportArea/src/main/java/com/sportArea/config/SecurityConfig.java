@@ -38,9 +38,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http
                 .csrf().disable()
-                .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and()
+//                .sessionManagement()
+//                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+//                .and()
                 .authorizeRequests()
                 .antMatchers("/").permitAll()
                 .antMatchers("/user/auth/login").permitAll()
@@ -92,10 +92,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 //                .antMatchers(HttpMethod.DELETE, "/user/**").hasAuthority(Permission.DEVELOPERS_WRITE.getPermission())
                 .anyRequest()
                 .authenticated()
-//                .and()
-//                .apply(jwtConfigurer)
                 .and()
-                .oauth2Client(Customizer.withDefaults())
+                .apply(jwtConfigurer)
+                .and()
+//                .oauth2Client()
+//                .and()
                 .oauth2Login()
                 .authorizationEndpoint()
                 .baseUri("/oauth2/authorization/google")
@@ -112,11 +113,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return super.authenticationManagerBean();
     }
 
-    @Bean
-    public OAuth2AuthorizedClientRepository authorizedClientRepository(
-            ClientRegistrationRepository clientRegistrationRepository) {
-        return new HttpSessionOAuth2AuthorizedClientRepository();
-    }
+//    @Bean
+//    public OAuth2AuthorizedClientRepository authorizedClientRepository(
+//            ClientRegistrationRepository clientRegistrationRepository) {
+//        return new HttpSessionOAuth2AuthorizedClientRepository();
+//    }
 
 
 

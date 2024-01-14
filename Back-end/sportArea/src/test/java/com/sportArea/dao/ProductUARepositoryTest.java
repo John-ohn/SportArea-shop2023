@@ -14,9 +14,13 @@ import org.springframework.test.context.TestPropertySource;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 
@@ -33,6 +37,10 @@ class ProductUARepositoryTest {
 
     private ProductUA productUA;
 
+    private ProductUA productTwo;
+
+    private ProductUA productThree;
+
     @BeforeEach
     void createProduct() {
         productUA = ProductUA.builder()
@@ -43,7 +51,7 @@ class ProductUARepositoryTest {
                 .formOfIssue("Капсул")
                 .producingCountry("Україна")
                 .taste("Без смаку")
-                .price(BigDecimal.valueOf(299))
+                .price(BigDecimal.valueOf(500))
                 .currency("UA")
                 .weight("200г")
                 .article(231L)
@@ -64,13 +72,8 @@ class ProductUARepositoryTest {
                 .dateCreation(LocalDateTime.of(2023, 8, 5, 14, 47, 58))
                 .urlImage("https://allnutrition.ua/produkt_img/f8b0i3189_d1200x1200.png")
                 .build();
-    }
 
-    @Test
-    @DisplayName("Test ProductUARepository method findAll")
-    void testMethodFindAll(){
-
-        ProductUA  productTwo = ProductUA.builder()
+        productTwo = ProductUA.builder()
                 .productName("Solgar Vitamin E")
                 .brands("Solgar")
                 .type("Харчові добавки, Вітаміни")
@@ -78,7 +81,7 @@ class ProductUARepositoryTest {
                 .formOfIssue("Капсул")
                 .producingCountry("Україна")
                 .taste("Без смаку")
-                .price(BigDecimal.valueOf(299))
+                .price(BigDecimal.valueOf(340))
                 .promotionPrice(BigDecimal.valueOf(270))
                 .currency("UA")
                 .weight("200г")
@@ -101,7 +104,7 @@ class ProductUARepositoryTest {
                 .urlImage("https://allnutrition.ua/produkt_img/f8b0i3189_d1200x1200.png")
                 .build();
 
-        ProductUA  productThree = ProductUA.builder()
+        productThree = ProductUA.builder()
                 .productName("Biotech Protein Power")
                 .brands("Biotech")
                 .type("Протеїн")
@@ -110,7 +113,7 @@ class ProductUARepositoryTest {
                 .producingCountry("Україна")
                 .taste("Без смаку")
                 .price(BigDecimal.valueOf(299))
-                .promotionPrice(BigDecimal.valueOf(270))
+                .promotionPrice(BigDecimal.valueOf(220))
                 .currency("UA")
                 .weight("200г")
                 .article(231L)
@@ -131,48 +134,71 @@ class ProductUARepositoryTest {
                 .dateCreation(LocalDateTime.of(2023, 8, 5, 14, 47, 58))
                 .urlImage("https://allnutrition.ua/produkt_img/f8b0i3189_d1200x1200.png")
                 .build();
+    }
+
+    @Test
+    @DisplayName("Test ProductUARepository method findAll")
+    void testMethodFindAll() {
+
 
         List<ProductUA> emptyList = productUARepository.findAll();
 
         assertAll(
-                ()-> assertTrue(emptyList.isEmpty())
+                () -> assertTrue(emptyList.isEmpty())
         );
 
         entityManager.persist(productUA);
         entityManager.persist(productTwo);
         entityManager.persist(productThree);
 
-        ProductUA  productEmpty = ProductUA.builder().build();
+        ProductUA productEmpty = ProductUA.builder().build();
 
-        List<ProductUA> productList  = productUARepository.findAll();
+        List<ProductUA> productList = productUARepository.findAll();
 
         assertAll(
-                ()-> assertNotNull(productList),
-                ()-> assertEquals(3, productList.size()),
-                ()-> assertTrue(productList.contains(productUA)),
-                ()-> assertTrue(productList.contains(productTwo)),
-                ()-> assertTrue(productList.contains(productThree)),
-                ()->assertFalse(productList.contains(productEmpty))
+                () -> assertNotNull(productList),
+                () -> assertEquals(3, productList.size()),
+                () -> assertTrue(productList.contains(productUA)),
+                () -> assertTrue(productList.contains(productTwo)),
+                () -> assertTrue(productList.contains(productThree)),
+                () -> assertFalse(productList.contains(productEmpty))
         );
     }
 
     @Test
     @DisplayName("Test ProductUARepository method findById")
-    void testMethodFindById(){
+    void testMethodFindById() {
         entityManager.persist(productUA);
-        Optional<ProductUA> product  = productUARepository.findById(productUA.getProductId());
+        Optional<ProductUA> product = productUARepository.findById(productUA.getProductId());
 
-        Optional<ProductUA> productEmpty  = productUARepository.findById(8L);
+        Optional<ProductUA> productEmpty = productUARepository.findById(8L);
 
         assertAll(
-                ()-> assertTrue(product.isPresent()),
-                ()-> assertEquals(productUA, product.get()),
-                ()-> assertEquals(productUA.getProductId(), product.get().getProductId())
+                () -> assertTrue(product.isPresent()),
+                () -> assertEquals(productUA, product.get()),
+                () -> assertEquals(productUA.getProductId(), product.get().getProductId())
         );
 
         assertAll(
-                ()-> assertFalse(productEmpty.isPresent()),
-                ()-> assertTrue(productEmpty.isEmpty())
+                () -> assertFalse(productEmpty.isPresent()),
+                () -> assertTrue(productEmpty.isEmpty())
+        );
+    }
+
+    @Test
+    @DisplayName("Test ProductUARepository method save")
+    void testMethodSave() {
+
+        ProductUA productSave = productUARepository.save(productUA);
+
+        ProductUA product = entityManager.find(ProductUA.class, productSave.getProductId());
+
+        assertAll(
+                () -> assertNotNull(productSave),
+                () -> assertEquals(productSave, product),
+                () -> assertEquals(productUA, productSave),
+                () -> assertThat(productSave.getProductId()).isGreaterThan(0),
+                () -> assertEquals(productUA.getProductName(), product.getProductName())
         );
     }
 
@@ -217,10 +243,55 @@ class ProductUARepositoryTest {
 
     @Test
     void sortByPriceAscKeyWordDescription() {
+
+        List<ProductUA> ListEmpty = productUARepository.findAll();
+        assertTrue(ListEmpty.isEmpty());
+
+        entityManager.persist(productUA);
+        entityManager.persist(productTwo);
+        entityManager.persist(productThree);
+
+        List<ProductUA> productList = productUARepository.sortByPriceAscKeyWordDescription("індивідуальна");
+        List<ProductUA> sortList = Arrays.asList(productThree, productTwo, productUA);
+
+        assertAll(
+                () -> assertNotNull(productList),
+                ()-> assertEquals(sortList,productList),
+                () -> assertEquals(BigDecimal.valueOf(299), productList.get(0).getPrice()),
+                () -> assertEquals(BigDecimal.valueOf(340), productList.get(1).getPrice()),
+                () -> assertEquals(BigDecimal.valueOf(500), productList.get(2).getPrice())
+        );
+
+        List<ProductUA> productListEmpty = productUARepository.sortByPriceAscKeyWordDescription("Null");
+
+        assertTrue(productListEmpty.isEmpty());
+
     }
 
     @Test
     void sortByPriceDescKeyWordDescription() {
+
+        List<ProductUA> ListEmpty = productUARepository.findAll();
+        assertTrue(ListEmpty.isEmpty());
+
+        entityManager.persist(productUA);
+        entityManager.persist(productTwo);
+        entityManager.persist(productThree);
+
+        List<ProductUA> productList = productUARepository.sortByPriceDescKeyWordDescription("індивідуальна");
+        List<ProductUA> sortList = Arrays.asList(productUA, productTwo, productThree);
+
+        assertAll(
+                () -> assertNotNull(productList),
+                () -> assertEquals(sortList, productList),
+                () -> assertEquals(BigDecimal.valueOf(299), productList.get(2).getPrice()),
+                () -> assertEquals(BigDecimal.valueOf(340), productList.get(1).getPrice()),
+                () -> assertEquals(BigDecimal.valueOf(500), productList.get(0).getPrice())
+        );
+
+        List<ProductUA> productListEmpty = productUARepository.sortByPriceAscKeyWordDescription("Null");
+
+        assertTrue(productListEmpty.isEmpty());
     }
 
     @Test
@@ -256,7 +327,7 @@ class ProductUARepositoryTest {
                 () -> assertTrue(productType.contains(productUA))
         );
 
-        List<ProductUA> productSubType= productUARepository.searchByKeyWordInTypeSubtype("Вітамін Е");
+        List<ProductUA> productSubType = productUARepository.searchByKeyWordInTypeSubtype("Вітамін Е");
 
         assertAll(
                 () -> assertNotNull(productSubType),
@@ -264,7 +335,7 @@ class ProductUARepositoryTest {
                 () -> assertTrue(productSubType.contains(productUA))
         );
 
-        List<ProductUA> productEmpty= productUARepository.searchByKeyWordInTypeSubtype("Null");
+        List<ProductUA> productEmpty = productUARepository.searchByKeyWordInTypeSubtype("Null");
 
         assertAll(
                 () -> assertTrue(productEmpty.isEmpty())
@@ -274,7 +345,7 @@ class ProductUARepositoryTest {
     @Test
     @DisplayName("Test ProductUARepository method searchByPromotionPrice")
     void testMethodSearchByPromotionPrice() {
-        ProductUA  productPromotion = ProductUA.builder()
+        ProductUA productPromotion = ProductUA.builder()
                 .productName("Solgar Vitamin E")
                 .brands("Solgar")
                 .type("Харчові добавки, Вітаміни")
@@ -313,13 +384,13 @@ class ProductUARepositoryTest {
                 () -> assertNotNull(productList),
                 () -> assertEquals(1, productList.size()),
                 () -> assertTrue(productList.contains(productPromotion)),
-                ()-> assertFalse(productList.contains(productUA))
+                () -> assertFalse(productList.contains(productUA))
         );
 
         entityManager.remove(productUA);
         entityManager.remove(productPromotion);
 
-        List<ProductUA> productEmpty= productUARepository.searchByPromotionPrice();
+        List<ProductUA> productEmpty = productUARepository.searchByPromotionPrice();
 
         assertAll(
                 () -> assertTrue(productEmpty.isEmpty())
