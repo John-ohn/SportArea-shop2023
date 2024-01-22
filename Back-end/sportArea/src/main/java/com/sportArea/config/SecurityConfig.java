@@ -8,12 +8,18 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.oauth2.client.registration.ClientRegistration;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
+import org.springframework.security.oauth2.client.registration.InMemoryClientRegistrationRepository;
 import org.springframework.security.oauth2.client.web.HttpSessionOAuth2AuthorizedClientRepository;
 import org.springframework.security.oauth2.client.web.OAuth2AuthorizedClientRepository;
+import org.springframework.security.oauth2.core.AuthorizationGrantType;
+import org.springframework.security.oauth2.core.oidc.IdTokenClaimNames;
 
 
 @Configuration
@@ -86,15 +92,18 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 //                .antMatchers(HttpMethod.DELETE, "/user/**").hasAuthority(Permission.DEVELOPERS_WRITE.getPermission())
                 .anyRequest()
                 .authenticated()
-//                .and()
-//                .apply(jwtConfigurer)
                 .and()
+                .apply(jwtConfigurer)
+                .and()
+//                .oauth2Client()
+//                .and()
                 .oauth2Login()
                 .authorizationEndpoint()
                 .baseUri("/oauth2/authorization/google")
                 .and()
                 .redirectionEndpoint()
                 .baseUri("/login/oauth2/code/google");
+
     }
 
 
@@ -104,10 +113,17 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return super.authenticationManagerBean();
     }
 
-    @Bean
-    public OAuth2AuthorizedClientRepository authorizedClientRepository(
-            ClientRegistrationRepository clientRegistrationRepository) {
-        return new HttpSessionOAuth2AuthorizedClientRepository();
-    }
+//    @Bean
+//    public OAuth2AuthorizedClientRepository authorizedClientRepository(
+//            ClientRegistrationRepository clientRegistrationRepository) {
+//        return new HttpSessionOAuth2AuthorizedClientRepository();
+//    }
+
+
+
+
+
+
+
 
 }

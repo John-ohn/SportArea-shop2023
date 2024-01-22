@@ -1,11 +1,17 @@
 package com.sportArea.security;
 
+import com.sportArea.entity.dto.logger.GeneralLogg;
 import com.sportArea.exception.JwtAuthenticationException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.authentication.AuthenticationServiceException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestTemplate;
 import org.springframework.web.filter.GenericFilterBean;
 
 import javax.servlet.FilterChain;
@@ -16,9 +22,14 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Map;
 
 @Component
 public class JwtTokenFilter extends GenericFilterBean {
+    @Autowired
+    private GeneralLogg generalLogg;
+
 
     private final JwtTokenProvider jwtTokenProvider;
 
@@ -34,6 +45,10 @@ public class JwtTokenFilter extends GenericFilterBean {
         try {
             if (token != null && jwtTokenProvider.validateToken(token)) {
                 Authentication authentication = jwtTokenProvider.getAuthentication(token);
+
+                generalLogg.getLoggerControllerInfo("JwtTokenFilter",
+                        "doFilter",
+                        "token","token"+authentication);
                 if (authentication != null) {
                     SecurityContextHolder.getContext().setAuthentication(authentication);
                 }
@@ -45,6 +60,5 @@ public class JwtTokenFilter extends GenericFilterBean {
         }
         filterChain.doFilter(servletRequest, servletResponse);
     }
-
 
 }

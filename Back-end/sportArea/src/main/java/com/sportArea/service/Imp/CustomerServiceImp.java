@@ -1,6 +1,6 @@
 package com.sportArea.service.Imp;
 
-import com.sportArea.dao.UserRepository;
+import com.sportArea.dao.CustomerRepository;
 import com.sportArea.entity.Customer;
 import com.sportArea.entity.Role;
 import com.sportArea.entity.Status;
@@ -11,7 +11,7 @@ import com.sportArea.entity.dto.UserUpdateRequest;
 import com.sportArea.exception.GeneralException;
 import com.sportArea.service.EmailService;
 import com.sportArea.service.PasswordGeneratorService;
-import com.sportArea.service.UserService;
+import com.sportArea.service.CustomerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,10 +33,10 @@ import java.util.Optional;
 @Service
 @Validated
 @Transactional
-public class UserServiceImp implements UserService {
+public class CustomerServiceImp implements CustomerService {
 
-    Logger logger = LoggerFactory.getLogger(UserServiceImp.class);
-    private final UserRepository userRepository;
+    Logger logger = LoggerFactory.getLogger(CustomerServiceImp.class);
+    private final CustomerRepository customerRepository;
 
     private final PasswordEncoder passwordEncoder;
 
@@ -45,11 +45,11 @@ public class UserServiceImp implements UserService {
     private final PasswordGeneratorService passwordGeneratorService;
 
     @Autowired
-    public UserServiceImp(UserRepository userRepository,
-                          PasswordEncoder passwordEncoder,
-                          @Qualifier("gmailSMTServiceImp") EmailService emailService,
-                          PasswordGeneratorService passwordGeneratorService) {
-        this.userRepository = userRepository;
+    public CustomerServiceImp(CustomerRepository customerRepository,
+                              PasswordEncoder passwordEncoder,
+                              @Qualifier("gmailSMTServiceImp") EmailService emailService,
+                              PasswordGeneratorService passwordGeneratorService) {
+        this.customerRepository = customerRepository;
         this.passwordEncoder = passwordEncoder;
         this.emailService = emailService;
         this.passwordGeneratorService = passwordGeneratorService;
@@ -57,7 +57,7 @@ public class UserServiceImp implements UserService {
 
     @Override
     public UserRegistration findById(Long userId) {
-        Optional<Customer> userOptional = userRepository.findById(userId);
+        Optional<Customer> userOptional = customerRepository.findById(userId);
         if (userOptional.isPresent()) {
             Customer customer = userOptional.get();
             UserRegistration userRegistration = createUserDTOFromUser(customer);
@@ -72,7 +72,7 @@ public class UserServiceImp implements UserService {
 
     @Override
     public Customer findByIdInUser(Long userId) {
-        Optional<Customer> userOptional = userRepository.findById(userId);
+        Optional<Customer> userOptional = customerRepository.findById(userId);
         if (userOptional.isPresent()) {
             Customer customer = userOptional.get();
             logger.info("From UserServiceImp method -findById- return User by id: {} ", userId);
@@ -86,7 +86,7 @@ public class UserServiceImp implements UserService {
 
     @Override
     public List<UserRegistration> findAll() {
-        List<Customer> customerList = userRepository.findAll();
+        List<Customer> customerList = customerRepository.findAll();
         List<UserRegistration> userRegistrationList = customerList.stream().map(this::createUserDTOFromUser).toList();
 
         logger.info("From UserServiceImp method -findAll- return List of User .");
@@ -95,7 +95,7 @@ public class UserServiceImp implements UserService {
 
     @Override
     public Optional<Customer> findByEmail(String email) {
-        Optional<Customer> user = userRepository.findByEmail(email);
+        Optional<Customer> user = customerRepository.findByEmail(email);
         if (user.isPresent()) {
             logger.info("From UserServiceImp method -findByEmail- return User by email: {} ", email);
             return user;
@@ -109,7 +109,7 @@ public class UserServiceImp implements UserService {
 
     @Override
     public Customer findByEmailAndFirstName(String keyWord) {
-        Optional<Customer> user = Optional.ofNullable(userRepository.findByEmailAndFirstName(keyWord));
+        Optional<Customer> user = Optional.ofNullable(customerRepository.findByEmailAndFirstName(keyWord));
         if (user.isPresent()) {
             logger.info("From UserServiceImp method -findByEmailAndFirstName- return User by keyWord: {} ", keyWord);
             return user.get();
@@ -127,7 +127,7 @@ public class UserServiceImp implements UserService {
 
         if (userRegistration != null) {
             if (userRegistration.getUserId() == null) {
-                Optional<Customer> optionalUser = userRepository.findByEmail(userRegistration.getEmail());
+                Optional<Customer> optionalUser = customerRepository.findByEmail(userRegistration.getEmail());
                 if (optionalUser.isPresent()) {
                     logger.warn("From UserServiceImp method -save- send war message " +
                             "( Email already exists. ({})))", HttpStatus.NO_CONTENT.name());
@@ -139,7 +139,7 @@ public class UserServiceImp implements UserService {
                 customer.setRole(Role.ROLE_USER);
                 customer.setStatus(Status.ACTIVE);
                 customer.setTypeRegistration(TypeRegistration.FORM_REGISTRATION);
-                userRepository.save(customer);
+                customerRepository.save(customer);
 
                 logger.info("From UserServiceImp method -save- return new save User from Data Base.");
 
@@ -147,7 +147,7 @@ public class UserServiceImp implements UserService {
 
                 logger.info("From UserServiceImp method -save- send Mail Registration .");
             } else {
-                Optional<Customer> optionalUser = userRepository.findById(userRegistration.getUserId());
+                Optional<Customer> optionalUser = customerRepository.findById(userRegistration.getUserId());
                 if (optionalUser.isPresent()) {
                     logger.warn("From UserServiceImp method -save- send war message " +
                             "( User with this id already exists you can't save user twice. " +
@@ -174,7 +174,7 @@ public class UserServiceImp implements UserService {
             }
             Customer customer = createUserFromUpdate2(updates);
 
-            userRepository.save(customer);
+            customerRepository.save(customer);
 
             logger.info("From UserServiceImp method -updateUser- Made update User field in Data Base.");
 
@@ -194,7 +194,7 @@ public class UserServiceImp implements UserService {
 
     @Override
     public UserDTOUpdate createUserForUpdate(Long userId, UserUpdateRequest fieldName) {
-        Customer existingCustomer = userRepository.findById(userId)
+        Customer existingCustomer = customerRepository.findById(userId)
                 .orElseThrow(() -> new GeneralException("User is not available or his is empty. ", HttpStatus.NOT_FOUND));
         UserDTOUpdate user = createToUpdate2(existingCustomer);
         if (fieldName != null) {
@@ -224,7 +224,7 @@ public class UserServiceImp implements UserService {
     }
 
     public void updateUserPassword(Long userId, String newPassword, String oldPassword) {
-        Optional<Customer> user = userRepository.findById(userId);
+        Optional<Customer> user = customerRepository.findById(userId);
         if (user.isPresent()) {
 
             boolean checkPassword = passwordEncoder.matches(oldPassword, user.get().getPassword());
@@ -239,7 +239,7 @@ public class UserServiceImp implements UserService {
                     throw new GeneralException("The new password is the same as the old one.", HttpStatus.BAD_REQUEST);
                 }
 
-                userRepository.updateUserPassword(user.get().getUserId(), passwordEncoder.encode(newPassword));
+                customerRepository.updateUserPassword(user.get().getUserId(), passwordEncoder.encode(newPassword));
             } else {
                 logger.warn("From UserServiceImp method -updateUserPassword- send war message " +
                         "(The password does not match. Write the correct valid password   ({}) )", HttpStatus.NOT_FOUND.name());
@@ -257,13 +257,13 @@ public class UserServiceImp implements UserService {
                     "( Email is  is empty. ({}))", HttpStatus.BAD_REQUEST);
             throw new GeneralException("Email is  is empty. ", HttpStatus.BAD_REQUEST);
         }
-        Optional<Customer> user = userRepository.findByEmail(email);
+        Optional<Customer> user = customerRepository.findByEmail(email);
         if (user.isPresent()) {
 
             String randomPassword = passwordGeneratorService.generatePassword(length);
             logger.info("From UserServiceImp method -forgotPassword- Generator new password to user {}, {}", email , randomPassword);
 
-            userRepository.updateUserPassword(user.get().getUserId(),passwordEncoder.encode(randomPassword));
+            customerRepository.updateUserPassword(user.get().getUserId(),passwordEncoder.encode(randomPassword));
             logger.info("From UserServiceImp method -forgotPassword- save new password to user {}", email);
 
             emailService.sendHtmlEmailForgotPassword(email, randomPassword);
@@ -278,9 +278,9 @@ public class UserServiceImp implements UserService {
 
     @Override
     public void delete(Long userId) {
-        Optional<Customer> user = userRepository.findById(userId);
+        Optional<Customer> user = customerRepository.findById(userId);
         if (user.isPresent()) {
-            userRepository.delete(user.get());
+            customerRepository.delete(user.get());
             logger.info("From UserServiceImp method -delete- return message (User with userId: {} was deleted.).", userId);
         } else {
             logger.warn("From UserServiceImp method -delete- send war message " +
@@ -293,7 +293,7 @@ public class UserServiceImp implements UserService {
     public void deleteUsersBetweenIds(Long startId, Long endId) {
 
         if (startId >= 0 && endId > startId + 1) {
-            userRepository.deleteBetweenIds(startId, endId);
+            customerRepository.deleteBetweenIds(startId, endId);
             logger.info(
                     "From UserServiceImp method -deleteUsersBetweenIds- return message (Users between userIds: " +
                             "{} and {} was deleted.).", startId, endId);

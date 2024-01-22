@@ -8,7 +8,7 @@ import com.sportArea.entity.dto.BasketItemDTO;
 import com.sportArea.exception.GeneralException;
 import com.sportArea.service.BasketService;
 import com.sportArea.service.ProductUAService;
-import com.sportArea.service.UserService;
+import com.sportArea.service.CustomerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,18 +29,18 @@ public class BasketServiceImp implements BasketService {
 
     private final BasketItemRepository basketItemRepository;
 
-    private final UserService userService;
+    private final CustomerService customerService;
     private final ProductUAService productUAService;
 
     @Autowired
     public BasketServiceImp(BasketRepository basketRepository,
                             ProductUAService productUAService,
-                            UserService userService,
+                            CustomerService customerService,
                             BasketItemRepository basketItemRepository
     ) {
         this.basketRepository = basketRepository;
         this.productUAService = productUAService;
-        this.userService = userService;
+        this.customerService = customerService;
         this.basketItemRepository = basketItemRepository;
 
     }
@@ -95,7 +95,7 @@ public class BasketServiceImp implements BasketService {
         Optional<Basket> basketCheck = basketRepository.findByUserId(userId);
         if (basketCheck.isEmpty()) {
             BasketItem basketItem = createBasketItem(productId, productQuantity);
-            Customer customer = userService.findByIdInUser(userId);
+            Customer customer = customerService.findByIdInUser(userId);
 
 
             BasketItem saveBasketItem = basketItemRepository.save(basketItem);
@@ -209,14 +209,14 @@ public class BasketServiceImp implements BasketService {
         if (basket.getBasketId() != null) {
             return Basket.builder()
                     .basketId(basket.getBasketId())
-                    .customer(userService.createUserFromUserDTO(basket.getUser()))
+                    .customer(customerService.createUserFromUserDTO(basket.getUser()))
                     .productQuantity(basket.getProductQuantity())
                     .basketTotalPrice(basket.getBasketTotalPrice())
                     .products(convertToList(basket.getProducts()))
                     .build();
         } else {
             return Basket.builder()
-                    .customer(userService.createUserFromUserDTO(basket.getUser()))
+                    .customer(customerService.createUserFromUserDTO(basket.getUser()))
                     .productQuantity(basket.getProductQuantity())
                     .basketTotalPrice(basket.getBasketTotalPrice())
                     .products(convertToList(basket.getProducts()))
@@ -228,14 +228,14 @@ public class BasketServiceImp implements BasketService {
         if (basket.getBasketId() != null) {
             return BasketDTO.builder()
                     .basketId(basket.getBasketId())
-                    .user(userService.createUserDTOFromUser(basket.getCustomer()))
+                    .user(customerService.createUserDTOFromUser(basket.getCustomer()))
                     .productQuantity(basket.getProductQuantity())
                     .basketTotalPrice(basket.getBasketTotalPrice())
                     .products(convertToItemDTOList(basket.getProducts()))
                     .build();
         } else {
             return BasketDTO.builder()
-                    .user(userService.createUserDTOFromUser(basket.getCustomer()))
+                    .user(customerService.createUserDTOFromUser(basket.getCustomer()))
                     .productQuantity(basket.getProductQuantity())
                     .basketTotalPrice(basket.getBasketTotalPrice())
                     .products(convertToItemDTOList(basket.getProducts()))

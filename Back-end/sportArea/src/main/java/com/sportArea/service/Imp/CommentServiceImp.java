@@ -9,7 +9,7 @@ import com.sportArea.entity.dto.ProductUaDTO;
 import com.sportArea.exception.GeneralException;
 import com.sportArea.service.CommentService;
 import com.sportArea.service.ProductUAService;
-import com.sportArea.service.UserService;
+import com.sportArea.service.CustomerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,18 +26,18 @@ import java.util.Optional;
 @Transactional
 public class CommentServiceImp implements CommentService {
 
-    Logger logger = LoggerFactory.getLogger(UserServiceImp.class);
+    Logger logger = LoggerFactory.getLogger(CustomerServiceImp.class);
 
-    private final UserService userService;
+    private final CustomerService customerService;
 
     private final ProductUAService productUAService;
 
     private final CommentRepository commentRepository;
 
     @Autowired
-    public CommentServiceImp(CommentRepository commentRepository, UserService userService, ProductUAService productUAService) {
+    public CommentServiceImp(CommentRepository commentRepository, CustomerService customerService, ProductUAService productUAService) {
         this.commentRepository = commentRepository;
-        this.userService = userService;
+        this.customerService = customerService;
         this.productUAService = productUAService;
     }
 
@@ -150,7 +150,7 @@ public class CommentServiceImp implements CommentService {
         return Comment.builder()
                 .message(commentDTO.getMessage())
                 .note(commentDTO.getNote())
-                .customer(userService.createUserFromUserDTO(commentDTO.getUserRegistration()))
+                .customer(customerService.createUserFromUserDTO(commentDTO.getUserRegistration()))
                 .product(productUAService.createProductFromProductUaDTO(commentDTO.getProductDTO()))
                 .productRating(commentDTO.getProductRating())
                 .build();
@@ -164,7 +164,7 @@ public class CommentServiceImp implements CommentService {
                     .commentId(comment.getCommentId())
                     .message(comment.getMessage())
                     .note(comment.getNote())
-                    .userRegistration(userService.createUserDTOFromUser(comment.getCustomer()))
+                    .userRegistration(customerService.createUserDTOFromUser(comment.getCustomer()))
                     .build();
         } else {
             return CommentDTO
@@ -173,7 +173,7 @@ public class CommentServiceImp implements CommentService {
                     .message(comment.getMessage())
                     .note(comment.getNote())
                     .productRating(comment.getProductRating())
-                    .userRegistration(userService.createUserDTOFromUser(comment.getCustomer()))
+                    .userRegistration(customerService.createUserDTOFromUser(comment.getCustomer()))
                     .productDTO(productUAService.createProductDTOFromProductUA(comment.getProduct()))
                     .build();
         }

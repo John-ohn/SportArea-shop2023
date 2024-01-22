@@ -8,13 +8,14 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.transaction.annotation.Transactional;
 
 
+import java.util.List;
+
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -29,7 +30,7 @@ class CustomerRepositoryTest {
     private TestEntityManager entityManager;
 
     @Autowired
-    private UserRepository userRepository;
+    private CustomerRepository customerRepository;
 
     private Customer customerOne;
 
@@ -45,7 +46,6 @@ class CustomerRepositoryTest {
                 .status(Status.ACTIVE)
                 .typeRegistration(TypeRegistration.FORM_REGISTRATION)
                 .build();
-
     }
 
     @Test
@@ -54,23 +54,13 @@ class CustomerRepositoryTest {
         assertNotNull(entityManager);
     }
 
-
     @Test
     @DisplayName("Test UserRepository method findByEmail")
     void findByEmail() {
-//       Customer customerOne2 = new Customer();
-//        customerOne2.setFirstName("Ronald");
-//        customerOne2.setLastName("Serous");
-//        customerOne2.setEmail("sewewt@code.com");
-//        customerOne2.setPhoneNumber("380342312275");
-//        customerOne2.setPassword("As123ertyuer");
-//        customerOne2.setRole(Role.ROLE_USER);
-//        customerOne2.setStatus(Status.ACTIVE);
-//        customerOne2.setTypeRegistration(TypeRegistration.FORM_REGISTRATION);
 
         entityManager.persist(customerOne);
 
-        Customer customer = userRepository.findByEmail("sewewt@code.com").get();
+        Customer customer = customerRepository.findByEmail("sewewt@code.com").get();
 
         assertAll(
                 () -> assertNotNull(customer),
@@ -91,7 +81,7 @@ class CustomerRepositoryTest {
     void findByUserId() {
         entityManager.persist(customerOne);
 
-        Customer customer = userRepository.findByUserId(customerOne.getUserId()).get();
+        Customer customer = customerRepository.findByUserId(customerOne.getUserId()).get();
 
         assertAll(
                 () -> assertNotNull(customer),
@@ -101,11 +91,50 @@ class CustomerRepositoryTest {
         );
     }
 
+
+    @Test
+    @DisplayName("Test UserRepository method findAll")
+    void findAll() {
+
+        Customer customerTwo = new Customer();
+        customerTwo.setFirstName("Sewen");
+        customerTwo.setLastName("Rasul");
+        customerTwo.setEmail("srasult@code.com");
+        customerTwo.setPhoneNumber("380342312765");
+        customerTwo.setPassword("As123erty87");
+        customerTwo.setRole(Role.ROLE_USER);
+        customerTwo.setStatus(Status.ACTIVE);
+        customerTwo.setTypeRegistration(TypeRegistration.FORM_REGISTRATION);
+
+        Customer customerThree = new Customer();
+        customerThree.setFirstName("Lekir");
+        customerThree.setLastName("Dev");
+        customerThree.setEmail("devlt@code.com");
+        customerThree.setPhoneNumber("380342312765");
+        customerThree.setPassword("As123erty87");
+        customerThree.setRole(Role.ROLE_USER);
+        customerThree.setStatus(Status.ACTIVE);
+        customerThree.setTypeRegistration(TypeRegistration.FORM_REGISTRATION);
+
+        entityManager.persist(customerOne);
+        entityManager.persist(customerTwo);
+        entityManager.persist(customerThree);
+
+        List<Customer> customerList = customerRepository.findAll();
+
+        assertAll(
+                () -> assertNotNull(customerList),
+                () -> assertThat(customerList.size()).isEqualTo(3),
+                () -> assertTrue(customerList.contains(customerThree))
+        );
+    }
+
+
     @Test
     @DisplayName("Test UserRepository method save")
     void save() {
 
-        userRepository.save(customerOne);
+        customerRepository.save(customerOne);
 
         Customer customer = entityManager.find(Customer.class, customerOne.getUserId());
 
@@ -114,29 +143,34 @@ class CustomerRepositoryTest {
                 () -> assertEquals(customerOne.getFirstName(), customer.getFirstName()),
                 () -> assertEquals(customerOne.getUserId(), customer.getUserId())
         );
-
-
     }
 
     @Test
-    void deleteBetweenIds() {
+    @DisplayName("Test UserRepository method delete")
+    void testMethodDelete() {
+        entityManager.persist(customerOne);
 
+        Customer customer = entityManager.find(Customer.class, customerOne.getUserId());
 
+        customerRepository.delete(customer);
+
+        Customer customerDelete = entityManager.find(Customer.class, customerOne.getUserId());
+
+        assertAll(
+                () -> assertNull(customerDelete)
+        );
     }
 
     @Test
-    @Transactional
     void updateUserFirstName() {
 
         entityManager.persist(customerOne);
 
-//        userRepository.save(customerOne);
+        entityManager.clear();
 
         String firstName = "John";
 
-        userRepository.updateUserFirstName(customerOne.getUserId(), firstName);
-
-        System.out.println("Update operation completed");
+        customerRepository.updateUserFirstName(customerOne.getUserId(), firstName);
 
         Customer customer = entityManager.find(Customer.class, customerOne.getUserId());
 
@@ -144,8 +178,6 @@ class CustomerRepositoryTest {
                 () -> assertNotNull(customer),
                 () -> assertEquals(firstName, customer.getFirstName())
         );
-
-
     }
 
     @Test

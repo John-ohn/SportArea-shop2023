@@ -5,7 +5,7 @@ import com.sportArea.entity.Customer;
 import com.sportArea.entity.dto.logger.GeneralLogg;
 import com.sportArea.entity.dto.restJWT.AuthenticationRequestDTO;
 import com.sportArea.security.JwtTokenProvider;
-import com.sportArea.service.UserService;
+import com.sportArea.service.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -32,16 +32,16 @@ public class AuthenticationRestController {
 
     private final GeneralLogg generalLogg;
     private final AuthenticationManager authenticationManager;
-    private final UserService userService;
+    private final CustomerService customerService;
     private final JwtTokenProvider jwtTokenProvider;
 
     @Autowired
     public AuthenticationRestController(AuthenticationManager authenticationManager,
-                                        UserService userService,
+                                        CustomerService customerService,
                                         JwtTokenProvider jwtTokenProvider,
                                         GeneralLogg generalLogg) {
         this.authenticationManager = authenticationManager;
-        this.userService = userService;
+        this.customerService = customerService;
         this.jwtTokenProvider = jwtTokenProvider;
         this.generalLogg = generalLogg;
     }
@@ -52,7 +52,7 @@ public class AuthenticationRestController {
             authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword())
             );
-            Customer customer = userService.findByEmail(request.getEmail()).orElseThrow(
+            Customer customer = customerService.findByEmail(request.getEmail()).orElseThrow(
                     () -> new UsernameNotFoundException("User doesn't exists"));
 
             String token = jwtTokenProvider.createToken(request.getEmail(), customer.getRole().name(), customer.getUserId());

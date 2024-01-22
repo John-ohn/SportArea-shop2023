@@ -1,7 +1,7 @@
 package com.sportArea.security;
 
 import com.sportArea.entity.Customer;
-import com.sportArea.service.UserService;
+import com.sportArea.service.CustomerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,16 +16,16 @@ import org.springframework.stereotype.Service;
 public class UserDetailsServiceImp implements UserDetailsService {
     Logger logger = LoggerFactory.getLogger(UserDetailsServiceImp.class);
 
-    private final UserService userService;
+    private final CustomerService customerService;
 
     @Autowired
-    public UserDetailsServiceImp(UserService userService) {
-        this.userService = userService;
+    public UserDetailsServiceImp(CustomerService customerService) {
+        this.customerService = customerService;
     }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        Customer customer = userService.findByEmail(username).orElseThrow(
+        Customer customer = customerService.findByEmail(username).orElseThrow(
                 () -> new UsernameNotFoundException("User with this email doesn't exists, you can't get Authentication ")
         );
         logger.info("From UserDetailsServiceImp method -loadUserByUsername- check if email exists: {} ", username);

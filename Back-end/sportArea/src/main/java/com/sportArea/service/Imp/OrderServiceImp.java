@@ -11,7 +11,7 @@ import com.sportArea.entity.dto.account.UserOrders;
 import com.sportArea.exception.GeneralException;
 import com.sportArea.service.OrderService;
 import com.sportArea.service.ProductUAService;
-import com.sportArea.service.UserService;
+import com.sportArea.service.CustomerService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,7 +20,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -30,16 +29,16 @@ public class OrderServiceImp implements OrderService {
 
     Logger logger = LoggerFactory.getLogger(OrderServiceImp.class);
 
-    private final UserService userService;
+    private final CustomerService customerService;
 
     private final ProductUAService productUAService;
 
     private final OrderRepository orderRepository;
 
     @Autowired
-    public OrderServiceImp(OrderRepository orderRepository, UserService userService, ProductUAService productUAService) {
+    public OrderServiceImp(OrderRepository orderRepository, CustomerService customerService, ProductUAService productUAService) {
         this.orderRepository = orderRepository;
-        this.userService = userService;
+        this.customerService = customerService;
         this.productUAService = productUAService;
     }
 
