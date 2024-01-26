@@ -1,5 +1,6 @@
 package com.sportArea.service.Imp;
 
+import com.sportArea.dao.ProductENRepository;
 import com.sportArea.dao.ProductUARepository;
 import com.sportArea.entity.ProductUA;
 import com.sportArea.entity.dto.ProductUaDTO;
@@ -29,9 +30,12 @@ public class ProductUAServiceImp implements ProductUAService {
 
     private final ProductUARepository productRepository;
 
+    private final ProductENRepository productENRepository;
+
     @Autowired
-    public ProductUAServiceImp(ProductUARepository productRepository) {
+    public ProductUAServiceImp(ProductUARepository productRepository, ProductENRepository productENRepository) {
         this.productRepository = productRepository;
+        this.productENRepository= productENRepository;
 
     }
 
@@ -589,6 +593,7 @@ public class ProductUAServiceImp implements ProductUAService {
                 .numberOfOrders(productUA.getNumberOfOrders())
                 .dateCreation(productUA.getDateCreation())
                 .urlImage(productUA.getUrlImage())
+                .productEN(productUA.getProductEN())
                 .build();
     }
 

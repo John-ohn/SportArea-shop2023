@@ -1,6 +1,7 @@
 package com.sportArea.controller;
 
 import com.sportArea.entity.dto.DeliveryAddressDTO;
+import com.sportArea.entity.dto.GeneralResponse;
 import com.sportArea.entity.dto.delivery.DeliveryAddressRequest;
 import com.sportArea.entity.dto.delivery.DeliveryAddressUpdate;
 import com.sportArea.entity.dto.logger.GeneralLogg;
@@ -40,7 +41,7 @@ public class DeliveryAddressController {
     }
 
     @PostMapping
-    public ResponseEntity<String> addDeliveryAddress(@RequestBody DeliveryAddressDTO deliveryAddressDTO) {
+    public ResponseEntity<GeneralResponse> addDeliveryAddress(@RequestBody DeliveryAddressDTO deliveryAddressDTO) {
 
         deliveryAddressService.save(deliveryAddressDTO);
 
@@ -49,12 +50,16 @@ public class DeliveryAddressController {
                 "delivery/address",
                 "message (Your delivery address was successful added.) and Save new Delivery Address.");
 
-        return new ResponseEntity<>("Your delivery address was successful added.", HttpStatus.CREATED);
+        GeneralResponse generalResponse = new GeneralResponse(
+                HttpStatus.CREATED.value(),
+                "Your delivery address was successful added.");
+
+        return new ResponseEntity<>(generalResponse, HttpStatus.CREATED);
     }
 
     @PatchMapping("/{deliveryId}")
-    public ResponseEntity<String> updateDeliveryAddress(@PathVariable("deliveryId") Long deliveryId,
-                                                        @RequestBody DeliveryAddressRequest updateRequest) {
+    public ResponseEntity<GeneralResponse> updateDeliveryAddress(@PathVariable("deliveryId") Long deliveryId,
+                                                                 @RequestBody DeliveryAddressRequest updateRequest) {
 
         DeliveryAddressUpdate deliveryUpdate = deliveryAddressService.createForUpdateRequest(deliveryId, updateRequest);
 
@@ -65,6 +70,10 @@ public class DeliveryAddressController {
                 "delivery/address",
                 "message (Your delivery address was successful updated.) and update Delivery Address with deliveryId: " + deliveryUpdate.getDeliveryId());
 
-        return new ResponseEntity<>("Your delivery address was successful updated.", HttpStatus.CREATED);
+        GeneralResponse generalResponse = new GeneralResponse(
+                HttpStatus.CREATED.value(),
+                "Your delivery address was successful updated.");
+
+        return new ResponseEntity<>(generalResponse, HttpStatus.CREATED);
     }
 }

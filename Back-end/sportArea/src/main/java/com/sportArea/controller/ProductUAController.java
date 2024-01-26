@@ -1,10 +1,12 @@
 package com.sportArea.controller;
 
 
+import com.sportArea.entity.dto.GeneralResponse;
 import com.sportArea.entity.dto.ProductUaDTO;
 import com.sportArea.entity.dto.logger.GeneralLogg;
 import com.sportArea.service.ProductUAService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -51,7 +53,7 @@ public class ProductUAController {
     }
 
     @PostMapping
-    public ResponseEntity<String> addProductUA(@RequestBody ProductUaDTO product) {
+    public ResponseEntity<GeneralResponse> addProductUA(@RequestBody ProductUaDTO product) {
         productService.save(product);
 
         generalLogg.getLoggerControllerInfo("ProductUAController",
@@ -59,7 +61,11 @@ public class ProductUAController {
                 "/products",
                 "message (Product was added successfully.) and save new Product.");
 
-        return ResponseEntity.ok("Product was added successfully.");
+        GeneralResponse generalResponse = new GeneralResponse(
+                HttpStatus.OK.value(),
+                "Product was added successfully.");
+
+        return ResponseEntity.ok(generalResponse);
     }
 
     @GetMapping("/search")

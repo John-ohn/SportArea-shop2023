@@ -1,5 +1,6 @@
 package com.sportArea.dao;
 
+import com.sportArea.entity.ProductEN;
 import com.sportArea.entity.ProductUA;
 import com.sportArea.entity.TargetCategory;
 import org.junit.jupiter.api.BeforeEach;
@@ -41,8 +42,110 @@ class ProductUARepositoryTest {
 
     private ProductUA productThree;
 
+    private ProductEN productEN;
+
+    private ProductEN productENTwo;
+
+    private ProductEN productENThree;
+
     @BeforeEach
     void createProduct() {
+        productEN = ProductEN.builder()
+                .productName("Solgar Vitamin E")
+                .brands("Solgar")
+                .type("Харчові добавки, Вітаміни")
+                .subtype("Вітамін Е")
+                .formOfIssue("Капсул")
+                .producingCountry("Україна")
+                .taste("Без смаку")
+                .price(BigDecimal.valueOf(500))
+                .currency("UA")
+                .weight("200г")
+                .article(231L)
+                .productAmount(50)
+                .description("Contraindications: individual intolerance of product components." +
+                        "Not intended for use during pregnancy, lactation and persons under 18 years of age." +
+                        "Before taking the drug, consult a doctor."
+                )
+                .productConsist("Склад на порцію (1 таблетка):\n" +
+                        "Mg Цитрат 400 мг\n" +
+                        "Mg 56 мг 15%\n" +
+                        "Вітамін С 12 мг 15%\n"
+                )
+                .rating(5F)
+                .status("В наявності")
+                .promotion(0)
+                .numberOfOrders(5L)
+                .dateCreation(LocalDateTime.of(2023, 8, 5, 14, 47, 58))
+                .urlImage("https://allnutrition.ua/produkt_img/f8b0i3189_d1200x1200.png")
+                .build();
+
+        productENTwo = ProductEN.builder()
+                .productName("Solgar Vitamin E")
+                .brands("Solgar")
+                .type("Харчові добавки, Вітаміни")
+                .subtype("Вітамін Е")
+                .formOfIssue("Капсул")
+                .producingCountry("Україна")
+                .taste("Без смаку")
+                .price(BigDecimal.valueOf(340))
+                .promotionPrice(BigDecimal.valueOf(270))
+                .currency("UA")
+                .weight("200г")
+                .article(231L)
+                .productAmount(50)
+                .description("Contraindications: individual intolerance of product components." +
+                        "Not intended for use during pregnancy, lactation and persons under 18 years of age." +
+                        "Before taking the drug, consult a doctor."
+                )
+                .productConsist("Склад на порцію (1 таблетка):\n" +
+                        "Mg Цитрат 400 мг\n" +
+                        "Mg 56 мг 15%\n" +
+                        "Вітамін С 12 мг 15%\n"
+                )
+                .rating(5F)
+                .status("В наявності")
+                .promotion(1)
+                .numberOfOrders(5L)
+                .dateCreation(LocalDateTime.of(2023, 8, 5, 14, 47, 58))
+                .urlImage("https://allnutrition.ua/produkt_img/f8b0i3189_d1200x1200.png")
+                .build();
+
+        productENThree = ProductEN.builder()
+                .productName("Biotech Protein Power")
+                .brands("Biotech")
+                .type("Протеїн")
+                .subtype("Сироватковий протеїн")
+                .formOfIssue("Капсул")
+                .producingCountry("Україна")
+                .taste("Без смаку")
+                .price(BigDecimal.valueOf(299))
+                .promotionPrice(BigDecimal.valueOf(220))
+                .currency("UA")
+                .weight("200г")
+                .article(231L)
+                .productAmount(50)
+                .description("Contraindications: individual intolerance of product components." +
+                        "Not intended for use during pregnancy, lactation and persons under 18 years of age." +
+                        "Before taking the drug, consult a doctor."
+                )
+                .productConsist("Склад на порцію (1 таблетка):\n" +
+                        "Mg Цитрат 400 мг\n" +
+                        "Mg 56 мг 15%\n" +
+                        "Вітамін С 12 мг 15%\n"
+                )
+                .rating(5F)
+                .status("В наявності")
+                .promotion(1)
+                .numberOfOrders(5L)
+                .dateCreation(LocalDateTime.of(2023, 8, 5, 14, 47, 58))
+                .urlImage("https://allnutrition.ua/produkt_img/f8b0i3189_d1200x1200.png")
+                .build();
+
+        entityManager.persist(productEN);
+        entityManager.persist(productENTwo);
+        entityManager.persist(productENThree);
+
         productUA = ProductUA.builder()
                 .productName("Solgar Vitamin E")
                 .brands("Solgar")
@@ -71,6 +174,7 @@ class ProductUARepositoryTest {
                 .numberOfOrders(5L)
                 .dateCreation(LocalDateTime.of(2023, 8, 5, 14, 47, 58))
                 .urlImage("https://allnutrition.ua/produkt_img/f8b0i3189_d1200x1200.png")
+                .productEN(productEN)
                 .build();
 
         productTwo = ProductUA.builder()
@@ -102,6 +206,7 @@ class ProductUARepositoryTest {
                 .numberOfOrders(5L)
                 .dateCreation(LocalDateTime.of(2023, 8, 5, 14, 47, 58))
                 .urlImage("https://allnutrition.ua/produkt_img/f8b0i3189_d1200x1200.png")
+                .productEN(productENTwo)
                 .build();
 
         productThree = ProductUA.builder()
@@ -133,6 +238,7 @@ class ProductUARepositoryTest {
                 .numberOfOrders(5L)
                 .dateCreation(LocalDateTime.of(2023, 8, 5, 14, 47, 58))
                 .urlImage("https://allnutrition.ua/produkt_img/f8b0i3189_d1200x1200.png")
+                .productEN(productENThree)
                 .build();
     }
 
@@ -161,7 +267,8 @@ class ProductUARepositoryTest {
                 () -> assertTrue(productList.contains(productUA)),
                 () -> assertTrue(productList.contains(productTwo)),
                 () -> assertTrue(productList.contains(productThree)),
-                () -> assertFalse(productList.contains(productEmpty))
+                () -> assertFalse(productList.contains(productEmpty)),
+                ()-> assertEquals(productEN, productList.get(productList.indexOf(productUA)).getProductEN())
         );
     }
 

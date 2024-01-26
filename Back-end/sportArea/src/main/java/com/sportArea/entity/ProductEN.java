@@ -1,19 +1,24 @@
 package com.sportArea.entity;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
+import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "ProductUS")
+@Table(name = "ProductEN")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ProductUS {
+@Builder
+public class ProductEN {
 
     @Id
+    @Column(name = "productId")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long productId;
 
@@ -39,13 +44,22 @@ public class ProductUS {
     private String taste;
 
     @Column(name = "price")
-    private long price;
+    private BigDecimal price;
+
+    @Column(name="promotionPrice")
+    private BigDecimal promotionPrice;
+
+    @Column(name="currency")
+    private String currency;
+
+    @Column(name="weight")
+    private String weight;
 
     @Column(name = "article")
-    private long article;
+    private Long article;
 
     @Column(name = "productAmount")
-    private int productAmount;
+    private Integer productAmount;
 
     @Column(name = "description")
     private String description;
@@ -54,16 +68,24 @@ public class ProductUS {
     private String productConsist;
 
     @Column(name = "rating")
-    private int rating;
+    private Float rating;
 
     @Column(name = "status")
     private String status;
 
-    @ManyToOne
-    @JoinColumn(name = "languageId")
-    private Language language;
+    @Column(name = "promotion", columnDefinition = "INT default 0")
+    private Integer promotion;
 
-    @OneToOne
-    @JoinColumn(name = "productUAId")
-    private ProductUA productUA;
+    @Column(name="numberOfOrders")
+    private Long numberOfOrders;
+
+    @Column(name = "dateCreation")
+    private LocalDateTime dateCreation;
+
+    @Column(name="urlImage")
+    private String urlImage;
+
+//    @OneToOne
+//    @JoinColumn(name = "productUAId")
+//    private ProductUA productUA;
 }

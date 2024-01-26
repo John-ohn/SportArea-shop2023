@@ -1,6 +1,7 @@
 package com.sportArea.entity.dto;
 
 
+import com.sportArea.entity.ProductEN;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -60,4 +61,6 @@ public class ProductUaDTO {
     private LocalDateTime dateCreation;
 
     private String urlImage;
+
+    private ProductEN productEN;
 }

@@ -82,6 +82,10 @@ public class ProductUA {
     @Column(name="urlImage")
     private String urlImage;
 
+    @OneToOne
+    @JoinColumn(name = "productENId")
+    private ProductEN productEN;
+
 
 //
 //    @OneToMany(mappedBy = "productId")

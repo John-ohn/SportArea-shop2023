@@ -1,10 +1,12 @@
 package com.sportArea.controller;
 
 import com.sportArea.entity.MailSubscription;
+import com.sportArea.entity.dto.GeneralResponse;
 import com.sportArea.entity.dto.logger.GeneralLogg;
 import com.sportArea.service.EmailService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -25,7 +27,7 @@ public class EmailNewController {
     private final EmailService emailService;
 
     @PostMapping("/subscription")
-    public ResponseEntity<?> sendAfterSubscription(@RequestBody MailSubscription mailRequest) throws MessagingException, IOException {
+    public ResponseEntity<GeneralResponse> sendAfterSubscription(@RequestBody MailSubscription mailRequest) throws MessagingException, IOException {
         emailService.sendHtmlEmailSubscription(mailRequest.getEmail());
 
         generalLogg.getLoggerControllerInfo("EmailNewController",
@@ -33,11 +35,15 @@ public class EmailNewController {
                 "/send/subscription",
                 "message (The subscription was successful.) and Save new subscription with user email: " + mailRequest.getEmail());
 
-        return ResponseEntity.ok("The subscription was successful.");
+        GeneralResponse generalResponse = new GeneralResponse(
+                HttpStatus.OK.value(),
+                "The subscription was successful.");
+
+        return ResponseEntity.ok(generalResponse);
     }
 
     @PostMapping("/registr")
-    public ResponseEntity<?> sendAfterRegistr(@RequestBody MailSubscription mailRequest) throws MessagingException, IOException {
+    public ResponseEntity<GeneralResponse> sendAfterRegistr(@RequestBody MailSubscription mailRequest) throws MessagingException, IOException {
         emailService.sendHtmlEmailRegistration(mailRequest.getEmail());
 
         generalLogg.getLoggerControllerInfo("EmailNewController",
@@ -45,7 +51,11 @@ public class EmailNewController {
                 "/send/subscription",
                 "message (The subscription was successful.) and Save new subscription with user email: " + mailRequest.getEmail());
 
-        return ResponseEntity.ok("The subscription was successful.");
+        GeneralResponse generalResponse = new GeneralResponse(
+                HttpStatus.OK.value(),
+                "The subscription was successful.");
+
+        return ResponseEntity.ok(generalResponse);
     }
 
 }

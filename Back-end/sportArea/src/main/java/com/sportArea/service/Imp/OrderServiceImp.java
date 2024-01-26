@@ -6,8 +6,7 @@ import com.sportArea.entity.OrderItem;
 import com.sportArea.entity.OrderStatus;
 import com.sportArea.entity.dto.OrderDTO;
 import com.sportArea.entity.dto.ProductUaDTO;
-import com.sportArea.entity.dto.account.UserOrderProducts;
-import com.sportArea.entity.dto.account.UserOrders;
+import com.sportArea.entity.dto.account.*;
 import com.sportArea.exception.GeneralException;
 import com.sportArea.service.OrderService;
 import com.sportArea.service.ProductUAService;
@@ -67,11 +66,11 @@ public class OrderServiceImp implements OrderService {
 //    }
 
     @Override
-    public List<UserOrders> allUserOrders(Long userId){
+    public UserOrders allUserOrders(Long userId){
 
         List<Order>  listOrder =orderRepository.findAllByUserId(userId);
 
-        List<UserOrders>  list =  convertToUserOrders(listOrder);
+        UserOrders  list =  convertToUserOrders(listOrder);
 
         return list;
 
@@ -228,7 +227,21 @@ public class OrderServiceImp implements OrderService {
         productUAService.save(productUA);
     }
 
-    public UserOrderProducts createFromOrderItem (OrderItem orderItem){
+    public UserOrderProductEN createENFromOrderItem (OrderItem orderItem){
+        return  UserOrderProductEN.builder()
+                .productId(orderItem.getProduct().getProductEN().getProductId())
+                .productName(orderItem.getProduct().getProductEN().getProductName())
+                .productPrice(orderItem.getProduct().getProductEN().getPrice())
+                .urlImage(orderItem.getProduct().getProductEN().getUrlImage())
+                .itemId(orderItem.getItemId())
+                .productQuantity(orderItem.getProductQuantity())
+                .productTotalPrice(orderItem.getProductTotalPrice())
+                .build();
+
+
+    }
+    public UserOrderProducts createUAFromOrderItem (OrderItem orderItem){
+
         return UserOrderProducts.builder()
                 .productId(orderItem.getProduct().getProductId())
                 .productName(orderItem.getProduct().getProductName())
@@ -240,40 +253,101 @@ public class OrderServiceImp implements OrderService {
                 .build();
 
     }
-    public List<UserOrderProducts> convertToUserOrderProductsList(List<OrderItem> products) {
+    public List<UserOrderProducts> convertToUserOrderProductsUAList(List<OrderItem> products) {
         List<UserOrderProducts> userOrderProductsList = products.stream()
-                .map(this::createFromOrderItem)
+                .map(this::createUAFromOrderItem)
                 .toList();
 
         return userOrderProductsList;
     }
-    public UserOrders createFromOrder(Order order){
-        return UserOrders.builder()
-                .orderId(order.getOrderId())
-                .orderTotalPrice(order.getOrderTotalPrice())
-                .orderDate(order.getOrderDate())
-                .orderStatus(convertOrderStatusToUA(order.getOrderStatus()))
-                .products(convertToUserOrderProductsList(order.getProducts()))
-                .build();
 
-    }
-
-    public List<UserOrders> convertToUserOrders (List<Order>  listOrder){
-
-        List<UserOrders> userOrdersList = listOrder.stream()
-                .map(this::createFromOrder)
+    public List<UserOrderProductEN> convertToUserOrderProductsENList(List<OrderItem> products) {
+        List<UserOrderProductEN> userOrderProductsList = products.stream()
+                .map(this::createENFromOrderItem)
                 .toList();
 
-        return userOrdersList;
+        return userOrderProductsList;
+    }
 
+    public UserOrdersUA createUAFromOrder(Order order){
+        return UserOrdersUA.builder()
+                .orderId(order.getOrderId())
+                .orderTotalPrice(order.getOrderTotalPrice())
+                .orderDate(order.getOrderDate().toLocalDate())
+                .deliveryAddress(order.getOrderInfo().getDelivery())
+                .paymentMethod(order.getPaymentMethod())
+                .statusText(convertOrderStatusToUA(order.getOrderStatus()))
+                .status(order.getOrderStatus())
+                .products(convertToUserOrderProductsUAList(order.getProducts()))
+                .build();
+
+//        UserOrdersEN userOrdersEN = UserOrdersEN.builder()
+//                .orderId(order.getOrderId())
+//                .orderTotalPrice(order.getOrderTotalPrice())
+//                .orderDate(order.getOrderDate().toLocalDate())
+//                .deliveryAddress(order.getOrderInfo().getDelivery())
+//                .paymentMethod(convertPaymentMethodToEN(order.getPaymentMethod()))
+//                .statusText(convertOrderStatusToEN(order.getOrderStatus()))
+//                .status(order.getOrderStatus())
+//                .products(convertToUserOrderProductsENList(order.getProducts()))
+//                .build();
+
+//        return UserOrders.builder()
+//                .userOrdersUA(userOrdersUA)
+//                .userOrdersEN(userOrdersEN)
+//                .build();
 
     }
 
-    public String convertOrderStatusToUA(OrderStatus orderStatus){
+    public UserOrdersEN createENFromOrder(Order order){
+//        UserOrdersUA userOrdersUA =UserOrdersUA.builder()
+//                .orderId(order.getOrderId())
+//                .orderTotalPrice(order.getOrderTotalPrice())
+//                .orderDate(order.getOrderDate().toLocalDate())
+//                .deliveryAddress(order.getOrderInfo().getDelivery())
+//                .paymentMethod(order.getPaymentMethod())
+//                .statusText(convertOrderStatusToUA(order.getOrderStatus()))
+//                .status(order.getOrderStatus())
+//                .products(convertToUserOrderProductsUAList(order.getProducts()))
+//                .build();
+
+        return UserOrdersEN.builder()
+                .orderId(order.getOrderId())
+                .orderTotalPrice(order.getOrderTotalPrice())
+                .orderDate(order.getOrderDate().toLocalDate())
+                .deliveryAddress(order.getOrderInfo().getDelivery())
+                .paymentMethod(convertPaymentMethodToEN(order.getPaymentMethod()))
+                .statusText(convertOrderStatusToEN(order.getOrderStatus()))
+                .status(order.getOrderStatus())
+                .products(convertToUserOrderProductsENList(order.getProducts()))
+                .build();
+
+//        return UserOrders.builder()
+//                .userOrdersUA(userOrdersUA)
+//                .userOrdersEN(userOrdersEN)
+//                .build();
+
+    }
+
+    public UserOrders convertToUserOrders (List<Order>  listOrder){
+        List<UserOrdersUA> uaList = listOrder.stream()
+                .map(this::createUAFromOrder)
+                .toList();
+
+        List<UserOrdersEN> enList = listOrder.stream()
+                .map(this::createENFromOrder)
+                .toList();
+
+        return UserOrders.builder()
+                .userOrdersUA(uaList)
+                .userOrdersEN(enList)
+                .build();
+    }
+
+    public String convertOrderStatusToUA(OrderStatus orderStatus) {
         if (orderStatus == null) {
             return null;
         }
-
         switch (orderStatus) {
             case DONE:
                 return "Виконано";
@@ -285,4 +359,35 @@ public class OrderServiceImp implements OrderService {
                 return null;
         }
     }
+
+    public String convertOrderStatusToEN (OrderStatus orderStatus){
+        if (orderStatus == null) {
+            return null;
+        }
+        switch (orderStatus) {
+            case DONE:
+                return "DONE";
+            case IN_PROGRESS:
+                return "IN PROGRESS";
+            case CANCEL:
+                return "CANCEL";
+            default:
+                return null;
+        }
+    }
+
+    public String convertPaymentMethodToEN (String paymentMethod){
+        if (paymentMethod == null) {
+            return null;
+        }
+        switch (paymentMethod) {
+            case "Оплата при отриманні":
+                return "Payment upon receipt";
+            case "Оплата карткою онлайн":
+                return "Payment by card online";
+            default:
+                return null;
+        }
+    }
+
 }
