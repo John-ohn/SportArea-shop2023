@@ -3,44 +3,44 @@ package com.sportArea.service.Imp;
 import com.sportArea.dao.BlogRepository;
 import com.sportArea.entity.Blog;
 import com.sportArea.entity.dto.BlogDTO;
-import org.aspectj.lang.annotation.Before;
+import com.sportArea.exception.GeneralException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.mockito.junit.MockitoJUnitRunner;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.http.HttpStatus;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.mockito.Mockito.*;
 
 
 //@SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.NONE)
 @ExtendWith(MockitoExtension.class)
-
 class BlogServiceImpTest {
 
     @Mock
-    private  BlogRepository blogRepository;
+    private BlogRepository blogRepository;
 
     @InjectMocks
     private BlogServiceImp blogServiceImp;
 
     private Blog blogOne;
 
+    private Blog blogSecond;
+
     @BeforeEach
     public void setup() {
 //        MockitoAnnotations.openMocks(this);
 
-        blogOne= Blog.builder()
+        blogOne = Blog.builder()
                 .blogId(1L)
                 .title("How be stronger")
                 .text("<p>Безумовно, одним з проявів любові до власного тіла є дбайливе ставлення до його фізичної форми, сили та витривалості. Це стосується не лише естетичного аспекту, але й загального самопочуття та здоров'я. Фізична активність розганяє біль, втому та поганий настрій.</p><br>\n" +
@@ -53,13 +53,8 @@ class BlogServiceImpTest {
                         "\n")
                 .urlMainImage("https://www.dung.com/wp-content/uploads/2022/11/main-1.2.0.png")
                 .build();
-    }
 
-    @Test
-    @DisplayName("Test BlogServiceImpTest method findAll")
-    void findAll() {
-        List<Blog> list = new ArrayList<>();
-        Blog blogSecond = Blog.builder()
+        blogSecond = Blog.builder()
                 .blogId(2L)
                 .title("How be goode")
                 .text("<p>Безумовно, одним з проявів любові до власного тіла є дбайливе ставлення до його фізичної форми, сили та витривалості. Це стосується не лише естетичного аспекту, але й загального самопочуття та здоров'я. Фізична активність розганяє біль, втому та поганий настрій.</p><br>\n" +
@@ -72,43 +67,137 @@ class BlogServiceImpTest {
                         "\n")
                 .urlMainImage("https://www.dung.com/wp-content/uploads/2022/11/main-1.2.10.png")
                 .build();
+    }
+
+    @Test
+    @DisplayName("Test BlogServiceImp method findAll")
+    void testMethodFindAll() {
+        when(blogRepository.findAll()).thenReturn(List.of());
+
+        Throwable error = assertThrows(GeneralException.class, () ->
+                blogServiceImp.findAll());
+
+        assertThrows(GeneralException.class, () -> blogServiceImp.findAll());
+        assertEquals("Don't find any Blog. Blogs list is empty.", error.getMessage());
+
+        List<Blog> list = new ArrayList<>();
+
 
         list.add(blogOne);
         list.add(blogSecond);
 
-        when(blogRepository.findAll()).thenReturn(List.of(blogOne,blogSecond));
+        when(blogRepository.findAll()).thenReturn(List.of(blogOne, blogSecond));
 
-        List<BlogDTO> blogs =blogServiceImp.findAll();
+        List<BlogDTO> blogs = blogServiceImp.findAll();
 
         assertAll(
-                ()-> assertFalse(blogs.isEmpty()),
-                ()-> assertEquals(2,blogs.size())
+                () -> assertFalse(blogs.isEmpty()),
+                () -> assertEquals(2, blogs.size())
         );
 
-        verify(blogRepository, times(1)).findAll();
+        verify(blogRepository, times(3)).findAll();
     }
 
     @Test
-    void findById() {
+    @DisplayName("Test BlogServiceImp method findAll")
+    void testMethodFindById() {
+
+        when(blogRepository.findById(blogOne.getBlogId())).thenReturn(Optional.ofNullable(blogOne));
+
+        BlogDTO blogDTO = blogServiceImp.findById(blogOne.getBlogId());
+
+        assertAll(
+                () -> assertNotNull(blogDTO),
+                () -> assertEquals(blogOne.getBlogId(), blogDTO.getBlogId())
+        );
+
+        Throwable error = assertThrows(GeneralException.class, () ->
+                blogServiceImp.findById(blogOne.getBlogId() + 2));
+
+        assertThrows(GeneralException.class, () -> blogServiceImp.findById(blogOne.getBlogId() + 2));
+        assertEquals("Blog with blogId: " + (blogOne.getBlogId() + 2) + " is not available.", error.getMessage());
+
+        verify(blogRepository, times(3)).findById(any());
     }
 
     @Test
-    void createBlogDTOFromBlog() {
+    @DisplayName("Test BlogServiceImp method createBlogDTOFromBlog")
+    void testMethodCreateBlogDTOFromBlog() {
+
+        BlogDTO blogDTO = blogServiceImp.createBlogDTOFromBlog(blogOne);
+
+        assertNotNull(blogDTO);
+        assertEquals(blogOne.getBlogId(), blogDTO.getBlogId());
+
+        GeneralException error = assertThrows(GeneralException.class, () ->
+                blogServiceImp.createBlogDTOFromBlog(null));
+
+        assertThrows(GeneralException.class, () -> blogServiceImp.createBlogDTOFromBlog(null));
+        assertEquals("Blog is null and not available.", error.getMessage());
+        assertEquals(HttpStatus.BAD_REQUEST, error.getHttpStatus());
+
     }
 
     @Test
-    void convertToProductDTOList() {
+    @DisplayName("Test BlogServiceImp method convertToProductDTOList")
+    void testMethodConvertToProductDTOList() {
+
+        List<Blog> list = new ArrayList<>();
+
+        assertTrue(list.isEmpty());
+
+        list.add(blogOne);
+        list.add(blogSecond);
+
+        List<BlogDTO> blogList = blogServiceImp.convertToProductDTOList(list);
+
+        assertAll(
+                () -> assertFalse(blogList.isEmpty()),
+                () -> assertEquals(2, blogList.size())
+        );
     }
 
     @Test
-    void titek() {
+    @DisplayName("Test BlogServiceImp method addSubTitle")
+    void testMethodAddSubTitle() {
+
+        BlogDTO blogDTOFirst = blogServiceImp.createBlogDTOFromBlog(blogOne);
+        BlogDTO blogDTOSecond = blogServiceImp.createBlogDTOFromBlog(blogSecond);
+
+        List<BlogDTO> listBlogs = new ArrayList<>();
+
+        listBlogs.add(blogDTOFirst);
+        listBlogs.add(blogDTOSecond);
+
+        blogServiceImp.addSubTitle(listBlogs);
+
+        assertFalse(listBlogs.isEmpty());
+        assertTrue(listBlogs.get(listBlogs.indexOf(blogDTOFirst)).getSubTitle().length() <= 165);
+        assertEquals("Безумовно, одним з проявів любові до власного тіла є дбайливе ставлення до його фізичної форми, сили та витривалості. " +
+                        "Це стосується не лише естетичного аспекту,...",
+                listBlogs.get(listBlogs.indexOf(blogDTOFirst)).getSubTitle());
     }
 
     @Test
-    void cutText() {
+    @DisplayName("Test BlogServiceImp method cutText")
+    void testMethodCutText() {
+
+        String cutText = BlogServiceImp.cutText(blogOne.getText());
+
+        assertNotNull(cutText);
+        assertEquals("Безумовно, одним з проявів любові до власного тіла є дбайливе ставлення до його фізичної форми, сили та витривалості. " +
+                "Це стосується не лише естетичного аспекту,...", cutText);
+
     }
 
     @Test
-    void cutText2() {
+    @DisplayName("Test BlogServiceImp method cutText2")
+    void testMethodCutText2() {
+        String cutText = BlogServiceImp.cutText2(blogOne.getText());
+
+        assertNotNull(cutText);
+        assertEquals("Безумовно, одним з проявів любові до власного тіла є дбайливе ставлення до його фізичної форми, сили та витривалості. " +
+                "Це стосується не лише естетичного аспекту, але...", cutText);
+
     }
 }

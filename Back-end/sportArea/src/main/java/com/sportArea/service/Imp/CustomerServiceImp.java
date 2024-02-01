@@ -1,14 +1,13 @@
 package com.sportArea.service.Imp;
 
+import com.sportArea.dao.CommentRepository;
 import com.sportArea.dao.CustomerRepository;
-import com.sportArea.entity.Customer;
-import com.sportArea.entity.Role;
-import com.sportArea.entity.Status;
-import com.sportArea.entity.TypeRegistration;
+import com.sportArea.entity.*;
 import com.sportArea.entity.dto.UserRegistration;
 import com.sportArea.entity.dto.UserDTOUpdate;
 import com.sportArea.entity.dto.UserUpdateRequest;
 import com.sportArea.exception.GeneralException;
+import com.sportArea.service.CommentService;
 import com.sportArea.service.EmailService;
 import com.sportArea.service.PasswordGeneratorService;
 import com.sportArea.service.CustomerService;
@@ -36,7 +35,13 @@ import java.util.Optional;
 public class CustomerServiceImp implements CustomerService {
 
     Logger logger = LoggerFactory.getLogger(CustomerServiceImp.class);
+
+    // We use it when updating user changes. Specify whether to run the commenter update method when the username changes.
+    private Boolean userNameBeenChanged = false;
+
     private final CustomerRepository customerRepository;
+
+    private final CommentRepository commentService;
 
     private final PasswordEncoder passwordEncoder;
 
@@ -48,11 +53,15 @@ public class CustomerServiceImp implements CustomerService {
     public CustomerServiceImp(CustomerRepository customerRepository,
                               PasswordEncoder passwordEncoder,
                               @Qualifier("gmailSMTServiceImp") EmailService emailService,
-                              PasswordGeneratorService passwordGeneratorService) {
+                              PasswordGeneratorService passwordGeneratorService,
+                              CommentRepository commentService
+                              ) {
         this.customerRepository = customerRepository;
         this.passwordEncoder = passwordEncoder;
         this.emailService = emailService;
         this.passwordGeneratorService = passwordGeneratorService;
+        this.commentService=commentService;
+
     }
 
     @Override
@@ -176,6 +185,12 @@ public class CustomerServiceImp implements CustomerService {
 
             customerRepository.save(customer);
 
+            if(userNameBeenChanged) {
+                updateUserNameInComments(customer);
+
+                //after we rewrote the username in the comments, we return the value (userNameBeenChanged) to false
+                userNameBeenChanged=false;
+            }
             logger.info("From UserServiceImp method -updateUser- Made update User field in Data Base.");
 
         } else {
@@ -184,6 +199,21 @@ public class CustomerServiceImp implements CustomerService {
 
             throw new GeneralException("User is not available or his is empty. ", HttpStatus.NOT_FOUND);
         }
+    }
+
+    private void updateUserNameInComments(Customer customer){
+
+        List<Comment> commentList = commentService.findAllUserComments(customer.getUserId());
+
+        commentList.forEach(comment -> {
+                    comment.setUserName(customer.getFirstName());
+                    logger.info("From UserServiceImp method -updateUserNameInComments- send  message " +
+                            "( update user name  ()");
+                    commentService.updateUserUserName(customer.getUserId(),customer.getFirstName());
+                    logger.info("From UserServiceImp method -updateUserNameInComments- send  message " +
+                            "( save user name  ()");
+        });
+
     }
 
     //Make validation ond updates User fields.
@@ -201,6 +231,8 @@ public class CustomerServiceImp implements CustomerService {
             // Update fields.
             if (fieldName.getFirstName() != null) {
                 user.setFirstName(fieldName.getFirstName());
+                // Indicate that we are changing the username.
+                userNameBeenChanged = true;
             }
             // Update fields.
             if (fieldName.getLastName() != null) {
@@ -261,9 +293,9 @@ public class CustomerServiceImp implements CustomerService {
         if (user.isPresent()) {
 
             String randomPassword = passwordGeneratorService.generatePassword(length);
-            logger.info("From UserServiceImp method -forgotPassword- Generator new password to user {}, {}", email , randomPassword);
+            logger.info("From UserServiceImp method -forgotPassword- Generator new password to user {}, {}", email, randomPassword);
 
-            customerRepository.updateUserPassword(user.get().getUserId(),passwordEncoder.encode(randomPassword));
+            customerRepository.updateUserPassword(user.get().getUserId(), passwordEncoder.encode(randomPassword));
             logger.info("From UserServiceImp method -forgotPassword- save new password to user {}", email);
 
             emailService.sendHtmlEmailForgotPassword(email, randomPassword);
