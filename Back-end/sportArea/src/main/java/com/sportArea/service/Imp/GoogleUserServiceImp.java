@@ -1,11 +1,19 @@
 package com.sportArea.service.Imp;
 
+
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.http.javanet.NetHttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.gson.GsonFactory;
 import com.sportArea.dao.CustomerRepository;
 import com.sportArea.entity.Role;
 import com.sportArea.entity.Status;
 import com.sportArea.entity.TypeRegistration;
 import com.sportArea.entity.Customer;
 import com.sportArea.entity.dto.GoogleUserDTO;
+import com.sportArea.entity.dto.restJWT.AuthenticationGoogleRequestDto;
 import com.sportArea.exception.GeneralException;
 import com.sportArea.security.JwtTokenProvider;
 import com.sportArea.service.GoogleUserService;
@@ -24,6 +32,10 @@ import java.util.*;
 @Service
 @Transactional
 public class GoogleUserServiceImp implements GoogleUserService {
+
+
+//    @Value("${google.clientID}")
+//    private String googleClientId="535501168701-jn3j530ctea52lth65lndv7jlov632bi.apps.googleusercontent.com";
 
     @Autowired
     private JwtTokenProvider jwtTokenProvider;
@@ -126,5 +138,71 @@ public class GoogleUserServiceImp implements GoogleUserService {
             googleAccount.put("lastName", firstLastName[1]);
             return googleAccount;
         }
+    }
+
+
+
+
+    @Override
+    public Customer loginGoogle(AuthenticationGoogleRequestDto requestDto) {
+       try {
+           String googleClientId = "535501168701-jn3j530ctea52lth65lndv7jlov632bi.apps.googleusercontent.com";
+           HttpTransport transport = new NetHttpTransport();
+           JsonFactory jsonFactory = GsonFactory.getDefaultInstance();
+
+           GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(transport, jsonFactory)
+                   .setAudience(Collections.singletonList(googleClientId))
+                   .build();
+           GoogleIdToken idToken = verifier.verify(requestDto.getToken());
+
+        if (idToken != null) {
+            GoogleIdToken.Payload payload = idToken.getPayload();
+
+            String userId = payload.getSubject();
+            logger.debug("User ID: " + userId);
+
+            String email = payload.getEmail();
+            String name = (String) payload.get("name");
+            String familyName = (String) payload.get("family_name");
+            String givenName = (String) payload.get("given_name");
+
+            logger.debug("Name: " + name);
+            return getUserFromGoogle(email, givenName, familyName);
+        } else {
+            throw new GeneralException(" token.",HttpStatus.BAD_REQUEST);
+        }
+       }catch (Exception e){
+           throw new GeneralException("Invalid ID token.",HttpStatus.BAD_REQUEST);
+       }
+    }
+
+    private Customer getUserFromGoogle(String email, String firstName, String lastName) {
+        Optional<Customer> byEmail = customerRepository.findByEmail(email);
+        Customer user = null;
+
+        if (!byEmail.isPresent()) {
+            user = new Customer();
+//            Role roleUser = roleRepository.findByName("ROLE_USER").orElseThrow(() -> {
+//                throw new ItemNotFoundException("Role not found");
+//            });
+            List<Role> userRoles = new ArrayList<>();
+            userRoles.add(Role.ROLE_USER);
+            user.setEmail(email);
+
+//            user.setPassword(passwordEncoder.encode(Helper.getRandomString(10)));
+            user.setPassword(passwordEncoder.encode("google"));
+            user.setRole(Role.ROLE_USER);
+            user.setStatus(Status.ACTIVE);
+//            user.setUserId(null);
+
+//            user.setEmailConfirmed(true);
+            user.setFirstName(firstName);
+            user.setLastName(lastName);
+            customerRepository.save(user);
+
+        } else {
+            user = byEmail.get();
+        }
+        return user;
     }
 }

@@ -2,6 +2,7 @@ package com.sportArea.service.Imp;
 
 import com.sportArea.dao.CommentRepository;
 import com.sportArea.entity.*;
+import com.sportArea.entity.dto.AddComment;
 import com.sportArea.entity.dto.CommentDTO;
 import com.sportArea.exception.GeneralException;
 import com.sportArea.service.CustomerService;
@@ -10,8 +11,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
+import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 
@@ -39,6 +39,21 @@ class CommentServiceImpTest {
 
     @InjectMocks
     private CommentServiceImp commentServiceImp;
+
+    @Captor
+    private ArgumentCaptor<String> messageCaptor;
+
+    @Captor
+    private ArgumentCaptor<String> noteCaptor;
+
+    @Captor
+    private ArgumentCaptor<Long> userIdCaptor;
+
+    @Captor
+    private ArgumentCaptor<Long> productIdCaptor;
+
+    @Captor
+    private ArgumentCaptor<Float> productRatingCaptor;
 
     private Comment commentCompany;
 
@@ -247,30 +262,115 @@ class CommentServiceImpTest {
     }
 
     @Test
+    @DisplayName("Test CommentServiceImp method findCompanyComments")
     void findCompanyComments() {
+        List<Comment> commentList = List.of(commentCompany);
+
+        when(commentRepository.findCompanyComments()).thenReturn(commentList);
+
+        List<CommentDTO> companyCommentsList = commentServiceImp.findCompanyComments();
+
+        assertAll(
+                () -> assertNotNull(companyCommentsList),
+                () -> assertFalse(companyCommentsList.isEmpty()),
+                () -> assertEquals(1, companyCommentsList.size())
+        );
+
+
+        when(commentRepository.findCompanyComments()).thenReturn(new ArrayList<>());
+
+        GeneralException error = assertThrows(GeneralException.class, () -> commentServiceImp.findCompanyComments());
+
+        assertEquals("Company Comments  List is empty.", error.getMessage());
+        assertEquals(HttpStatus.NOT_FOUND, error.getHttpStatus());
     }
 
     @Test
     void deleteResponseIdsBetweenIds() {
+
+
     }
 
     @Test
+    @DisplayName("Test CommentServiceImp method addProductComment")
     void addProductComment() {
+
+        AddComment comment = new AddComment();
+        comment.setMessage(commentProduct.getMessage());
+        comment.setUserId(commentProduct.getCustomer().getUserId());
+        comment.setProductId(commentProduct.getProduct().getProductId());
+        comment.setNote(commentProduct.getNote());
+        comment.setProductRating(commentProduct.getProduct().getRating());
+
+        when(commentRepository.getProductRating(1L)).thenReturn(5F);
+        when(productUAService.findByIdWithoutDTO(1L)).thenReturn(productUA);
+        Mockito.doNothing().when(productUAService).saveWithoutDTO(Mockito.any());
+
+        commentServiceImp.addProductComment(comment);
+
+        verify(commentRepository).addProductComment(
+                messageCaptor.capture(),
+                noteCaptor.capture(),
+                userIdCaptor.capture(),
+                productIdCaptor.capture(),
+                productRatingCaptor.capture()
+        );
+
+        assertAll(
+                () -> assertEquals("Класний продукт рекомендую", messageCaptor.getValue()),
+                () -> assertEquals(Note.FOR_PRODUCT.toString(), noteCaptor.getValue()),
+                () -> assertEquals(1L, userIdCaptor.getValue()),
+                () -> assertEquals(1L, productIdCaptor.getValue()),
+                () -> assertEquals(5F, productRatingCaptor.getValue())
+        );
+
     }
 
     @Test
     void createCommentFromCommentDTO() {
+
     }
 
     @Test
+    @DisplayName("Test CommentServiceImp method createCommentDTOFromComment")
     void createCommentDTOFromComment() {
+
+        CommentDTO commentDTO = commentServiceImp.createCommentDTOFromComment(commentProduct);
+
+        assertAll(
+                () -> assertNotNull(commentDTO),
+                () -> assertEquals(commentProduct.getMessage(), commentDTO.getMessage()),
+                () -> assertEquals(commentProduct.getProductRating(), commentDTO.getProductRating()),
+                () -> assertEquals(commentProduct.getCommentId(), commentDTO.getCommentId())
+        );
     }
 
     @Test
+    @DisplayName("Test CommentServiceImp method convertToCommentDTOList")
     void convertToCommentDTOList() {
+        List<Comment> commentList = List.of(commentCompany,commentProduct);
+
+        List<CommentDTO> commentDTOList = commentServiceImp.convertToCommentDTOList(commentList);
+
+        assertAll(
+                () -> assertFalse(commentDTOList.isEmpty()),
+                () -> assertEquals(2,commentDTOList.size() )
+
+        );
     }
 
     @Test
+    @DisplayName("Test CommentServiceImp method addProductRating")
     void addProductRating() {
+        Long productId = 1L;
+        when(commentRepository.getProductRating(productId)).thenReturn(5F);
+        when(productUAService.findByIdWithoutDTO(productId)).thenReturn(productUA);
+        Mockito.doNothing().when(productUAService).saveWithoutDTO(Mockito.any());
+
+        commentServiceImp.addProductRating(productId);
+
+        verify(commentRepository).getProductRating(productId);
+        verify(productUAService).findByIdWithoutDTO(productId);
+        verify(productUAService).saveWithoutDTO(productUA);
     }
 }

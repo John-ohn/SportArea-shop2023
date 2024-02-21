@@ -26,10 +26,10 @@ import java.util.ArrayList;
 import java.util.Map;
 
 @Component
+
 public class JwtTokenFilter extends GenericFilterBean {
     @Autowired
     private GeneralLogg generalLogg;
-
 
     private final JwtTokenProvider jwtTokenProvider;
 

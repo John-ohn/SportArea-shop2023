@@ -42,7 +42,7 @@ public class BlogServiceImp implements BlogService {
             return blogList;
         } else {
             logger.warn("From BlogServiceImp method -findAll- send war message " +
-                    "( Blog with blogId is not available. ({}))", HttpStatus.NOT_FOUND);
+                    "( Don't find any Blog. Blogs list is empty.. ({}))", HttpStatus.NOT_FOUND);
             throw new GeneralException("Don't find any Blog. Blogs list is empty.", HttpStatus.NOT_FOUND);
         }
     }

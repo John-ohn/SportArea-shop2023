@@ -3,6 +3,7 @@ package com.sportArea.service.Imp;
 import com.sportArea.dao.CommentRepository;
 import com.sportArea.entity.Comment;
 import com.sportArea.entity.Note;
+import com.sportArea.entity.ProductUA;
 import com.sportArea.entity.dto.AddComment;
 import com.sportArea.entity.dto.CommentDTO;
 import com.sportArea.entity.dto.ProductUaDTO;
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -102,7 +104,7 @@ public class CommentServiceImp implements CommentService {
     }
 
     @Override
-    public List<Comment> findAllUserCommentsWithoutDTO (Long userId) {
+    public List<Comment> findAllUserCommentsWithoutDTO(Long userId) {
         List<Comment> commentList = commentRepository.findAllUserComments(userId);
         if (!(commentList.size() == 0)) {
             logger.info("From CommentServiceImp method -findByCommentId- return List to CommentDTO by id: {} ", userId);
@@ -161,7 +163,20 @@ public class CommentServiceImp implements CommentService {
     public List<CommentDTO> findCompanyComments() {
         List<Comment> commentList = commentRepository.findCompanyComments();
 
-        return convertToCommentDTOList(commentList);
+        if (!(commentList.size() == 0)) {
+            List<CommentDTO> commentDTO = convertToCommentDTOList(commentList);
+
+            logger.info("From CommentServiceImp method -findCompanyComments- return List to CommentDTO by Company Comments");
+
+            return commentDTO;
+        } else {
+
+            logger.warn("From CommentServiceImp method -findCompanyComments- send war message " +
+                    "(Company Comments  List is empty. ({}))", HttpStatus.NOT_FOUND.name());
+            throw new GeneralException("Company Comments  List is empty.", HttpStatus.NOT_FOUND);
+
+//            return new ArrayList<>();
+        }
     }
 
     @Override
@@ -233,10 +248,10 @@ public class CommentServiceImp implements CommentService {
     public void addProductRating(Long productId) {
         Float productRating = commentRepository.getProductRating(productId);
 
-        ProductUaDTO productUA = productUAService.findById(productId);
+        ProductUA productUA = productUAService.findByIdWithoutDTO(productId);
         productUA.setRating(productRating);
 
-        productUAService.save(productUA);
+        productUAService.saveWithoutDTO(productUA);
         logger.info("Add new product rating: {}; productId: {} ", productRating, productId);
     }
 

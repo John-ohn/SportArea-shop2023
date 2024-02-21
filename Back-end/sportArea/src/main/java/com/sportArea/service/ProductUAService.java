@@ -12,6 +12,8 @@ public interface ProductUAService {
 
     ProductUaDTO findById(Long productId);
 
+    ProductUA findByIdWithoutDTO(Long productId);
+
     List<ProductUaDTO> findAll();
 
     ProductUA findByIdInProduct(Long productId);
@@ -23,6 +25,8 @@ public interface ProductUAService {
     List<ProductUaDTO> searchByPromotionPrice();
 
     void save(ProductUaDTO product);
+
+    void saveWithoutDTO(ProductUA product);
 
     void delete(Long productId);
 

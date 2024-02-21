@@ -55,6 +55,21 @@ public class ProductUAServiceImp implements ProductUAService {
     }
 
     @Override
+    public ProductUA findByIdWithoutDTO(Long productId) {
+        Optional<ProductUA> product = productRepository.findById(productId);
+
+        if (product.isPresent()) {
+            logger.info("From ProductUAServiceImp method -findByIdWithoutDTO- return Product by id: {} ", productId);
+
+            return product.get();
+        } else {
+            logger.warn("From ProductUAServiceImp method -findByIdWithoutDTO- send war message " +
+                    "( Product with productId {} is not available. ({}))", productId, HttpStatus.NOT_FOUND);
+            throw new GeneralException("Product with productId: " + productId + " is not available.", HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @Override
     public ProductUA findByIdInProduct(Long productId) {
         Optional<ProductUA> product = productRepository.findById(productId);
 
@@ -151,6 +166,25 @@ public class ProductUAServiceImp implements ProductUAService {
         }
     }
 
+    @Override
+    public void saveWithoutDTO(ProductUA product) {
+
+        if (product != null) {
+
+            LocalDateTime localDateTime = LocalDateTime.now();
+            product.setDateCreation(localDateTime);
+            productRepository.save(product);
+
+            logger.info("From ProductUAServiceImp method -saveWithoutDTO- return new message (Product was added successfully.).");
+
+
+        } else {
+            logger.warn("From ProductUAServiceImp method -saveWithoutDTO- send war message " +
+                    "( Product is not available or his is empty. ({}))", HttpStatus.NOT_FOUND.value());
+
+            throw new GeneralException("Product is not available or his is empty. ", HttpStatus.NOT_FOUND);
+        }
+    }
     @Override
     public void delete(Long productId) {
         Optional<ProductUA> product = productRepository.findById(productId);
