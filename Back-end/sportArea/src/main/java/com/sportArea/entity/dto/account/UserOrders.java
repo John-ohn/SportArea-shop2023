@@ -1,5 +1,6 @@
 package com.sportArea.entity.dto.account;
 
+import com.sportArea.entity.DeliveryAddress;
 import com.sportArea.entity.OrderStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -7,7 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.math.BigDecimal;
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.List;
 
 @Data
@@ -16,15 +17,27 @@ import java.util.List;
 @Builder
 public class UserOrders {
 
-    private Long orderId;
 
-    private List<UserOrderProducts> products;
 
-    private BigDecimal orderTotalPrice;
+    private List<UserOrdersUA> userOrdersUA;
 
-    private LocalDateTime orderDate;
+    private List<UserOrdersEN> userOrdersEN;
 
-    private String orderStatus;
+//    private Long orderId;
+//
+//    private List<UserOrderProducts> products;
+//
+//    private BigDecimal orderTotalPrice;
+//
+//    private LocalDate orderDate;
+//
+//    private DeliveryAddress deliveryAddress;
+//
+//    private String paymentMethod;
+//
+//    private String statusText;
+//
+//    private OrderStatus status;
 
 
 }

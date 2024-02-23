@@ -10,7 +10,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-public class RegistrationStatus {
+public class GeneralResponse {
 
     private int status;
     private String message;

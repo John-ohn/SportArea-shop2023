@@ -17,7 +17,7 @@ public interface OrderService {
 
     Order findByUserId(Long userId);
 
-    List<UserOrders> allUserOrders(Long userId);
+    UserOrders allUserOrders(Long userId);
 
 //    void save(OrderDTO order);
 //

@@ -1,9 +1,11 @@
 package com.sportArea.controller;
 
 import com.sportArea.entity.MailSubscription;
+import com.sportArea.entity.dto.GeneralResponse;
 import com.sportArea.entity.dto.logger.GeneralLogg;
 import com.sportArea.service.MailSubscriptionService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,7 +23,7 @@ public class EmailController {
     private final MailSubscriptionService mailSubscriptionService;
 
     @PostMapping("/subscription")
-    public ResponseEntity<?> sendAfterSubscription(@RequestBody MailSubscription mailRequest) throws MessagingException, IOException {
+    public ResponseEntity<GeneralResponse> sendAfterSubscription(@RequestBody MailSubscription mailRequest) throws MessagingException, IOException {
 
         mailSubscriptionService.addNewSubscription(mailRequest);
 
@@ -30,7 +32,11 @@ public class EmailController {
                 "/send/subscription",
                 "message (The subscription was successful.) and Save new subscription with user email: " + mailRequest.getEmail());
 
-        return ResponseEntity.ok("The subscription was successful.");
+        GeneralResponse generalResponse = new GeneralResponse(
+                HttpStatus.OK.value(),
+                "The subscription was successful.");
+
+        return ResponseEntity.ok(generalResponse);
     }
 
 

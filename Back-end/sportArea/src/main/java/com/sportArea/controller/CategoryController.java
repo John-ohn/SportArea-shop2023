@@ -1,9 +1,11 @@
 package com.sportArea.controller;
 
 import com.sportArea.entity.TargetCategory;
+import com.sportArea.entity.dto.GeneralResponse;
 import com.sportArea.entity.dto.logger.GeneralLogg;
 import com.sportArea.service.TargetCategoryService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -49,7 +51,7 @@ public class CategoryController {
     }
 
     @PostMapping("/targets")
-    public ResponseEntity<String> saveTargetCategory(@RequestBody TargetCategory category) {
+    public ResponseEntity<GeneralResponse> saveTargetCategory(@RequestBody TargetCategory category) {
 
         targetCategoryService.save(category);
 
@@ -58,11 +60,15 @@ public class CategoryController {
                 "/targets",
                 "message (saved on target category successfully) ");
 
-        return ResponseEntity.ok("Category was saved on target category successfully");
+        GeneralResponse generalResponse = new GeneralResponse(
+                HttpStatus.CREATED.value(),
+                "Category was saved on target category successfully");
+
+        return ResponseEntity.ok(generalResponse);
     }
 
     @DeleteMapping("/targets/{categoryId}")
-    public ResponseEntity<String> deleteTargetCategory(@PathVariable("categoryId") Long categoryId) {
+    public ResponseEntity<GeneralResponse> deleteTargetCategory(@PathVariable("categoryId") Long categoryId) {
 
         targetCategoryService.delete(categoryId);
 
@@ -71,6 +77,10 @@ public class CategoryController {
                 "/targets/{categoryId}",
                 "message (Category was deleted ) categoryId " + categoryId);
 
-        return ResponseEntity.ok("Category was deleted from target category successfully");
+        GeneralResponse generalResponse = new GeneralResponse(
+                HttpStatus.CREATED.value(),
+                "Category was deleted from target category successfully");
+
+        return ResponseEntity.ok(generalResponse);
     }
 }

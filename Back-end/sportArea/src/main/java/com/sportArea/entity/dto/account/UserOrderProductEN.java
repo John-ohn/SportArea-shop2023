@@ -11,7 +11,7 @@ import java.math.BigDecimal;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class UserOrderProducts {
+public class UserOrderProductEN {
 
     private Long productId;
 
@@ -26,7 +26,4 @@ public class UserOrderProducts {
     private Integer productQuantity;
 
     private BigDecimal productTotalPrice;
-
-    private UserOrderProductEN productEN;
-
 }

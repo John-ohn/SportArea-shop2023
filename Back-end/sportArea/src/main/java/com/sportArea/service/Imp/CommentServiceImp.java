@@ -3,6 +3,7 @@ package com.sportArea.service.Imp;
 import com.sportArea.dao.CommentRepository;
 import com.sportArea.entity.Comment;
 import com.sportArea.entity.Note;
+import com.sportArea.entity.ProductUA;
 import com.sportArea.entity.dto.AddComment;
 import com.sportArea.entity.dto.CommentDTO;
 import com.sportArea.entity.dto.ProductUaDTO;
@@ -18,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -57,6 +59,35 @@ public class CommentServiceImp implements CommentService {
     }
 
     @Override
+    public Comment findByIdWithoutDTO(Long commentId) {
+        Optional<Comment> responseOptional = commentRepository.findById(commentId);
+        if (responseOptional.isPresent()) {
+
+
+            logger.info("From CommentServiceImp method -findById- return CommentDTO by id: {} ", commentId);
+            return responseOptional.get();
+        } else {
+            logger.warn("From CommentServiceImp method -findById- send war message " +
+                    "( Comment with commentId: {} is not available. ({}))", commentId, HttpStatus.NOT_FOUND.name());
+            throw new GeneralException("Comment with commentId: " + commentId + " is not available.", HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @Override
+    public void save(Comment comment) {
+
+        if (comment != null) {
+
+            logger.info("From CommentServiceImp method -save- Save Comment by id: {} ", comment.getCommentId());
+            commentRepository.save(comment);
+        } else {
+            logger.warn("From CommentServiceImp method -save- send war message " +
+                    "( Comment  is not available. ({}))", HttpStatus.NOT_FOUND.name());
+            throw new GeneralException("Comment is not available.", HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @Override
     public List<CommentDTO> findAllUserComments(Long userId) {
         List<Comment> commentList = commentRepository.findAllUserComments(userId);
         if (!(commentList.size() == 0)) {
@@ -65,6 +96,19 @@ public class CommentServiceImp implements CommentService {
 
             logger.info("From CommentServiceImp method -findByCommentId- return List to CommentDTO by id: {} ", userId);
             return commentDTO;
+        } else {
+            logger.warn("From CommentServiceImp method -findAllUserComments- send war message " +
+                    "( Comment with userId: {} is not available. ({}))", userId, HttpStatus.NOT_FOUND.name());
+            throw new GeneralException("User with userId: " + userId + " is not available.", HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @Override
+    public List<Comment> findAllUserCommentsWithoutDTO(Long userId) {
+        List<Comment> commentList = commentRepository.findAllUserComments(userId);
+        if (!(commentList.size() == 0)) {
+            logger.info("From CommentServiceImp method -findByCommentId- return List to CommentDTO by id: {} ", userId);
+            return commentList;
         } else {
             logger.warn("From CommentServiceImp method -findAllUserComments- send war message " +
                     "( Comment with userId: {} is not available. ({}))", userId, HttpStatus.NOT_FOUND.name());
@@ -109,8 +153,8 @@ public class CommentServiceImp implements CommentService {
             logger.info("From CommentServiceImp method -delete- return message (Comment with commentId: {} was deleted.).", responseId);
         } else {
             logger.warn("From CommentServiceImp method -delete- send war message " +
-                    "(Comment with responseId: {} is not available. ({}) )", responseId, HttpStatus.NOT_FOUND.name());
-            throw new GeneralException("Comment with responseId: " + responseId + " is not available.", HttpStatus.NOT_FOUND);
+                    "(Comment with responseId: {} is not available. ({}) )", responseId, HttpStatus.BAD_REQUEST.name());
+            throw new GeneralException("Comment with responseId: " + responseId + " is not available.", HttpStatus.BAD_REQUEST);
         }
 
     }
@@ -119,7 +163,20 @@ public class CommentServiceImp implements CommentService {
     public List<CommentDTO> findCompanyComments() {
         List<Comment> commentList = commentRepository.findCompanyComments();
 
-        return convertToCommentDTOList(commentList);
+        if (!(commentList.size() == 0)) {
+            List<CommentDTO> commentDTO = convertToCommentDTOList(commentList);
+
+            logger.info("From CommentServiceImp method -findCompanyComments- return List to CommentDTO by Company Comments");
+
+            return commentDTO;
+        } else {
+
+            logger.warn("From CommentServiceImp method -findCompanyComments- send war message " +
+                    "(Company Comments  List is empty. ({}))", HttpStatus.NOT_FOUND.name());
+            throw new GeneralException("Company Comments  List is empty.", HttpStatus.NOT_FOUND);
+
+//            return new ArrayList<>();
+        }
     }
 
     @Override
@@ -191,10 +248,10 @@ public class CommentServiceImp implements CommentService {
     public void addProductRating(Long productId) {
         Float productRating = commentRepository.getProductRating(productId);
 
-        ProductUaDTO productUA = productUAService.findById(productId);
+        ProductUA productUA = productUAService.findByIdWithoutDTO(productId);
         productUA.setRating(productRating);
 
-        productUAService.save(productUA);
+        productUAService.saveWithoutDTO(productUA);
         logger.info("Add new product rating: {}; productId: {} ", productRating, productId);
     }
 

@@ -21,31 +21,31 @@ public interface ProductUARepository extends JpaRepository<ProductUA, Long> {
     void deleteBetweenIds(@Param("startId") Long startId, @Param("endId") Long endId);
 
     @QueryHints(@QueryHint(name = org.hibernate.jpa.QueryHints.HINT_READONLY, value = "true"))
-    @Query("SELECT prod FROM ProductUA prod WHERE prod.description LIKE %:keyWord%")
+    @Query("SELECT prod FROM ProductUA prod left JOIN fetch prod.productEN WHERE prod.description LIKE %:keyWord%")
     List<ProductUA> searchByKeyWordInDescription(@Param("keyWord") String keyWord);
 
     @QueryHints(@QueryHint(name = org.hibernate.jpa.QueryHints.HINT_READONLY, value = "true"))
-    @Query("SELECT p FROM ProductUA p WHERE p.description LIKE %:keyWord%  ORDER BY p.price ASC")
+    @Query("SELECT p FROM ProductUA p left JOIN fetch p.productEN WHERE p.description LIKE %:keyWord%  ORDER BY p.price ASC")
     List<ProductUA> sortByPriceAscKeyWordDescription(@Param("keyWord") String keyWord);
 
     @QueryHints(@QueryHint(name = org.hibernate.jpa.QueryHints.HINT_READONLY, value = "true"))
-    @Query("SELECT p FROM ProductUA p WHERE p.description LIKE %:keyWord% ORDER BY p.price DESC")
+    @Query("SELECT p FROM ProductUA p  left JOIN fetch p.productEN WHERE p.description LIKE %:keyWord% ORDER BY p.price DESC")
     List<ProductUA> sortByPriceDescKeyWordDescription(@Param("keyWord") String keyWord);
 
     @QueryHints(@QueryHint(name = org.hibernate.jpa.QueryHints.HINT_READONLY, value = "true"))
-    @Query("SELECT p FROM ProductUA p WHERE p.description LIKE %:keyWord% ORDER BY p.rating DESC")
+    @Query("SELECT p FROM ProductUA p  left JOIN fetch p.productEN WHERE p.description LIKE %:keyWord% ORDER BY p.rating DESC")
     List<ProductUA> sortByRatingDescKeyWordDescription(@Param("keyWord") String keyWord);
 
     @QueryHints(@QueryHint(name = org.hibernate.jpa.QueryHints.HINT_READONLY, value = "true"))
-    @Query("SELECT p FROM ProductUA p WHERE p.description LIKE %:keyWord% ORDER BY p.productName ASC")
+    @Query("SELECT p FROM ProductUA p  left JOIN fetch p.productEN WHERE p.description LIKE %:keyWord% ORDER BY p.productName ASC")
     List<ProductUA> sortByProductNameAscKeyWordDescription(@Param("keyWord") String keyWord);
 
     @QueryHints(@QueryHint(name = org.hibernate.jpa.QueryHints.HINT_READONLY, value = "true"))
-    @Query("SELECT p FROM ProductUA p WHERE p.description LIKE %:keyWord% ORDER BY p.numberOfOrders DESC")
+    @Query("SELECT p FROM ProductUA p   left JOIN fetch p.productEN WHERE p.description LIKE %:keyWord% ORDER BY p.numberOfOrders DESC")
     List<ProductUA> sortByNumberOfOrdersDescKeyWordDescription(@Param("keyWord") String keyWord);
 
     @QueryHints(@QueryHint(name = org.hibernate.jpa.QueryHints.HINT_READONLY, value = "true"))
-    @Query("SELECT p FROM ProductUA p WHERE p.description LIKE %:keyWord% " +
+    @Query("SELECT p FROM ProductUA p  left JOIN fetch p.productEN WHERE p.description LIKE %:keyWord% " +
             "AND p.price BETWEEN :lowPrice AND :highPrice " +
             "ORDER BY p.price ASC")
     List<ProductUA> sortByPriceBetweenKeyWordDescription(
@@ -55,15 +55,15 @@ public interface ProductUARepository extends JpaRepository<ProductUA, Long> {
     );
 
     @QueryHints(@QueryHint(name = org.hibernate.jpa.QueryHints.HINT_READONLY, value = "true"))
-    @Query("SELECT p FROM ProductUA p WHERE p.description LIKE %:keyWord% ORDER BY p.dateCreation DESC")
+    @Query("SELECT p FROM ProductUA p  left JOIN fetch p.productEN WHERE p.description LIKE %:keyWord% ORDER BY p.dateCreation DESC")
     List<ProductUA> sortByTimeKeyWordDescription(@Param("keyWord") String keyWord);
 
     @QueryHints(@QueryHint(name = org.hibernate.jpa.QueryHints.HINT_READONLY, value = "true"))
-    @Query("SELECT prod FROM ProductUA prod WHERE prod.type LIKE %:keyWord% OR prod.subtype LIKE %:keyWord% ")
+    @Query("SELECT prod FROM ProductUA prod  left JOIN fetch prod.productEN WHERE prod.type LIKE %:keyWord% OR prod.subtype LIKE %:keyWord% ")
     List<ProductUA> searchByKeyWordInTypeSubtype(@Param("keyWord") String keyWord);
 
     @QueryHints(@QueryHint(name = org.hibernate.jpa.QueryHints.HINT_READONLY, value = "true"))
-    @Query("SELECT prod FROM ProductUA prod WHERE prod.promotion = 1 ORDER BY prod.price ASC")
+    @Query("SELECT prod FROM ProductUA prod left JOIN fetch prod.productEN WHERE prod.promotion = 1 ORDER BY prod.price ASC")
     List<ProductUA> searchByPromotionPrice();
 
 

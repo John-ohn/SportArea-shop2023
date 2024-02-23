@@ -31,7 +31,7 @@ public class BlogController {
 
         generalLogg.getLoggerControllerInfo("BlogController",
                 "findAll",
-                "/blog/list",
+                "/blogs",
                 "List of Blog");
 
         return blogList;
@@ -43,7 +43,7 @@ public class BlogController {
 
         generalLogg.getLoggerControllerInfo("BlogController",
                 "findById",
-                "/blog/{blogId}",
+                "/blogs/{blogId}",
                 "Blog with id" + blogId);
 
         return blog;

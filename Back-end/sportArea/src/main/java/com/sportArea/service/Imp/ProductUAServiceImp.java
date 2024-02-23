@@ -1,5 +1,6 @@
 package com.sportArea.service.Imp;
 
+import com.sportArea.dao.ProductENRepository;
 import com.sportArea.dao.ProductUARepository;
 import com.sportArea.entity.ProductUA;
 import com.sportArea.entity.dto.ProductUaDTO;
@@ -29,9 +30,12 @@ public class ProductUAServiceImp implements ProductUAService {
 
     private final ProductUARepository productRepository;
 
+    private final ProductENRepository productENRepository;
+
     @Autowired
-    public ProductUAServiceImp(ProductUARepository productRepository) {
+    public ProductUAServiceImp(ProductUARepository productRepository, ProductENRepository productENRepository) {
         this.productRepository = productRepository;
+        this.productENRepository= productENRepository;
 
     }
 
@@ -45,6 +49,21 @@ public class ProductUAServiceImp implements ProductUAService {
             return createProductDTOFromProductUA(product.get());
         } else {
             logger.warn("From ProductUAServiceImp method -findById- send war message " +
+                    "( Product with productId {} is not available. ({}))", productId, HttpStatus.NOT_FOUND);
+            throw new GeneralException("Product with productId: " + productId + " is not available.", HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @Override
+    public ProductUA findByIdWithoutDTO(Long productId) {
+        Optional<ProductUA> product = productRepository.findById(productId);
+
+        if (product.isPresent()) {
+            logger.info("From ProductUAServiceImp method -findByIdWithoutDTO- return Product by id: {} ", productId);
+
+            return product.get();
+        } else {
+            logger.warn("From ProductUAServiceImp method -findByIdWithoutDTO- send war message " +
                     "( Product with productId {} is not available. ({}))", productId, HttpStatus.NOT_FOUND);
             throw new GeneralException("Product with productId: " + productId + " is not available.", HttpStatus.NOT_FOUND);
         }
@@ -147,6 +166,25 @@ public class ProductUAServiceImp implements ProductUAService {
         }
     }
 
+    @Override
+    public void saveWithoutDTO(ProductUA product) {
+
+        if (product != null) {
+
+            LocalDateTime localDateTime = LocalDateTime.now();
+            product.setDateCreation(localDateTime);
+            productRepository.save(product);
+
+            logger.info("From ProductUAServiceImp method -saveWithoutDTO- return new message (Product was added successfully.).");
+
+
+        } else {
+            logger.warn("From ProductUAServiceImp method -saveWithoutDTO- send war message " +
+                    "( Product is not available or his is empty. ({}))", HttpStatus.NOT_FOUND.value());
+
+            throw new GeneralException("Product is not available or his is empty. ", HttpStatus.NOT_FOUND);
+        }
+    }
     @Override
     public void delete(Long productId) {
         Optional<ProductUA> product = productRepository.findById(productId);
@@ -589,6 +627,7 @@ public class ProductUAServiceImp implements ProductUAService {
                 .numberOfOrders(productUA.getNumberOfOrders())
                 .dateCreation(productUA.getDateCreation())
                 .urlImage(productUA.getUrlImage())
+                .productEN(productUA.getProductEN())
                 .build();
     }
 

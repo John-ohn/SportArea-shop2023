@@ -5,7 +5,7 @@ import com.sportArea.dao.CustomerRepository;
 import com.sportArea.entity.Role;
 import com.sportArea.entity.Status;
 import com.sportArea.entity.TypeRegistration;
-import com.sportArea.entity.dto.RegistrationStatus;
+import com.sportArea.entity.dto.GeneralResponse;
 import com.sportArea.entity.dto.UserRegistration;
 import com.sportArea.entity.dto.UserDTOUpdate;
 import com.sportArea.entity.dto.UserUpdateRequest;
@@ -72,7 +72,7 @@ public class UserController {
     }
 
     @PostMapping("/registration")
-    public ResponseEntity<RegistrationStatus> addUser(@Valid @RequestBody UserRegistration user) throws MessagingException, IOException {
+    public ResponseEntity<GeneralResponse> addUser(@Valid @RequestBody UserRegistration user) throws MessagingException, IOException {
         customerService.save(user);
 
         generalLogg.getLoggerControllerInfo("UserController",
@@ -80,17 +80,17 @@ public class UserController {
                 "/registration",
                 "message (Registration was Successful.) and Save new User with user email: " + user.getEmail());
 
-        RegistrationStatus registrationStatus = new RegistrationStatus(
+        GeneralResponse generalResponse = new GeneralResponse(
                 HttpStatus.CREATED.value(),
                 "Registration was Successful.");
 
-        return new ResponseEntity<>(registrationStatus, HttpStatus.CREATED);
+        return new ResponseEntity<>(generalResponse, HttpStatus.CREATED);
     }
 
 
     @PatchMapping("/{userId}")
-    public ResponseEntity<RegistrationStatus> updateUser(@PathVariable("userId") Long userId,
-                                                         @RequestBody UserUpdateRequest user) {
+    public ResponseEntity<GeneralResponse> updateUser(@PathVariable("userId") Long userId,
+                                                      @RequestBody UserUpdateRequest user) {
 
         UserDTOUpdate userDTOUpdate = customerService.createUserForUpdate(userId, user);
 
@@ -101,15 +101,15 @@ public class UserController {
                 "/users",
                 "message (Update was Successful.) and update User with user email: " + user.getEmail());
 
-        RegistrationStatus registrationStatus = new RegistrationStatus(
+        GeneralResponse generalResponse = new GeneralResponse(
                 HttpStatus.CREATED.value(),
                 "Update was Successful.");
 
-        return new ResponseEntity<>(registrationStatus, HttpStatus.CREATED);
+        return new ResponseEntity<>(generalResponse, HttpStatus.CREATED);
     }
 
     @PostMapping("/forgot/password")
-    public ResponseEntity<String> forgotPassword(@RequestParam("email")String email){
+    public ResponseEntity<GeneralResponse> forgotPassword(@RequestParam("email")String email){
 
         customerService.forgotPassword(email,12);
 
@@ -118,12 +118,16 @@ public class UserController {
                 "/forgot/password",
                 "message (We have sent a new password to your email address.) and update User password");
 
-        return new ResponseEntity<>("We have sent a new password to your email address.", HttpStatus.OK);
+        GeneralResponse generalResponse = new GeneralResponse(
+                HttpStatus.OK.value(),
+                "We have sent a new password to your email address.");
+
+        return new ResponseEntity<>(generalResponse, HttpStatus.OK);
     }
 
     @PatchMapping("/{userId}/first-name")
-    public ResponseEntity<RegistrationStatus> updateUserFirstName(@Valid @RequestBody UserUpdateFirstName firstName,
-                                                                  @PathVariable("userId") Long userId) {
+    public ResponseEntity<GeneralResponse> updateUserFirstName(@Valid @RequestBody UserUpdateFirstName firstName,
+                                                               @PathVariable("userId") Long userId) {
 
         customerRepository.updateUserFirstName(userId, firstName.getFirstName());
 
@@ -132,10 +136,10 @@ public class UserController {
                 "/{userId}/first-name",
                 "message (Update was Successful.) and update User first name to - " + firstName.getFirstName() + " -. with userId: " + userId);
 
-        RegistrationStatus registrationStatus = new RegistrationStatus(
+        GeneralResponse generalResponse = new GeneralResponse(
                 HttpStatus.CREATED.value(),
                 "Update was Successful.");
-        return new ResponseEntity<>(registrationStatus, HttpStatus.CREATED);
+        return new ResponseEntity<>(generalResponse, HttpStatus.CREATED);
     }
 
 //    @PatchMapping("/{userId}/last-name")
@@ -191,8 +195,8 @@ public class UserController {
 //    }
 
     @PatchMapping("/{userId}/password")
-    public ResponseEntity<RegistrationStatus> updateUserPassword(@Valid @RequestBody UserUpdatePassword password,
-                                                                 @PathVariable("userId") Long userId) {
+    public ResponseEntity<GeneralResponse> updateUserPassword(@Valid @RequestBody UserUpdatePassword password,
+                                                              @PathVariable("userId") Long userId) {
 
         customerService.updateUserPassword(userId, password.getNewPassword(), password.getOldPassword());
 
@@ -201,15 +205,15 @@ public class UserController {
                 "/{userId}/password",
                 "message (Update was Successful.) and update User password with userId: " + userId);
 
-        RegistrationStatus registrationStatus = new RegistrationStatus(
+        GeneralResponse generalResponse = new GeneralResponse(
                 HttpStatus.CREATED.value(),
                 "Update was Successful.");
-        return new ResponseEntity<>(registrationStatus, HttpStatus.CREATED);
+        return new ResponseEntity<>(generalResponse, HttpStatus.CREATED);
     }
 
     @PatchMapping("/{userId}/status")
-    public ResponseEntity<RegistrationStatus> updateUserStatus(@RequestParam("status") Status status,
-                                                               @PathVariable("userId") Long userId) {
+    public ResponseEntity<GeneralResponse> updateUserStatus(@RequestParam("status") Status status,
+                                                            @PathVariable("userId") Long userId) {
 
 //        userService.updateUserFields(userId, "status", status.toString());
 
@@ -218,15 +222,15 @@ public class UserController {
                 "/{userId}/status",
                 "message (Update was Successful.) and update User status to - " + status.name() + " -. with userId: " + userId);
 
-        RegistrationStatus registrationStatus = new RegistrationStatus(
+        GeneralResponse generalResponse = new GeneralResponse(
                 HttpStatus.CREATED.value(),
                 "Update was Successful.");
 
-        return new ResponseEntity<>(registrationStatus, HttpStatus.CREATED);
+        return new ResponseEntity<>(generalResponse, HttpStatus.CREATED);
     }
 
     @DeleteMapping("/{userId}")
-    public ResponseEntity<String> deleteUser(@PathVariable long userId) {
+    public ResponseEntity<GeneralResponse> deleteUser(@PathVariable long userId) {
         customerService.delete(userId);
 
         generalLogg.getLoggerControllerInfo("UserController",
@@ -234,11 +238,15 @@ public class UserController {
                 "/{userId}",
                 "message (User was deleted.) and Delete User By userId: " + userId);
 
-        return new ResponseEntity<>("User with userId: " + userId + " was deleted.", HttpStatus.CREATED);
+        GeneralResponse generalResponse = new GeneralResponse(
+                HttpStatus.CREATED.value(),
+                "User with userId: " + userId + " was deleted.");
+
+        return new ResponseEntity<>(generalResponse, HttpStatus.CREATED);
     }
 
     @DeleteMapping("/between")
-    public ResponseEntity<String> deleteUsersBetweenIds(
+    public ResponseEntity<GeneralResponse> deleteUsersBetweenIds(
             @RequestParam("startId") Long startId,
             @RequestParam("endId") Long endId) {
 
@@ -249,8 +257,12 @@ public class UserController {
                 "/between",
                 "message (Users was deleted.) and  Delete Users between: " + startId + " - " + endId);
 
-        return new ResponseEntity<String>(
-                "Users between userIds: " + startId + " and " + endId + " was deleted.", HttpStatus.CREATED);
+        GeneralResponse generalResponse = new GeneralResponse(
+                HttpStatus.CREATED.value(),
+                "Users between userIds: " + startId + " and " + endId + " was deleted.");
+
+        return new ResponseEntity<>(
+                generalResponse, HttpStatus.CREATED);
     }
             // /api/v1/users/testAuth
     @GetMapping("/testAuth")

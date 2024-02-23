@@ -2,11 +2,13 @@ package com.sportArea.controller;
 
 import com.sportArea.entity.dto.AddComment;
 import com.sportArea.entity.dto.CommentDTO;
+import com.sportArea.entity.dto.GeneralResponse;
 import com.sportArea.entity.dto.ProductUaDTO;
 import com.sportArea.entity.dto.logger.GeneralLogg;
 import com.sportArea.service.CommentService;
 import com.sportArea.service.ProductUAService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -63,7 +65,7 @@ public class CommentController {
     }
 
     @PostMapping("/product")
-    public ResponseEntity<String> addProductComment(@RequestBody AddComment commentDTO) {
+    public ResponseEntity<GeneralResponse> addProductComment(@RequestBody AddComment commentDTO) {
 
         commentService.addProductComment(commentDTO);
 
@@ -73,11 +75,15 @@ public class CommentController {
                 "message(Your comment was added successfully.) and add new Product Comment to getProductId: "
                         + commentDTO.getProductId());
 
-        return ResponseEntity.ok("Your comment was added successfully.");
+        GeneralResponse generalResponse = new GeneralResponse(
+                HttpStatus.OK.value(),
+                "Your comment was added successfully.");
+
+        return ResponseEntity.ok(generalResponse);
     }
 
     @GetMapping("/checkRating/{productId}")
-    public ResponseEntity<String> checkRating(@PathVariable("productId") Long productId) {
+    public ResponseEntity<GeneralResponse> checkRating(@PathVariable("productId") Long productId) {
         commentService.addProductRating(productId);
         ProductUaDTO productUA = productUAService.findById(productId);
 
@@ -87,9 +93,12 @@ public class CommentController {
                 "message( Product rating is : " + productUA.getRating()
                         + " product :" + productUA.getProductName() + " " + productUA.getProductId() + " )");
 
-        return ResponseEntity.ok(
+        GeneralResponse generalResponse = new GeneralResponse(
+                HttpStatus.OK.value(),
                 "Product rating is : " + productUA.getRating()
                         + " product :" + productUA.getProductName() + " " + productUA.getProductId());
+
+        return ResponseEntity.ok(generalResponse);
     }
 
 }

@@ -28,4 +28,10 @@ public interface CommentService {
 
     void addProductRating(Long productId);
 
+    List<Comment> findAllUserCommentsWithoutDTO (Long userId);
+
+    Comment findByIdWithoutDTO(Long commentId);
+
+    void save(Comment comment);
+
 }

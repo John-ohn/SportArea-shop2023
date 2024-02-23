@@ -28,8 +28,8 @@ public class OrderController {
     }
 
     @GetMapping("/users/{userId}")
-    public ResponseEntity<List<UserOrders>> findByUserId(@PathVariable("userId") Long userId) {
-        List<UserOrders> orderList = orderService.allUserOrders(userId);
+    public ResponseEntity<UserOrders> findByUserId(@PathVariable("userId") Long userId) {
+        UserOrders orderList = orderService.allUserOrders(userId);
 
         generalLogg.getLoggerControllerInfo("OrderController",
                 "ordersList",

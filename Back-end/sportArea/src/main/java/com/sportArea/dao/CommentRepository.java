@@ -53,4 +53,9 @@ public interface CommentRepository extends JpaRepository<Comment,Long> {
     @QueryHints(@QueryHint(name = org.hibernate.jpa.QueryHints.HINT_READONLY, value = "true"))
     @Query("SELECT AVG(c.productRating) From Comment c WHERE c.product.productId =:productId")
     Float getProductRating(@Param("productId") Long productId);
+
+    @Modifying
+    @Query("UPDATE Comment c SET c.userName =:value WHERE c.customer.userId =:userId")
+//    @Transactional
+    void updateUserUserName(@Param("userId") Long userId, @Param("value") String value);
 }

@@ -3,6 +3,7 @@ package com.sportArea.config;
 
 import com.sportArea.entity.Permission;
 import com.sportArea.security.JwtConfigurer;
+import com.sportArea.security.JwtTokenFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -20,22 +21,25 @@ import org.springframework.security.oauth2.client.web.HttpSessionOAuth2Authorize
 import org.springframework.security.oauth2.client.web.OAuth2AuthorizedClientRepository;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.core.oidc.IdTokenClaimNames;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
+
     private final JwtConfigurer jwtConfigurer;
 
     @Autowired
     public SecurityConfig(JwtConfigurer jwtConfigurer) {
         this.jwtConfigurer = jwtConfigurer;
-
     }
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+
+
         http
                 .csrf().disable()
 //                .sessionManagement()
@@ -44,7 +48,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers("/").permitAll()
                 .antMatchers("/user/auth/login").permitAll()
-                .antMatchers(HttpMethod.POST, "/api/v1/users/registration").permitAll()
+                .antMatchers(HttpMethod.POST, "/api/v1/users/registration","/api/v1/user/auth/login/google").permitAll()
                 .antMatchers(HttpMethod.GET, "/api/v1/users/testAuth").hasAnyAuthority(Permission.DEVELOPERS_READ.getPermission())
                 .antMatchers(HttpMethod.GET,
                         "/response/**",
@@ -61,9 +65,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         "/api/v1/categorys/**",
                         "/api/v1/delivery/address/**",
                         "/api/v1/post/**",
-                        "/api/users/**").permitAll()
-                .antMatchers(HttpMethod.POST, "/api/v1/users/**",
-                        "/api/v1/user/auth/login",
+                        "/api/users/**",
+                        "/api/v1/banners/**").permitAll()
+                .antMatchers(HttpMethod.POST,
+                        "/api/v1/users/**",
+                        "/api/v1/user/auth/**",
                         "/api/v1/products/**",
                         "/api/v1/comments/**",
                         "/api/v1/orders/**",
@@ -93,17 +99,15 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .anyRequest()
                 .authenticated()
                 .and()
-                .apply(jwtConfigurer)
-                .and()
-//                .oauth2Client()
+                .apply(jwtConfigurer);
 //                .and()
-                .oauth2Login()
-                .authorizationEndpoint()
-                .baseUri("/oauth2/authorization/google")
-                .and()
-                .redirectionEndpoint()
-                .baseUri("/login/oauth2/code/google");
-
+//                .oauth2Login()
+//                .authorizationEndpoint()
+//                .baseUri("/oauth2/authorization/google")
+//                .and()
+//                .redirectionEndpoint()
+//                .baseUri("/login/oauth2/code/google");
+//        http.addFilterBefore(jwtTokenFilter, UsernamePasswordAuthenticationFilter.class);
     }
 
 
