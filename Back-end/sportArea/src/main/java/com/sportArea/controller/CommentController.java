@@ -32,36 +32,47 @@ public class CommentController {
     }
 
     @GetMapping
-    public List<CommentDTO> list() {
-        return commentService.findAll();
+    public ResponseEntity<List<CommentDTO>> list() {
+        List<CommentDTO> commentList = commentService.findAll();
+        generalLogg.getLoggerControllerInfo("CommentController",
+                "list",
+                "/api/v1/comments",
+                "List of Comments.");
+        return ResponseEntity.ok(commentList);
     }
 
     @GetMapping("/company")
-    public List<CommentDTO> findCompanyComments() {
-        return commentService.findCompanyComments();
+    public ResponseEntity<List<CommentDTO>> findCompanyComments() {
+        List<CommentDTO> commentList = commentService.findCompanyComments();
+        generalLogg.getLoggerControllerInfo("CommentController",
+                "findCompanyComments",
+                "/company",
+                "List of Company Comments.");
+        return ResponseEntity.ok(commentList);
     }
 
     @GetMapping("/users/{userId}")
-    public List<CommentDTO> findAllUserComments(@PathVariable("userId") Long userId) {
+    public ResponseEntity<List<CommentDTO>> findAllUserComments(@PathVariable("userId") Long userId) {
 
+        List<CommentDTO> commentList = commentService.findAllUserComments(userId);
         generalLogg.getLoggerControllerInfo("CommentController",
                 "findAllUserComments",
                 "/users/{userId}",
                 "List of User Comments with userId: " + userId);
 
-        return commentService.findAllUserComments(userId);
+        return ResponseEntity.ok(commentList);
     }
 
     @GetMapping("/products/{productId}")
-    public List<CommentDTO> findAllProductComments(@PathVariable("productId") Long productId) {
-        List<CommentDTO> commentDTOList = commentService.findAllProductComments(productId);
+    public ResponseEntity<List<CommentDTO>> findAllProductComments(@PathVariable("productId") Long productId) {
+        List<CommentDTO> commentList = commentService.findAllProductComments(productId);
 
         generalLogg.getLoggerControllerInfo("CommentController",
                 "findAllProductComments",
                 "/products/{productId}",
                 "all Product Comments with productId: " + productId);
 
-        return commentDTOList;
+        return ResponseEntity.ok(commentList);
     }
 
     @PostMapping("/product")
