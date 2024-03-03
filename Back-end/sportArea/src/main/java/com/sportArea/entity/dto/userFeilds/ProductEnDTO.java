@@ -1,7 +1,5 @@
-package com.sportArea.entity.dto;
+package com.sportArea.entity.dto.userFeilds;
 
-
-import com.sportArea.entity.ProductEN;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -10,12 +8,11 @@ import lombok.NoArgsConstructor;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 
-
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class ProductUaDTO {
+public class ProductEnDTO {
 
     private Long productId;
 
@@ -61,5 +58,4 @@ public class ProductUaDTO {
 
     private String urlImage;
 
-    private ProductEN productEN;
 }

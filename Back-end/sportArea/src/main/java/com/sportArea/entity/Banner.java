@@ -19,6 +19,9 @@ public class Banner {
     @Column(name="bannerId")
     private Long bannerId;
 
+    @Column(name="bannerName")
+    private String bannerName;
+
     @Column(name = "bannerUrl")
     private String bannerUrl;
 }

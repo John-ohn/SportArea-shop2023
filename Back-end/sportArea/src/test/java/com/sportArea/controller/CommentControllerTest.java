@@ -2,36 +2,23 @@ package com.sportArea.controller;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sportArea.config.SecurityConfig;
 import com.sportArea.entity.*;
-import com.sportArea.entity.dto.AddComment;
-import com.sportArea.entity.dto.CommentDTO;
-import com.sportArea.entity.dto.ProductUaDTO;
-import com.sportArea.entity.dto.UserRegistration;
-import com.sportArea.entity.dto.logger.GeneralLogg;
+import com.sportArea.entity.dto.*;
+import com.sportArea.entity.dto.userFeilds.ProductEnDTO;
 import com.sportArea.exception.GeneralException;
-import com.sportArea.security.JwtConfigurer;
-import com.sportArea.security.JwtTokenProvider;
 import com.sportArea.service.CommentService;
 import com.sportArea.service.ProductUAService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
+import org.junit.jupiter.api.Test;;
 import org.mockito.Mockito;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.FilterType;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.context.TestPropertySource;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.hamcrest.Matchers.*;
@@ -81,6 +68,7 @@ class CommentControllerTest {
 
     private ProductUaDTO productUaDTO;
 
+    private ProductDto productDTO;
     private CommentDTO commentDTO;
 
     private CommentDTO commentDTOTwo;
@@ -131,13 +119,19 @@ class CommentControllerTest {
                 .urlImage("https://allnutrition.ua/produkt_img/f8b0i3189_d1200x1200.png")
                 .build();
 
+        productDTO = ProductDto.builder()
+                .productId(productUaDTO.getProductId())
+                .productUa(productUaDTO)
+                .productEn(new ProductEnDTO())
+                .build();
+
         commentDTO = CommentDTO.builder()
                 .commentId(1L)
                 .productRating(3.2F)
                 .message("Massage")
                 .note(Note.FOR_PRODUCT)
                 .userRegistration(userRegistration)
-                .productDTO(productUaDTO)
+                .productDTO(productDTO)
                 .build();
 
         commentDTOTwo = CommentDTO.builder()
@@ -146,7 +140,7 @@ class CommentControllerTest {
                 .message("Massage")
                 .note(Note.FOR_PRODUCT)
                 .userRegistration(userRegistration)
-                .productDTO(productUaDTO)
+                .productDTO(productDTO)
                 .build();
     }
 
@@ -183,7 +177,7 @@ class CommentControllerTest {
                 .message("Massage")
                 .note(Note.FOR_COMPANY)
                 .userRegistration(userRegistration)
-                .productDTO(new ProductUaDTO())
+                .productDTO(new ProductDto())
                 .build();
 
         List<CommentDTO> commentDTOList = List.of(commentFromCompany);

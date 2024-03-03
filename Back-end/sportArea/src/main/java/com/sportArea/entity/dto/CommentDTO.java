@@ -22,5 +22,5 @@ public class CommentDTO {
 
     private UserRegistration userRegistration;
 
-    private ProductUaDTO productDTO;
+    private ProductDto productDTO;
 }
