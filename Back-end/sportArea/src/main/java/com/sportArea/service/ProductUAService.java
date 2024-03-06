@@ -2,6 +2,7 @@ package com.sportArea.service;
 
 
 import com.sportArea.entity.ProductUA;
+import com.sportArea.entity.dto.ProductDto;
 import com.sportArea.entity.dto.ProductUaDTO;
 
 
@@ -36,6 +37,8 @@ public interface ProductUAService {
 
     ProductUaDTO createProductDTOFromProductUA(ProductUA productUA);
 
+    ProductDto createProductDtoFromProductUA(ProductUA productUA);
+
     List<ProductUaDTO> searchAndSort(String keyWord,
                                      String sortBy,
                                      String searchLocation,
@@ -49,4 +52,6 @@ public interface ProductUAService {
     List<ProductUA> convertToProductList(List<ProductUaDTO> productList);
 
     List<ProductUaDTO> convertToProductDTOList(List<ProductUA> productList);
+
+     List<ProductDto> convertToProductDtoList(List<ProductUA> productList);
 }

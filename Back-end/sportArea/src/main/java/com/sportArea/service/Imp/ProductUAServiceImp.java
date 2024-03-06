@@ -3,7 +3,9 @@ package com.sportArea.service.Imp;
 import com.sportArea.dao.ProductENRepository;
 import com.sportArea.dao.ProductUARepository;
 import com.sportArea.entity.ProductUA;
+import com.sportArea.entity.dto.ProductDto;
 import com.sportArea.entity.dto.ProductUaDTO;
+import com.sportArea.entity.dto.userFeilds.ProductEnDTO;
 import com.sportArea.exception.GeneralException;
 import com.sportArea.service.ProductUAService;
 import org.slf4j.Logger;
@@ -632,6 +634,64 @@ public class ProductUAServiceImp implements ProductUAService {
     }
 
     @Override
+    public ProductDto createProductDtoFromProductUA(ProductUA productUA) {
+
+        return ProductDto.builder()
+
+                .productId(productUA.getProductId())
+                .productUa(ProductUaDTO.builder()
+                        .productId(productUA.getProductId())
+                        .productName(productUA.getProductName())
+                        .brands(productUA.getBrands())
+                        .type(productUA.getType())
+                        .subtype(productUA.getSubtype())
+                        .formOfIssue(productUA.getFormOfIssue())
+                        .producingCountry(productUA.getProducingCountry())
+                        .taste(productUA.getTaste())
+                        .price(productUA.getPrice())
+                        .promotionPrice(productUA.getPromotionPrice())
+                        .weight(productUA.getWeight())
+                        .currency(productUA.getCurrency())
+                        .article(productUA.getArticle())
+                        .productAmount(productUA.getProductAmount())
+                        .description(productUA.getDescription())
+                        .productConsist(productUA.getProductConsist())
+                        .rating(productUA.getRating())
+                        .status(productUA.getStatus())
+                        .promotion(productUA.getPromotion())
+                        .numberOfOrders(productUA.getNumberOfOrders())
+                        .dateCreation(productUA.getDateCreation())
+                        .urlImage(productUA.getUrlImage())
+                        .build())
+                .productEn(ProductEnDTO.builder()
+                        .productId(productUA.getProductEN().getProductId())
+                        .productName(productUA.getProductEN().getProductName())
+                        .brands(productUA.getProductEN().getBrands())
+                        .type(productUA.getProductEN().getType())
+                        .subtype(productUA.getProductEN().getSubtype())
+                        .formOfIssue(productUA.getProductEN().getFormOfIssue())
+                        .producingCountry(productUA.getProductEN().getProducingCountry())
+                        .taste(productUA.getProductEN().getTaste())
+                        .price(productUA.getProductEN().getPrice())
+                        .promotionPrice(productUA.getProductEN().getPromotionPrice())
+                        .weight(productUA.getProductEN().getWeight())
+                        .currency(productUA.getProductEN().getCurrency())
+                        .article(productUA.getProductEN().getArticle())
+                        .productAmount(productUA.getProductEN().getProductAmount())
+                        .description(productUA.getProductEN().getDescription())
+                        .productConsist(productUA.getProductEN().getProductConsist())
+                        .rating(productUA.getProductEN().getRating())
+                        .status(productUA.getProductEN().getStatus())
+                        .promotion(productUA.getProductEN().getPromotion())
+                        .numberOfOrders(productUA.getProductEN().getNumberOfOrders())
+                        .dateCreation(productUA.getProductEN().getDateCreation())
+                        .urlImage(productUA.getProductEN().getUrlImage())
+                        .build())
+                .build();
+
+    }
+
+    @Override
     public List<ProductUA> convertToProductList(List<ProductUaDTO> productList) {
         return productList
                 .stream()
@@ -644,6 +704,14 @@ public class ProductUAServiceImp implements ProductUAService {
         return productList
                 .stream()
                 .map(this::createProductDTOFromProductUA)
+                .toList();
+    }
+
+    @Override
+    public List<ProductDto> convertToProductDtoList(List<ProductUA> productList) {
+        return productList
+                .stream()
+                .map(this::createProductDtoFromProductUA)
                 .toList();
     }
 

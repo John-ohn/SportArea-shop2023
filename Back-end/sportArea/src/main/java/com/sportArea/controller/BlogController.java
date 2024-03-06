@@ -4,6 +4,7 @@ import com.sportArea.entity.dto.BlogDTO;
 import com.sportArea.entity.dto.logger.GeneralLogg;
 import com.sportArea.service.BlogService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,7 +27,7 @@ public class BlogController {
     }
 
     @GetMapping
-    public List<BlogDTO> findAll() {
+    public ResponseEntity<List<BlogDTO>> findAll() {
         List<BlogDTO> blogList = blogService.findAll();
 
         generalLogg.getLoggerControllerInfo("BlogController",
@@ -34,11 +35,11 @@ public class BlogController {
                 "/blogs",
                 "List of Blog");
 
-        return blogList;
+        return ResponseEntity.ok(blogList);
     }
 
     @GetMapping("/{blogId}")
-    public BlogDTO findById(@PathVariable("blogId") Long blogId) {
+    public ResponseEntity<BlogDTO> findById(@PathVariable("blogId") Long blogId) {
         BlogDTO blog = blogService.findById(blogId);
 
         generalLogg.getLoggerControllerInfo("BlogController",
@@ -46,7 +47,7 @@ public class BlogController {
                 "/blogs/{blogId}",
                 "Blog with id" + blogId);
 
-        return blog;
+        return ResponseEntity.ok(blog);
     }
 
 }
