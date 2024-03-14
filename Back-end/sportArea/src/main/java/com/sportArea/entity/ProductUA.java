@@ -70,8 +70,8 @@ public class ProductUA {
     @Column(name = "status")
     private String status;
 
-    @Column(name = "promotion", columnDefinition = "INT default 0")
-    private Integer promotion;
+    @Column(name = "promotion", columnDefinition = "FALSE")
+    private Boolean promotion;
 
     @Column(name="numberOfOrders")
     private Long numberOfOrders;

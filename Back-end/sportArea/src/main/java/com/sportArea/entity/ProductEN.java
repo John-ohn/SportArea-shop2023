@@ -74,7 +74,7 @@ public class ProductEN {
     private String status;
 
     @Column(name = "promotion", columnDefinition = "INT default 0")
-    private Integer promotion;
+    private Boolean promotion;
 
     @Column(name="numberOfOrders")
     private Long numberOfOrders;

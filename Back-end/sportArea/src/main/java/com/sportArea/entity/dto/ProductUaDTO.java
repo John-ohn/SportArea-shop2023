@@ -53,7 +53,7 @@ public class ProductUaDTO {
 
     private String status;
 
-    private Integer promotion;
+    private Boolean promotion;
 
     private Long numberOfOrders;
 
