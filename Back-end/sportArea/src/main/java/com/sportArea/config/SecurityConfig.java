@@ -69,7 +69,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         "/api/v1/orders/**",
                         "/api/v1/baskets/**",
                         "/api/v1/blogs/**",
-                        "/api/v1/categorys/**",
+                        "/api/v1/categories/**",
                         "/api/v1/delivery/address/**",
                         "/api/v1/post/**",
                         "/api/users/**",
@@ -82,7 +82,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         "/api/v1/orders/**",
                         "/api/v1/baskets/**",
                         "/api/v1/blogs/**",
-                        "/api/v1/categorys/**",
+                        "/api/v1/categories/**",
                         "/api/v1/delivery/address/**",
                         "/api/v1/post/**",
                         "/api/v1/email/**",
@@ -98,7 +98,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         "/api/v1/orders/**",
                         "/api/v1/baskets/**",
                         "/api/v1/blogs/**",
-                        "/api/v1/categorys/**",
+                        "/api/v1/categories/**",
                         "/api/v1/delivery/address/**").permitAll()
 //                .antMatchers(HttpMethod.GET, "/user/**").hasAnyAuthority(Permission.DEVELOPERS_READ.getPermission())
 //                .antMatchers(HttpMethod.POST, "/user/**").hasAuthority(Permission.DEVELOPERS_WRITE.getPermission())

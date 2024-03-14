@@ -1,0 +1,7 @@
+package com.sportArea.dao;
+
+import com.sportArea.entity.SubCategory;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface SubCategoryRepository extends JpaRepository<SubCategory,Long> {
+}
