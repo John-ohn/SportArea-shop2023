@@ -1,7 +1,6 @@
 package com.sportArea.controller;
 
-import com.sportArea.dao.CategoryRepository;
-import com.sportArea.entity.Category;
+import com.sportArea.entity.CategoryUa;
 import com.sportArea.entity.TargetCategory;
 import com.sportArea.entity.dto.CategoryDTO;
 import com.sportArea.entity.dto.GeneralResponse;
@@ -35,28 +34,28 @@ public class CategoryController {
     }
 
     @GetMapping()
-    public ResponseEntity <List<Category>> getAllCategories() {
+    public ResponseEntity <List<CategoryDTO>> getAllCategories() {
 
-        List<Category> categoryList = categoryService.findAll();
+        List<CategoryDTO> categoryUaList = categoryService.findAll();
 
         generalLogg.getLoggerControllerInfo("CategoryController",
                 "getAllCategories",
                 "/categorys",
                 "List of Target Category");
 
-        return ResponseEntity.ok(categoryList);
+        return ResponseEntity.ok(categoryUaList);
     }
-    
+
     @GetMapping("/{categoryId}")
-    public ResponseEntity<Category> getCategoryById(@PathVariable("categoryId") Long categoryId) {
-    	Category category = categoryService.findById(categoryId);
+    public ResponseEntity<CategoryDTO> getCategoryById(@PathVariable("categoryId") Long categoryId) {
+        CategoryDTO categoryUa = categoryService.findById(categoryId);
 
         generalLogg.getLoggerControllerInfo("CategoryController",
                 "getCategoryById",
                 "/categorys/{categoryId}",
                 "Category with categoryId " + categoryId);
 
-        return ResponseEntity.ok(category);
+        return ResponseEntity.ok(categoryUa);
     }
 
     @GetMapping("/targets")

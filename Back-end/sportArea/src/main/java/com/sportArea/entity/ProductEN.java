@@ -73,7 +73,7 @@ public class ProductEN {
     @Column(name = "status")
     private String status;
 
-    @Column(name = "promotion", columnDefinition = "INT default 0")
+    @Column(name = "promotion")
     private Boolean promotion;
 
     @Column(name="numberOfOrders")

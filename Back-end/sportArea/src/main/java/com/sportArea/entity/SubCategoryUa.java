@@ -1,6 +1,5 @@
 package com.sportArea.entity;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import lombok.AllArgsConstructor;
@@ -11,11 +10,12 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 
 @Entity
+@Table(name = "SubCategoryUa")
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class SubCategory {
+public class SubCategoryUa {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,5 +28,5 @@ public class SubCategory {
     @ManyToOne
     @JoinColumn(name = "categoryId")
     @JsonIgnore
-    private Category category;
+    private CategoryUa category;
 }

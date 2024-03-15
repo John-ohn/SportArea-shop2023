@@ -1,6 +1,5 @@
 package com.sportArea.entity;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -11,10 +10,11 @@ import java.util.List;
 
 @Entity
 @Data
+@Table(name = "CategoryEn")
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class Category {
+public class CategoryEn {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,8 +24,6 @@ public class Category {
     @Column(name = "categoryName")
     private String categoryName;
 
-    @OneToMany(mappedBy = "category", cascade = CascadeType.ALL)
-    private List<SubCategory> subCategories;
-
-
+    @OneToMany(mappedBy = "categoryEn", fetch = FetchType.EAGER , cascade = CascadeType.ALL)
+    private List<SubCategoryEn> subCategoriesEn;
 }

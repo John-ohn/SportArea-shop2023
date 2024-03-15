@@ -1,7 +1,10 @@
 package com.sportArea.service.Imp;
 
 import com.sportArea.dao.CategoryRepository;
-import com.sportArea.entity.Category;
+import com.sportArea.entity.CategoryEn;
+import com.sportArea.entity.CategoryUa;
+import com.sportArea.entity.SubCategoryEn;
+import com.sportArea.entity.SubCategoryUa;
 import com.sportArea.entity.dto.CategoryDTO;
 import com.sportArea.exception.GeneralException;
 import com.sportArea.service.CategoryService;
@@ -12,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -29,11 +33,15 @@ public class CategoryServiceImp implements CategoryService {
     }
 
     @Override
-    public List<Category> findAll(){
+    public List<CategoryDTO> findAll(){
 
-        List<Category> categoryList = categoryRepository.findAll();
+        List<CategoryUa> categoryUaList = categoryRepository.findAll();
 
-        if (!categoryList.isEmpty()) {
+        if (!categoryUaList.isEmpty()) {
+            List<CategoryDTO> categoryList = categoryUaList.stream()
+                    .sorted(Comparator.comparing(CategoryUa::getCategoryName))
+                    .map(this::createCategoryDTOFromCategory)
+                    .toList();
             logger.info("From BannerServiceImp method -findAll- return List of Banners.");
 
             return categoryList;
@@ -45,14 +53,14 @@ public class CategoryServiceImp implements CategoryService {
     }
 
     @Override
-    public Category findById(Long categoryId){
+    public CategoryDTO findById(Long categoryId){
 
-        Optional<Category> category = categoryRepository.findById(categoryId);
+        Optional<CategoryUa> category = categoryRepository.findById(categoryId);
 
         if (category.isPresent()) {
             logger.info("From BannerServiceImp method -findAll- return List of Banners.");
 
-            return category.get();
+            return createCategoryDTOFromCategory(category.get());
         } else {
             logger.warn("From CategoryServiceImp method -categoryId- send war message " +
                     "(Don't find any Category with id: {}. ({}))", categoryId, HttpStatus.NOT_FOUND);
@@ -61,14 +69,30 @@ public class CategoryServiceImp implements CategoryService {
     }
 
 
-    
-    private CategoryDTO createCategoryDTOFromCategory(Category category) {
-    	
-    	return CategoryDTO.builder()
-    			.categoryId(category.getCategoryId())
-    			.categoryName(category.getCategoryName())
-    			.subCategories(category.getSubCategories())
-    			.build();
-    	
+
+    private CategoryDTO createCategoryDTOFromCategory(CategoryUa categoryUa) {
+        categoryUa.setSubCategories(orderSubCategoryUa(categoryUa.getSubCategories()));
+
+
+        CategoryEn categoryEn= categoryUa.getCategoryEn();
+        categoryEn.setSubCategoriesEn(orderSubCategoryEn(categoryUa.getCategoryEn().getSubCategoriesEn()));
+        categoryUa.setCategoryEn(null);
+
+        return CategoryDTO.builder()
+
+                .categoryId(categoryUa.getCategoryId())
+                .categoryUa(categoryUa)
+                .categoryEn(categoryEn)
+                .build();
+
+    }
+
+    private List<SubCategoryUa> orderSubCategoryUa(List<SubCategoryUa> list){
+        return   list.stream().sorted(Comparator.comparing(SubCategoryUa::getSubCategoryName)).toList();
+    }
+    private List<SubCategoryEn> orderSubCategoryEn(List<SubCategoryEn> list){
+        return   list.stream().sorted(Comparator.comparing(SubCategoryEn::getSubCategoryName))
+                .distinct()
+                .toList();
     }
 }

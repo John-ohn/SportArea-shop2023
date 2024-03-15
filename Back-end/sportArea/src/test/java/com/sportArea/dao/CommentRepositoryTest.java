@@ -59,7 +59,7 @@ class CommentRepositoryTest {
                 )
                 .rating(3.4F)
                 .status("В наявності")
-                .promotion(0)
+                .promotion(false)
                 .numberOfOrders(5L)
                 .dateCreation(LocalDateTime.of(2023, 8, 5, 14, 47, 58))
                 .urlImage("https://allnutrition.ua/produkt_img/f8b0i3189_d1200x1200.png")
@@ -202,13 +202,7 @@ class CommentRepositoryTest {
     @DisplayName("Test CommentRepository method addProductComment")
     void addProductComment() {
 
-        commentRepository.addProductComment(
-                commentOne.getMessage(),
-                commentOne.getNote().toString(),
-                commentOne.getCustomer().getUserId(),
-                commentOne.getProduct().getProductId(),
-                commentOne.getProductRating()
-                );
+        commentRepository.save(commentOne);
 
         List<Comment> commentList = commentRepository.findAllProductComments(productUA.getProductId());
 

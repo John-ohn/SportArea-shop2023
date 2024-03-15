@@ -63,7 +63,7 @@ public interface ProductUARepository extends JpaRepository<ProductUA, Long> {
     List<ProductUA> searchByKeyWordInTypeSubtype(@Param("keyWord") String keyWord);
 
     @QueryHints(@QueryHint(name = org.hibernate.jpa.QueryHints.HINT_READONLY, value = "true"))
-    @Query("SELECT prod FROM ProductUA prod left JOIN fetch prod.productEN WHERE prod.promotion = 1 ORDER BY prod.price ASC")
+    @Query("SELECT prod FROM ProductUA prod left JOIN fetch prod.productEN WHERE prod.promotion = true ORDER BY prod.price ASC")
     List<ProductUA> searchByPromotionPrice();
 
 

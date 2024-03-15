@@ -27,7 +27,7 @@ import static org.junit.jupiter.api.Assertions.*;
 @DataJpaTest
 @TestPropertySource(
         locations = "classpath:application-integrationtest.properties")
-class TargetCategoryRepositoryTest {
+class TargetCategoryRepositoryTestUa {
 
     @Autowired
     private TestEntityManager entityManager;

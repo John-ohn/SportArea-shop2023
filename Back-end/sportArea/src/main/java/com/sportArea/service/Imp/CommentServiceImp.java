@@ -2,6 +2,7 @@ package com.sportArea.service.Imp;
 
 import com.sportArea.dao.CommentRepository;
 import com.sportArea.entity.Comment;
+import com.sportArea.entity.Customer;
 import com.sportArea.entity.Note;
 import com.sportArea.entity.ProductUA;
 import com.sportArea.entity.dto.AddComment;
@@ -19,6 +20,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -185,18 +187,24 @@ public class CommentServiceImp implements CommentService {
     }
 
     @Override
-    public void addProductComment(AddComment comment) {
-        if (!(comment == null)) {
-            comment.setNote(Note.FOR_PRODUCT);
-            commentRepository.addProductComment(
-                    comment.getMessage(),
-                    comment.getNote().toString(),
-                    comment.getUserId(),
-                    comment.getProductId(),
-                    comment.getProductRating()
-            );
+    public void addProductComment(AddComment addComment) {
 
-            addProductRating(comment.getProductId());
+        if (!(addComment == null)) {
+            Customer customer = customerService.findByIdInUser(addComment.getUserId());
+            ProductUA productUA = productUAService.findByIdInProduct(addComment.getProductId());
+
+            Comment comment = Comment.builder()
+                    .userName(customer.getFirstName())
+                    .productRating( addComment.getProductRating())
+                    .product(productUA)
+                    .message(addComment.getMessage())
+                    .dateTime(LocalDateTime.now())
+                    .customer(customer)
+                    .note(Note.FOR_PRODUCT)
+                    .build();
+            commentRepository.save(comment);
+
+            addProductRating(addComment.getProductId());
 
             logger.info("Add new comment !");
         }

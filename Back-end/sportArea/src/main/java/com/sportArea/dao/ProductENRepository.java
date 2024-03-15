@@ -60,6 +60,6 @@ public interface ProductENRepository extends JpaRepository<ProductEN, Long> {
     List<ProductEN> searchByKeyWordInTypeSubtype(@Param("keyWord") String keyWord);
 
     @QueryHints(@QueryHint(name = org.hibernate.jpa.QueryHints.HINT_READONLY, value = "true"))
-    @Query("SELECT prod FROM ProductEN prod WHERE prod.promotion = 1 ORDER BY prod.price ASC")
+    @Query("SELECT prod FROM ProductEN prod WHERE prod.promotion = true ORDER BY prod.price ASC")
     List<ProductEN> searchByPromotionPrice();
 }

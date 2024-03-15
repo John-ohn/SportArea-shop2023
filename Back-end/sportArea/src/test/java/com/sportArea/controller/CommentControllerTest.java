@@ -35,8 +35,6 @@ import java.util.List;
 @SpringBootTest
 //@WebMvcTest(CommentController.class)
 @AutoConfigureMockMvc
-@TestPropertySource(
-        locations = "classpath:application-integrationtest.properties")
 class CommentControllerTest {
 
     @Autowired
@@ -48,21 +46,8 @@ class CommentControllerTest {
     @MockBean
     private CommentService commentService;
 
-
-//    @MockBean
-//    private  GeneralLogg generalLogg;
-
     @MockBean
     private ProductUAService productUAService;
-
-//    @MockBean
-//    private JwtConfigurer jwtConfigurer;
-
-//    @MockBean
-//    private JwtTokenProvider jwtTokenProvider;
-
-//    @InjectMocks
-//    private CommentController CommentController;
 
     private UserRegistration userRegistration;
 
@@ -113,7 +98,7 @@ class CommentControllerTest {
                 )
                 .rating(5F)
                 .status("В наявності")
-                .promotion(0)
+                .promotion(false)
                 .numberOfOrders(5L)
                 .dateCreation(LocalDateTime.of(2023, 8, 5, 14, 47, 58))
                 .urlImage("https://allnutrition.ua/produkt_img/f8b0i3189_d1200x1200.png")
