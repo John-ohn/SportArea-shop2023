@@ -1,16 +1,22 @@
 package com.sportArea.controller;
 
 import com.sportArea.entity.dto.AddComment;
-import com.sportArea.entity.dto.CommentDTO;
+import com.sportArea.entity.dto.CommentRequestDTO;
 import com.sportArea.entity.dto.GeneralResponse;
-import com.sportArea.entity.dto.ProductUaDTO;
+import com.sportArea.entity.dto.ProductDto;
 import com.sportArea.entity.dto.logger.GeneralLogg;
 import com.sportArea.service.CommentService;
 import com.sportArea.service.ProductUAService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.RequestBody;
+
 
 import java.util.List;
 
@@ -32,8 +38,8 @@ public class CommentController {
     }
 
     @GetMapping
-    public ResponseEntity<List<CommentDTO>> list() {
-        List<CommentDTO> commentList = commentService.findAll();
+    public ResponseEntity<List<CommentRequestDTO>> list() {
+        List<CommentRequestDTO> commentList = commentService.findAll();
         generalLogg.getLoggerControllerInfo("CommentController",
                 "list",
                 "/api/v1/comments",
@@ -42,8 +48,8 @@ public class CommentController {
     }
 
     @GetMapping("/company")
-    public ResponseEntity<List<CommentDTO>> findCompanyComments() {
-        List<CommentDTO> commentList = commentService.findCompanyComments();
+    public ResponseEntity<List<CommentRequestDTO>> findCompanyComments() {
+        List<CommentRequestDTO> commentList = commentService.findCompanyComments();
         generalLogg.getLoggerControllerInfo("CommentController",
                 "findCompanyComments",
                 "/company",
@@ -52,9 +58,9 @@ public class CommentController {
     }
 
     @GetMapping("/users/{userId}")
-    public ResponseEntity<List<CommentDTO>> findAllUserComments(@PathVariable("userId") Long userId) {
+    public ResponseEntity<List<CommentRequestDTO>> findAllUserComments(@PathVariable("userId") Long userId) {
 
-        List<CommentDTO> commentList = commentService.findAllUserComments(userId);
+        List<CommentRequestDTO> commentList = commentService.findAllUserComments(userId);
         generalLogg.getLoggerControllerInfo("CommentController",
                 "findAllUserComments",
                 "/users/{userId}",
@@ -64,8 +70,8 @@ public class CommentController {
     }
 
     @GetMapping("/products/{productId}")
-    public ResponseEntity<List<CommentDTO>> findAllProductComments(@PathVariable("productId") Long productId) {
-        List<CommentDTO> commentList = commentService.findAllProductComments(productId);
+    public ResponseEntity<List<CommentRequestDTO>> findAllProductComments(@PathVariable("productId") Long productId) {
+        List<CommentRequestDTO> commentList = commentService.findAllProductComments(productId);
 
         generalLogg.getLoggerControllerInfo("CommentController",
                 "findAllProductComments",
@@ -96,18 +102,18 @@ public class CommentController {
     @GetMapping("/checkRating/{productId}")
     public ResponseEntity<GeneralResponse> checkRating(@PathVariable("productId") Long productId) {
         commentService.addProductRating(productId);
-        ProductUaDTO productUA = productUAService.findById(productId);
+        ProductDto product = productUAService.findByIdConvertToProductDto(productId);
 
         generalLogg.getLoggerControllerInfo("CommentController",
                 "checkRating",
                 "/checkRating/{productId}",
-                "message( Product rating is : " + productUA.getRating()
-                        + " product :" + productUA.getProductName() + " " + productUA.getProductId() + " )");
+                "message( Product rating is : " + product.getProductUa().getRating()
+                        + " product :" + product.getProductUa().getProductName() + " " + product.getProductId() + " )");
 
         GeneralResponse generalResponse = new GeneralResponse(
                 HttpStatus.OK.value(),
-                "Product rating is : " + productUA.getRating()
-                        + " product :" + productUA.getProductName() + " " + productUA.getProductId());
+                "Product rating is : " + product.getProductUa().getRating()
+                        + " product :" + product.getProductUa().getProductName() + " " + product.getProductId());
 
         return ResponseEntity.ok(generalResponse);
     }

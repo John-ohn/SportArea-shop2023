@@ -1,6 +1,6 @@
 package com.sportArea.entity.dto;
 
-import com.sportArea.entity.dto.userFeilds.ProductEnDTO;
+import com.sportArea.entity.ProductEN;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -16,6 +16,6 @@ public class ProductDto {
 
     private ProductUaDTO productUa;
 
-    private ProductEnDTO productEn;
+    private ProductEN productEn;
 
 }

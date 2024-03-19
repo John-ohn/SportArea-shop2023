@@ -18,7 +18,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.TestPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
 
 import static org.hamcrest.Matchers.*;
@@ -28,7 +27,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 
@@ -54,9 +52,11 @@ class CommentControllerTest {
     private ProductUaDTO productUaDTO;
 
     private ProductDto productDTO;
-    private CommentDTO commentDTO;
 
-    private CommentDTO commentDTOTwo;
+    private CommentRequestDTO commentRequestDTO;
+
+    private CommentRequestDTO commentRequestDTOTwo;
+
 
     @BeforeEach
     void createObject() {
@@ -107,10 +107,10 @@ class CommentControllerTest {
         productDTO = ProductDto.builder()
                 .productId(productUaDTO.getProductId())
                 .productUa(productUaDTO)
-                .productEn(new ProductEnDTO())
+                .productEn(new ProductEN())
                 .build();
 
-        commentDTO = CommentDTO.builder()
+        commentRequestDTO = CommentRequestDTO.builder()
                 .commentId(1L)
                 .productRating(3.2F)
                 .message("Massage")
@@ -119,7 +119,7 @@ class CommentControllerTest {
                 .productDTO(productDTO)
                 .build();
 
-        commentDTOTwo = CommentDTO.builder()
+        commentRequestDTOTwo = CommentRequestDTO.builder()
                 .commentId(2L)
                 .productRating(3.2F)
                 .message("Massage")
@@ -133,9 +133,9 @@ class CommentControllerTest {
     @DisplayName("Test CommentController method list")
     void testMethodList() throws Exception {
 
-        List<CommentDTO> commentDTOList = List.of(commentDTO, commentDTOTwo);
+        List<CommentRequestDTO> commentRequestDTOList = List.of(commentRequestDTO, commentRequestDTOTwo);
 
-        when(commentService.findAll()).thenReturn(commentDTOList);
+        when(commentService.findAll()).thenReturn(commentRequestDTOList);
 
         mockMvc.perform(get("/api/v1/comments").contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -156,7 +156,7 @@ class CommentControllerTest {
     @DisplayName("Test CommentController method findCompanyComments")
     void testMethodsFindCompanyComments() throws Exception {
 
-        CommentDTO commentFromCompany = CommentDTO.builder()
+        CommentRequestDTO commentFromCompany = CommentRequestDTO.builder()
                 .commentId(1L)
                 .productRating(3.2F)
                 .message("Massage")
@@ -165,9 +165,9 @@ class CommentControllerTest {
                 .productDTO(new ProductDto())
                 .build();
 
-        List<CommentDTO> commentDTOList = List.of(commentFromCompany);
+        List<CommentRequestDTO> commentRequestDTOList = List.of(commentFromCompany);
 
-        when(commentService.findCompanyComments()).thenReturn(commentDTOList);
+        when(commentService.findCompanyComments()).thenReturn(commentRequestDTOList);
 
         mockMvc.perform(get("/api/v1/comments/company").contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -182,7 +182,7 @@ class CommentControllerTest {
     @DisplayName("Test CommentController method findAllUserComments")
     void testMethodFindAllUserComments() throws Exception {
 
-        List<CommentDTO> list = List.of(commentDTO, commentDTOTwo);
+        List<CommentRequestDTO> list = List.of(commentRequestDTO, commentRequestDTOTwo);
 
         when(commentService.findAllUserComments(userRegistration.getUserId())).thenReturn(list);
 
@@ -206,7 +206,7 @@ class CommentControllerTest {
     @Test
     @DisplayName("Test CommentController method findAllProductComments")
     void testMethodFindAllProductComments() throws Exception {
-        List<CommentDTO> productCommentsList = List.of(commentDTO, commentDTOTwo);
+        List<CommentRequestDTO> productCommentsList = List.of(commentRequestDTO, commentRequestDTOTwo);
 
         when(commentService.findAllProductComments(1L)).thenReturn(productCommentsList);
 
@@ -252,7 +252,7 @@ class CommentControllerTest {
 
         Mockito.doNothing().when(commentService).addProductRating(Mockito.any());
 
-        when(productUAService.findById(productUaDTO.getProductId())).thenReturn(productUaDTO);
+        when(productUAService.findByIdConvertToProductDto(productUaDTO.getProductId())).thenReturn(productDTO);
 
         mockMvc.perform(get("/api/v1/comments/checkRating/1")
                         .contentType(MediaType.APPLICATION_JSON))

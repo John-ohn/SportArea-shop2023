@@ -2,6 +2,7 @@ package com.sportArea.service.Imp;
 
 import com.sportArea.dao.ProductENRepository;
 import com.sportArea.dao.ProductUARepository;
+import com.sportArea.entity.ProductEN;
 import com.sportArea.entity.ProductUA;
 import com.sportArea.entity.dto.ProductDto;
 import com.sportArea.entity.dto.ProductUaDTO;
@@ -42,13 +43,28 @@ public class ProductUAServiceImp implements ProductUAService {
     }
 
     @Override
-    public ProductUaDTO findById(Long productId) {
+    public ProductDto findByIdConvertToProductDto(Long productId) {
         Optional<ProductUA> product = productRepository.findById(productId);
 
         if (product.isPresent()) {
             logger.info("From ProductUAServiceImp method -findById- return Product by id: {} ", productId);
 
-            return createProductDTOFromProductUA(product.get());
+            return createProductDtoFromProductUA(product.get());
+        } else {
+            logger.warn("From ProductUAServiceImp method -findById- send war message " +
+                    "( Product with productId {} is not available. ({}))", productId, HttpStatus.NOT_FOUND);
+            throw new GeneralException("Product with productId: " + productId + " is not available.", HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @Override
+    public ProductUA findById(Long productId) {
+        Optional<ProductUA> product = productRepository.findById(productId);
+
+        if (product.isPresent()) {
+            logger.info("From ProductUAServiceImp method -findById- return Product by id: {} ", productId);
+
+            return product.get();
         } else {
             logger.warn("From ProductUAServiceImp method -findById- send war message " +
                     "( Product with productId {} is not available. ({}))", productId, HttpStatus.NOT_FOUND);
@@ -72,28 +88,29 @@ public class ProductUAServiceImp implements ProductUAService {
     }
 
     @Override
-    public ProductUA findByIdInProduct(Long productId) {
-        Optional<ProductUA> product = productRepository.findById(productId);
-
-        if (product.isPresent()) {
-            logger.info("From ProductUAServiceImp method -findById- return Product by id: {} ", productId);
-
-            return product.get();
-        } else {
-            logger.warn("From ProductUAServiceImp method -findById- send war message " +
-                    "( Product with productId {} is not available. ({}))", productId, HttpStatus.NOT_FOUND);
-            throw new GeneralException("Product with productId: " + productId + " is not available.", HttpStatus.NOT_FOUND);
-        }
-    }
-
-    @Override
-    public List<ProductUaDTO> findAll() {
+    public List<ProductUA> findAll() {
         List<ProductUA> productList = productRepository.findAll();
         if (!productList.isEmpty()) {
 
-            List<ProductUaDTO> productDTOList = convertToProductDTOList(productList);
-
             logger.info("From ProductUAServiceImp method -findAll- return List of ProductUaDTOs.");
+
+            return productList;
+        } else {
+            throw new GeneralException("Don't find any Products. Products list is empty.", HttpStatus.NOT_FOUND);
+        }
+
+    }
+
+    @Override
+    public List<ProductDto> findAllConvertToProductDto() {
+        List<ProductUA> productList = productRepository.findAll();
+        if (!productList.isEmpty()) {
+
+
+            List<ProductDto> productDTOList = convertToProductDtoList(productList);
+//            List<ProductUaDTO> productDTOList = convertToProductDTOList(productList);
+
+            logger.info("From ProductUAServiceImp method -findAll- return List of ProductDto.");
 
             return productDTOList;
         } else {
@@ -102,51 +119,51 @@ public class ProductUAServiceImp implements ProductUAService {
 
     }
 
-    @Override
-    public List<ProductUaDTO> searchByKeyWordInDescription(String keyWord) {
+//    @Override
+//    public List<ProductUaDTO> searchByKeyWordInDescription(String keyWord) {
+//
+//        return checkConvertSortKeyWordDescription(keyWord,
+//                "searchByKeyWordInDescription",
+//                productRepository::searchByKeyWordInDescription);
+//    }
 
-        return checkConvertSortKeyWordDescription(keyWord,
-                "searchByKeyWordInDescription",
-                productRepository::searchByKeyWordInDescription);
-    }
+//    @Override
+//    public List<ProductUaDTO> searchByKeyWordInTypeSubtype(String keyWord) {
+//        if (keyWord != null || !keyWord.isEmpty()) {
+//            List<ProductUA> productUAList = productRepository.searchByKeyWordInTypeSubtype(keyWord);
+//            if (!productUAList.isEmpty()) {
+//                List<ProductUaDTO> productDTOList = convertToProductDTOList(productUAList);
+//                logger.info("From ProductUAServiceImp method -searchByKeyWordInTypeSubtype- return List<ProductUA> with keyWord: {}.", keyWord);
+//                return productDTOList;
+//            } else {
+//                logger.warn("From ProductUAServiceImp method -searchByKeyWordInTypeSubtype- send war message " +
+//                        "(Product with keyWord: {} not found. ({}))", keyWord, HttpStatus.NOT_FOUND.name());
+//
+//                throw new GeneralException("Product with keyWord: " + keyWord + " not found.",
+//                        HttpStatus.NOT_FOUND);
+//            }
+//        } else {
+//            logger.warn("From ProductUAServiceImp method -searchByKeyWordInTypeSubtype- send war message " +
+//                    "Key word is empty or null . ({})", HttpStatus.NOT_FOUND.name());
+//
+//            throw new GeneralException("Key word is empty or null" + keyWord,
+//                    HttpStatus.NOT_FOUND);
+//        }
+//    }
 
-    @Override
-    public List<ProductUaDTO> searchByKeyWordInTypeSubtype(String keyWord) {
-        if (keyWord != null || !keyWord.isEmpty()) {
-            List<ProductUA> productUAList = productRepository.searchByKeyWordInTypeSubtype(keyWord);
-            if (!productUAList.isEmpty()) {
-                List<ProductUaDTO> productDTOList = convertToProductDTOList(productUAList);
-                logger.info("From ProductUAServiceImp method -searchByKeyWordInTypeSubtype- return List<ProductUA> with keyWord: {}.", keyWord);
-                return productDTOList;
-            } else {
-                logger.warn("From ProductUAServiceImp method -searchByKeyWordInTypeSubtype- send war message " +
-                        "(Product with keyWord: {} not found. ({}))", keyWord, HttpStatus.NOT_FOUND.name());
-
-                throw new GeneralException("Product with keyWord: " + keyWord + " not found.",
-                        HttpStatus.NOT_FOUND);
-            }
-        } else {
-            logger.warn("From ProductUAServiceImp method -searchByKeyWordInTypeSubtype- send war message " +
-                    "Key word is empty or null . ({})", HttpStatus.NOT_FOUND.name());
-
-            throw new GeneralException("Key word is empty or null" + keyWord,
-                    HttpStatus.NOT_FOUND);
-        }
-    }
-
-    @Override
-    public List<ProductUaDTO> searchByPromotionPrice() {
-        List<ProductUA> productList = productRepository.searchByPromotionPrice();
-        if (!productList.isEmpty()) {
-            List<ProductUaDTO> productDTOList = convertToProductDTOList(productList);
-            logger.info("From ProductUAServiceImp method -searchByBestPrice- return List<ProductUA> ");
-            return productDTOList;
-        } else {
-            logger.warn("From ProductUAServiceImp method -searchByBestPrice- send war message " +
-                    "List with promotion products is empty or not available. ({})", HttpStatus.NOT_FOUND.name());
-            throw new GeneralException("List with promotion products is empty or not available.", HttpStatus.NOT_FOUND);
-        }
-    }
+//    @Override
+//    public List<ProductUaDTO> searchByPromotionPrice() {
+//        List<ProductUA> productList = productRepository.searchByPromotionPrice();
+//        if (!productList.isEmpty()) {
+//            List<ProductUaDTO> productDTOList = convertToProductDTOList(productList);
+//            logger.info("From ProductUAServiceImp method -searchByBestPrice- return List<ProductUA> ");
+//            return productDTOList;
+//        } else {
+//            logger.warn("From ProductUAServiceImp method -searchByBestPrice- send war message " +
+//                    "List with promotion products is empty or not available. ({})", HttpStatus.NOT_FOUND.name());
+//            throw new GeneralException("List with promotion products is empty or not available.", HttpStatus.NOT_FOUND);
+//        }
+//    }
 
     @Override
     public void save(ProductUaDTO product) {
@@ -187,6 +204,7 @@ public class ProductUAServiceImp implements ProductUAService {
             throw new GeneralException("Product is not available or his is empty. ", HttpStatus.NOT_FOUND);
         }
     }
+
     @Override
     public void delete(Long productId) {
         Optional<ProductUA> product = productRepository.findById(productId);
@@ -222,10 +240,10 @@ public class ProductUAServiceImp implements ProductUAService {
     }
 
     @Override
-    public List<ProductUaDTO> searchProducts(String keyWord,
-                                     String searchLocation) {
+    public List<ProductDto> searchProducts(String keyWord,
+                                           String searchLocation) {
 
-        List<ProductUaDTO> products;
+        List<ProductDto> products;
         switch (searchLocation) {
             case "main-search":
                 products = searchAndSortKeyWordTypeSubtypeFromDataBase(keyWord);
@@ -242,36 +260,37 @@ public class ProductUAServiceImp implements ProductUAService {
 
     }
 
-    @Override
-    public List<ProductUaDTO> searchAndSort(String keyWord,
-                                            String sortBy,
-                                            String searchLocation,
-                                            String priceBetween,
-                                            BigDecimal lowPrice,
-                                            BigDecimal highPrice) {
+//    @Override
+//    public List<ProductUaDTO> searchAndSort(String keyWord,
+//                                            String sortBy,
+//                                            String searchLocation,
+//                                            String priceBetween,
+//                                            BigDecimal lowPrice,
+//                                            BigDecimal highPrice) {
+//
+//        List<ProductUaDTO> products;
+//        switch (searchLocation) {
+//            case "main-search":
+//                products = searchAndSortKeyWordTypeSubtypeFromDataBase(keyWord, sortBy, priceBetween, lowPrice, highPrice);
+//                return products;
+//            case "description-search":
+//                products = searchAndSortKeyWordInDescription(keyWord, sortBy, priceBetween, lowPrice, highPrice);
+//                return products;
+//            case "best-price":
+//                products = searchAndSortPromotionPriceFromDataBase(sortBy, priceBetween, lowPrice, highPrice);
+//                return products;
+//            default:
+//                return new ArrayList<>();
+//        }
+//
+//    }
 
-        List<ProductUaDTO> products;
-        switch (searchLocation) {
-            case "main-search":
-                products = searchAndSortKeyWordTypeSubtypeFromDataBase(keyWord, sortBy, priceBetween, lowPrice, highPrice);
-                return products;
-            case "description-search":
-                products = searchAndSortKeyWordInDescription(keyWord, sortBy, priceBetween, lowPrice, highPrice);
-                return products;
-            case "best-price":
-                products = searchAndSortPromotionPriceFromDataBase(sortBy, priceBetween, lowPrice, highPrice);
-                return products;
-            default:
-                return new ArrayList<>();
-        }
-
-    }
-
-    public List<ProductUaDTO> searchAndSortKeyWordTypeSubtypeFromDataBase(String keyWord) {
+    public List<ProductDto> searchAndSortKeyWordTypeSubtypeFromDataBase(String keyWord) {
         if (!keyWord.isEmpty()) {
             List<ProductUA> products = productRepository.searchByKeyWordInTypeSubtype(keyWord);
             if (!products.isEmpty()) {
-                List<ProductUaDTO> productsList = convertToProductDTOList(products);
+                List<ProductDto> productsList = convertToProductDtoList(products);
+
                 return productsList;
             } else {
                 logger.warn("From ProductUAServiceImp method -searchAndSortKeyWordTypeSubtypeFromDataBase-.Nothing found from keyword ( {} ) send war message " +
@@ -327,14 +346,13 @@ public class ProductUAServiceImp implements ProductUAService {
         return new ArrayList<>();
     }
 
-    public List<ProductUaDTO> searchAndSortKeyWordInDescription(String keyWord) {
+    public List<ProductDto> searchAndSortKeyWordInDescription(String keyWord) {
         if (!keyWord.isEmpty()) {
             List<ProductUA> products = productRepository.searchByKeyWordInDescription(keyWord);
             if (!products.isEmpty()) {
+                List<ProductDto> productsList = convertToProductDtoList(products);
 
-                List<ProductUaDTO> productsList = convertToProductDTOList(products);
                 return productsList;
-
             } else {
                 logger.warn("From ProductUAServiceImp method -searchAndSortKeyWordInDescription-. Nothing found from keyword ( {} ) send war message " +
                         "(Products List is not available or his is empty.)", keyWord);
@@ -390,12 +408,12 @@ public class ProductUAServiceImp implements ProductUAService {
         return new ArrayList<>();
     }
 
-    public List<ProductUaDTO> searchAndSortPromotionPriceFromDataBase() {
+    public List<ProductDto> searchAndSortPromotionPriceFromDataBase() {
 
         List<ProductUA> products = productRepository.searchByPromotionPrice();
         if (!products.isEmpty()) {
 
-            List<ProductUaDTO> productsList = convertToProductDTOList(products);
+            List<ProductDto> productsList = convertToProductDtoList(products);
             return productsList;
         } else {
             logger.warn("From ProductUAServiceImp method -searchAndSortPromotionPriceFromDataBase-. Nothing found send war message " +
@@ -604,6 +622,42 @@ public class ProductUAServiceImp implements ProductUAService {
     }
 
     @Override
+    public ProductDto createProductDtoFromProductUA(ProductUA productUA) {
+
+        ProductEN productEN = productUA.getProductEN();
+        ProductUaDTO productUaDTO = ProductUaDTO.builder()
+                .productId(productUA.getProductId())
+                .productName(productUA.getProductName())
+                .brands(productUA.getBrands())
+                .type(productUA.getType())
+                .subtype(productUA.getSubtype())
+                .formOfIssue(productUA.getFormOfIssue())
+                .producingCountry(productUA.getProducingCountry())
+                .taste(productUA.getTaste())
+                .price(productUA.getPrice())
+                .promotionPrice(productUA.getPromotionPrice())
+                .weight(productUA.getWeight())
+                .currency(productUA.getCurrency())
+                .article(productUA.getArticle())
+                .productAmount(productUA.getProductAmount())
+                .description(productUA.getDescription())
+                .productConsist(productUA.getProductConsist())
+                .rating(productUA.getRating())
+                .status(productUA.getStatus())
+                .promotion(productUA.getPromotion())
+                .numberOfOrders(productUA.getNumberOfOrders())
+                .dateCreation(productUA.getDateCreation())
+                .urlImage(productUA.getUrlImage())
+                .build();
+
+        return ProductDto.builder()
+                .productId(productUA.getProductId())
+                .productUa(productUaDTO)
+                .productEn(productEN)
+                .build();
+    }
+
+    @Override
     public ProductUaDTO createProductDTOFromProductUA(ProductUA productUA) {
 
         return ProductUaDTO.builder()
@@ -633,63 +687,63 @@ public class ProductUAServiceImp implements ProductUAService {
                 .build();
     }
 
-    @Override
-    public ProductDto createProductDtoFromProductUA(ProductUA productUA) {
-
-        return ProductDto.builder()
-
-                .productId(productUA.getProductId())
-                .productUa(ProductUaDTO.builder()
-                        .productId(productUA.getProductId())
-                        .productName(productUA.getProductName())
-                        .brands(productUA.getBrands())
-                        .type(productUA.getType())
-                        .subtype(productUA.getSubtype())
-                        .formOfIssue(productUA.getFormOfIssue())
-                        .producingCountry(productUA.getProducingCountry())
-                        .taste(productUA.getTaste())
-                        .price(productUA.getPrice())
-                        .promotionPrice(productUA.getPromotionPrice())
-                        .weight(productUA.getWeight())
-                        .currency(productUA.getCurrency())
-                        .article(productUA.getArticle())
-                        .productAmount(productUA.getProductAmount())
-                        .description(productUA.getDescription())
-                        .productConsist(productUA.getProductConsist())
-                        .rating(productUA.getRating())
-                        .status(productUA.getStatus())
-                        .promotion(productUA.getPromotion())
-                        .numberOfOrders(productUA.getNumberOfOrders())
-                        .dateCreation(productUA.getDateCreation())
-                        .urlImage(productUA.getUrlImage())
-                        .build())
-                .productEn(ProductEnDTO.builder()
-                        .productId(productUA.getProductEN().getProductId())
-                        .productName(productUA.getProductEN().getProductName())
-                        .brands(productUA.getProductEN().getBrands())
-                        .type(productUA.getProductEN().getType())
-                        .subtype(productUA.getProductEN().getSubtype())
-                        .formOfIssue(productUA.getProductEN().getFormOfIssue())
-                        .producingCountry(productUA.getProductEN().getProducingCountry())
-                        .taste(productUA.getProductEN().getTaste())
-                        .price(productUA.getProductEN().getPrice())
-                        .promotionPrice(productUA.getProductEN().getPromotionPrice())
-                        .weight(productUA.getProductEN().getWeight())
-                        .currency(productUA.getProductEN().getCurrency())
-                        .article(productUA.getProductEN().getArticle())
-                        .productAmount(productUA.getProductEN().getProductAmount())
-                        .description(productUA.getProductEN().getDescription())
-                        .productConsist(productUA.getProductEN().getProductConsist())
-                        .rating(productUA.getProductEN().getRating())
-                        .status(productUA.getProductEN().getStatus())
-                        .promotion(productUA.getProductEN().getPromotion())
-                        .numberOfOrders(productUA.getProductEN().getNumberOfOrders())
-                        .dateCreation(productUA.getProductEN().getDateCreation())
-                        .urlImage(productUA.getProductEN().getUrlImage())
-                        .build())
-                .build();
-
-    }
+//    @Override
+//    public ProductDto createProductDtoFromProductUA(ProductUA productUA) {
+//
+//        return ProductDto.builder()
+//
+//                .productId(productUA.getProductId())
+//                .productUa(ProductUaDTO.builder()
+//                        .productId(productUA.getProductId())
+//                        .productName(productUA.getProductName())
+//                        .brands(productUA.getBrands())
+//                        .type(productUA.getType())
+//                        .subtype(productUA.getSubtype())
+//                        .formOfIssue(productUA.getFormOfIssue())
+//                        .producingCountry(productUA.getProducingCountry())
+//                        .taste(productUA.getTaste())
+//                        .price(productUA.getPrice())
+//                        .promotionPrice(productUA.getPromotionPrice())
+//                        .weight(productUA.getWeight())
+//                        .currency(productUA.getCurrency())
+//                        .article(productUA.getArticle())
+//                        .productAmount(productUA.getProductAmount())
+//                        .description(productUA.getDescription())
+//                        .productConsist(productUA.getProductConsist())
+//                        .rating(productUA.getRating())
+//                        .status(productUA.getStatus())
+//                        .promotion(productUA.getPromotion())
+//                        .numberOfOrders(productUA.getNumberOfOrders())
+//                        .dateCreation(productUA.getDateCreation())
+//                        .urlImage(productUA.getUrlImage())
+//                        .build())
+//                .productEn(ProductEnDTO.builder()
+//                        .productId(productUA.getProductEN().getProductId())
+//                        .productName(productUA.getProductEN().getProductName())
+//                        .brands(productUA.getProductEN().getBrands())
+//                        .type(productUA.getProductEN().getType())
+//                        .subtype(productUA.getProductEN().getSubtype())
+//                        .formOfIssue(productUA.getProductEN().getFormOfIssue())
+//                        .producingCountry(productUA.getProductEN().getProducingCountry())
+//                        .taste(productUA.getProductEN().getTaste())
+//                        .price(productUA.getProductEN().getPrice())
+//                        .promotionPrice(productUA.getProductEN().getPromotionPrice())
+//                        .weight(productUA.getProductEN().getWeight())
+//                        .currency(productUA.getProductEN().getCurrency())
+//                        .article(productUA.getProductEN().getArticle())
+//                        .productAmount(productUA.getProductEN().getProductAmount())
+//                        .description(productUA.getProductEN().getDescription())
+//                        .productConsist(productUA.getProductEN().getProductConsist())
+//                        .rating(productUA.getProductEN().getRating())
+//                        .status(productUA.getProductEN().getStatus())
+//                        .promotion(productUA.getProductEN().getPromotion())
+//                        .numberOfOrders(productUA.getProductEN().getNumberOfOrders())
+//                        .dateCreation(productUA.getProductEN().getDateCreation())
+//                        .urlImage(productUA.getProductEN().getUrlImage())
+//                        .build())
+//                .build();
+//
+//    }
 
     @Override
     public List<ProductUA> convertToProductList(List<ProductUaDTO> productList) {

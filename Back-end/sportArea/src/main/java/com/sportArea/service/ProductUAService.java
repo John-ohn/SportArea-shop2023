@@ -11,19 +11,20 @@ import java.util.List;
 
 public interface ProductUAService {
 
-    ProductUaDTO findById(Long productId);
+    ProductUA findById(Long productId);
+    ProductDto findByIdConvertToProductDto(Long productId);
 
     ProductUA findByIdWithoutDTO(Long productId);
 
-    List<ProductUaDTO> findAll();
+    List<ProductUA> findAll();
 
-    ProductUA findByIdInProduct(Long productId);
+    List<ProductDto> findAllConvertToProductDto();
 
-    List<ProductUaDTO> searchByKeyWordInDescription(String keyWord);
-
-    List<ProductUaDTO> searchByKeyWordInTypeSubtype(String keyWord);
-
-    List<ProductUaDTO> searchByPromotionPrice();
+//    List<ProductUaDTO> searchByKeyWordInDescription(String keyWord);
+//
+//    List<ProductUaDTO> searchByKeyWordInTypeSubtype(String keyWord);
+//
+//    List<ProductUaDTO> searchByPromotionPrice();
 
     void save(ProductUaDTO product);
 
@@ -39,19 +40,19 @@ public interface ProductUAService {
 
     ProductDto createProductDtoFromProductUA(ProductUA productUA);
 
-    List<ProductUaDTO> searchAndSort(String keyWord,
-                                     String sortBy,
-                                     String searchLocation,
-                                     String priceBetween,
-                                     BigDecimal lowPrice,
-                                     BigDecimal highPrice);
+//    List<ProductUaDTO> searchAndSort(String keyWord,
+//                                     String sortBy,
+//                                     String searchLocation,
+//                                     String priceBetween,
+//                                     BigDecimal lowPrice,
+//                                     BigDecimal highPrice);
 
-    List<ProductUaDTO> searchProducts(String keyWord,
-                                      String searchLocation);
+    List<ProductDto> searchProducts(String keyWord,
+                                    String searchLocation);
 
     List<ProductUA> convertToProductList(List<ProductUaDTO> productList);
 
     List<ProductUaDTO> convertToProductDTOList(List<ProductUA> productList);
 
-     List<ProductDto> convertToProductDtoList(List<ProductUA> productList);
+    List<ProductDto> convertToProductDtoList(List<ProductUA> productList);
 }

@@ -2,8 +2,7 @@ package com.sportArea.service.Imp;
 
 import com.sportArea.dao.CommentRepository;
 import com.sportArea.entity.*;
-import com.sportArea.entity.dto.AddComment;
-import com.sportArea.entity.dto.CommentDTO;
+import com.sportArea.entity.dto.CommentRequestDTO;
 import com.sportArea.exception.GeneralException;
 import com.sportArea.service.CustomerService;
 import com.sportArea.service.ProductUAService;
@@ -139,11 +138,11 @@ class CommentServiceImpTest {
 
         when(commentRepository.findById(commentCompany.getCommentId())).thenReturn(Optional.ofNullable(commentCompany));
 
-        CommentDTO commentDTO = commentServiceImp.findById(commentCompany.getCommentId());
+        CommentRequestDTO commentRequestDTO = commentServiceImp.findById(commentCompany.getCommentId());
 
         assertAll(
-                () -> assertNotNull(commentDTO),
-                () -> assertEquals(commentCompany.getCommentId(), commentDTO.getCommentId())
+                () -> assertNotNull(commentRequestDTO),
+                () -> assertEquals(commentCompany.getCommentId(), commentRequestDTO.getCommentId())
         );
 
         GeneralException error = assertThrows(GeneralException.class, () ->
@@ -163,14 +162,14 @@ class CommentServiceImpTest {
 
         when(commentRepository.findAllUserComments(customerOne.getUserId())).thenReturn(commentList);
 
-        List<CommentDTO> commentDTOList = commentServiceImp.findAllUserComments(customerOne.getUserId());
+        List<CommentRequestDTO> commentRequestDTOList = commentServiceImp.findAllUserComments(customerOne.getUserId());
 
         assertAll(
-                () -> assertNotNull(commentDTOList),
-                () -> assertFalse(commentDTOList.isEmpty()),
-                () -> assertEquals(2, commentDTOList.size()),
-                () -> assertTrue(commentDTOList.stream().anyMatch(a -> a.getNote().equals(Note.FOR_COMPANY))),
-                () -> assertTrue(commentDTOList.stream().anyMatch(a -> a.getNote().equals(Note.FOR_PRODUCT)))
+                () -> assertNotNull(commentRequestDTOList),
+                () -> assertFalse(commentRequestDTOList.isEmpty()),
+                () -> assertEquals(2, commentRequestDTOList.size()),
+                () -> assertTrue(commentRequestDTOList.stream().anyMatch(a -> a.getNote().equals(Note.FOR_COMPANY))),
+                () -> assertTrue(commentRequestDTOList.stream().anyMatch(a -> a.getNote().equals(Note.FOR_PRODUCT)))
         );
 
         GeneralException error = assertThrows(GeneralException.class, () -> commentServiceImp.findAllUserComments(customerOne.getUserId() + 2));
@@ -189,14 +188,14 @@ class CommentServiceImpTest {
 
         when(commentRepository.findAllProductComments(productUA.getProductId())).thenReturn(commentList);
 
-        List<CommentDTO> commentDTOList = commentServiceImp.findAllProductComments(productUA.getProductId());
+        List<CommentRequestDTO> commentRequestDTOList = commentServiceImp.findAllProductComments(productUA.getProductId());
 
         assertAll(
-                () -> assertNotNull(commentDTOList),
-                () -> assertFalse(commentDTOList.isEmpty()),
-                () -> assertEquals(1, commentDTOList.size()),
-                () -> assertTrue(commentDTOList.stream().anyMatch(a -> Objects.equals(a.getCommentId(), commentProduct.getCommentId()))),
-                () -> assertTrue(commentDTOList.stream().anyMatch(a -> a.getNote().equals(Note.FOR_PRODUCT)))
+                () -> assertNotNull(commentRequestDTOList),
+                () -> assertFalse(commentRequestDTOList.isEmpty()),
+                () -> assertEquals(1, commentRequestDTOList.size()),
+                () -> assertTrue(commentRequestDTOList.stream().anyMatch(a -> Objects.equals(a.getCommentId(), commentProduct.getCommentId()))),
+                () -> assertTrue(commentRequestDTOList.stream().anyMatch(a -> a.getNote().equals(Note.FOR_PRODUCT)))
         );
 
         GeneralException error = assertThrows(GeneralException.class, () -> commentServiceImp.findAllProductComments(productUA.getProductId() + 2));
@@ -216,14 +215,14 @@ class CommentServiceImpTest {
 
         when(commentRepository.findAll()).thenReturn(commentList);
 
-        List<CommentDTO> commentDTOList = commentServiceImp.findAll();
+        List<CommentRequestDTO> commentRequestDTOList = commentServiceImp.findAll();
 
         assertAll(
-                () -> assertNotNull(commentDTOList),
-                () -> assertFalse(commentDTOList.isEmpty()),
-                () -> assertEquals(2, commentDTOList.size()),
-                () -> assertTrue(commentDTOList.stream().anyMatch(a -> a.getNote().equals(Note.FOR_COMPANY))),
-                () -> assertTrue(commentDTOList.stream().anyMatch(a -> a.getNote().equals(Note.FOR_PRODUCT)))
+                () -> assertNotNull(commentRequestDTOList),
+                () -> assertFalse(commentRequestDTOList.isEmpty()),
+                () -> assertEquals(2, commentRequestDTOList.size()),
+                () -> assertTrue(commentRequestDTOList.stream().anyMatch(a -> a.getNote().equals(Note.FOR_COMPANY))),
+                () -> assertTrue(commentRequestDTOList.stream().anyMatch(a -> a.getNote().equals(Note.FOR_PRODUCT)))
         );
 
         List<Comment> commentListEmpty = new ArrayList<>();
@@ -268,7 +267,7 @@ class CommentServiceImpTest {
 
         when(commentRepository.findCompanyComments()).thenReturn(commentList);
 
-        List<CommentDTO> companyCommentsList = commentServiceImp.findCompanyComments();
+        List<CommentRequestDTO> companyCommentsList = commentServiceImp.findCompanyComments();
 
         assertAll(
                 () -> assertNotNull(companyCommentsList),
@@ -306,7 +305,7 @@ class CommentServiceImpTest {
 //        when(productUAService.findByIdWithoutDTO(1L)).thenReturn(productUA);
 //        Mockito.doNothing().when(productUAService).saveWithoutDTO(Mockito.any());
 //
-//        commentServiceImp.addProductComment(comment);
+//        commentServiceImp.save(comment);
 //
 //        verify(commentRepository).addProductComment(
 //                messageCaptor.capture(),
@@ -335,13 +334,13 @@ class CommentServiceImpTest {
     @DisplayName("Test CommentServiceImp method createCommentDTOFromComment")
     void createCommentDTOFromComment() {
 
-        CommentDTO commentDTO = commentServiceImp.createCommentDTOFromComment(commentProduct);
+        CommentRequestDTO commentRequestDTO = commentServiceImp.createCommentDTOFromComment(commentProduct);
 
         assertAll(
-                () -> assertNotNull(commentDTO),
-                () -> assertEquals(commentProduct.getMessage(), commentDTO.getMessage()),
-                () -> assertEquals(commentProduct.getProductRating(), commentDTO.getProductRating()),
-                () -> assertEquals(commentProduct.getCommentId(), commentDTO.getCommentId())
+                () -> assertNotNull(commentRequestDTO),
+                () -> assertEquals(commentProduct.getMessage(), commentRequestDTO.getMessage()),
+                () -> assertEquals(commentProduct.getProductRating(), commentRequestDTO.getProductRating()),
+                () -> assertEquals(commentProduct.getCommentId(), commentRequestDTO.getCommentId())
         );
     }
 
@@ -350,11 +349,11 @@ class CommentServiceImpTest {
     void convertToCommentDTOList() {
         List<Comment> commentList = List.of(commentCompany,commentProduct);
 
-        List<CommentDTO> commentDTOList = commentServiceImp.convertToCommentDTOList(commentList);
+        List<CommentRequestDTO> commentRequestDTOList = commentServiceImp.convertToCommentDTOList(commentList);
 
         assertAll(
-                () -> assertFalse(commentDTOList.isEmpty()),
-                () -> assertEquals(2,commentDTOList.size() )
+                () -> assertFalse(commentRequestDTOList.isEmpty()),
+                () -> assertEquals(2, commentRequestDTOList.size() )
 
         );
     }

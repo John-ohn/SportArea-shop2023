@@ -2,23 +2,22 @@ package com.sportArea.service;
 
 import com.sportArea.entity.Comment;
 import com.sportArea.entity.dto.AddComment;
-import com.sportArea.entity.dto.CommentDTO;
-import org.springframework.data.repository.query.Param;
+import com.sportArea.entity.dto.CommentRequestDTO;
 
 import java.util.List;
 
 
 public interface CommentService {
 
-    CommentDTO findById(Long responseId);
+    CommentRequestDTO findById(Long responseId);
 
-    List<CommentDTO> findAll();
+    List<CommentRequestDTO> findAll();
 
-    List<CommentDTO> findCompanyComments();
+    List<CommentRequestDTO> findCompanyComments();
 
-    List<CommentDTO> findAllUserComments(Long userId);
+    List<CommentRequestDTO> findAllUserComments(Long userId);
 
-    List<CommentDTO> findAllProductComments(Long productId);
+    List<CommentRequestDTO> findAllProductComments(Long productId);
 
     void delete(Long responseId);
 

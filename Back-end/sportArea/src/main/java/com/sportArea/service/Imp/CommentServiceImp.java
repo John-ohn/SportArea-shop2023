@@ -6,8 +6,7 @@ import com.sportArea.entity.Customer;
 import com.sportArea.entity.Note;
 import com.sportArea.entity.ProductUA;
 import com.sportArea.entity.dto.AddComment;
-import com.sportArea.entity.dto.CommentDTO;
-import com.sportArea.entity.dto.ProductUaDTO;
+import com.sportArea.entity.dto.CommentRequestDTO;
 import com.sportArea.exception.GeneralException;
 import com.sportArea.service.CommentService;
 import com.sportArea.service.ProductUAService;
@@ -21,7 +20,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -46,13 +44,13 @@ public class CommentServiceImp implements CommentService {
     }
 
     @Override
-    public CommentDTO findById(Long commentId) {
+    public CommentRequestDTO findById(Long commentId) {
         Optional<Comment> responseOptional = commentRepository.findById(commentId);
         if (responseOptional.isPresent()) {
 
-            CommentDTO commentDTO = createCommentDTOFromComment(responseOptional.get());
+            CommentRequestDTO commentRequestDTO = createCommentDTOFromComment(responseOptional.get());
             logger.info("From CommentServiceImp method -findById- return CommentDTO by id: {} ", commentId);
-            return commentDTO;
+            return commentRequestDTO;
         } else {
             logger.warn("From CommentServiceImp method -findById- send war message " +
                     "( Comment with commentId: {} is not available. ({}))", commentId, HttpStatus.NOT_FOUND.name());
@@ -90,14 +88,14 @@ public class CommentServiceImp implements CommentService {
     }
 
     @Override
-    public List<CommentDTO> findAllUserComments(Long userId) {
+    public List<CommentRequestDTO> findAllUserComments(Long userId) {
         List<Comment> commentList = commentRepository.findAllUserComments(userId);
         if (!(commentList.size() == 0)) {
 
-            List<CommentDTO> commentDTO = convertToCommentDTOList(commentList);
+            List<CommentRequestDTO> commentRequestDTO = convertToCommentDTOList(commentList);
 
             logger.info("From CommentServiceImp method -findByCommentId- return List to CommentDTO by id: {} ", userId);
-            return commentDTO;
+            return commentRequestDTO;
         } else {
             logger.warn("From CommentServiceImp method -findAllUserComments- send war message " +
                     "( Comment with userId: {} is not available. ({}))", userId, HttpStatus.NOT_FOUND.name());
@@ -119,14 +117,14 @@ public class CommentServiceImp implements CommentService {
     }
 
     @Override
-    public List<CommentDTO> findAllProductComments(Long productId) {
+    public List<CommentRequestDTO> findAllProductComments(Long productId) {
         List<Comment> commentList = commentRepository.findAllProductComments(productId);
         if (!(commentList.size() == 0)) {
-            List<CommentDTO> commentDTO = convertToCommentDTOList(commentList);
+            List<CommentRequestDTO> commentRequestDTO = convertToCommentDTOList(commentList);
 
             logger.info("From CommentServiceImp method -findAllProductComments- return List to CommentDTO by id: {} ", productId);
 
-            return commentDTO;
+            return commentRequestDTO;
         } else {
             logger.warn("From CommentServiceImp method -findAllProductComments- send war message " +
                     "( Comment with productId: {} is not available. ({}))", productId, HttpStatus.NOT_FOUND.name());
@@ -135,12 +133,12 @@ public class CommentServiceImp implements CommentService {
     }
 
     @Override
-    public List<CommentDTO> findAll() {
+    public List<CommentRequestDTO> findAll() {
         List<Comment> commentList = commentRepository.findAll();
         if (!(commentList.size() == 0)) {
-            List<CommentDTO> commentDTOList = convertToCommentDTOList(commentList);
+            List<CommentRequestDTO> commentRequestDTOList = convertToCommentDTOList(commentList);
             logger.info("From CommentServiceImp method -findAll- return List of Comments.");
-            return commentDTOList;
+            return commentRequestDTOList;
         } else {
             throw new GeneralException("Comments is not available. The list of comments is empty.", HttpStatus.NOT_FOUND);
         }
@@ -162,15 +160,15 @@ public class CommentServiceImp implements CommentService {
     }
 
     @Override
-    public List<CommentDTO> findCompanyComments() {
+    public List<CommentRequestDTO> findCompanyComments() {
         List<Comment> commentList = commentRepository.findCompanyComments();
 
         if (!(commentList.size() == 0)) {
-            List<CommentDTO> commentDTO = convertToCommentDTOList(commentList);
+            List<CommentRequestDTO> commentRequestDTO = convertToCommentDTOList(commentList);
 
             logger.info("From CommentServiceImp method -findCompanyComments- return List to CommentDTO by Company Comments");
 
-            return commentDTO;
+            return commentRequestDTO;
         } else {
 
             logger.warn("From CommentServiceImp method -findCompanyComments- send war message " +
@@ -191,7 +189,7 @@ public class CommentServiceImp implements CommentService {
 
         if (!(addComment == null)) {
             Customer customer = customerService.findByIdInUser(addComment.getUserId());
-            ProductUA productUA = productUAService.findByIdInProduct(addComment.getProductId());
+            ProductUA productUA = productUAService.findByIdWithoutDTO(addComment.getProductId());
 
             Comment comment = Comment.builder()
                     .userName(customer.getFirstName())
@@ -211,20 +209,20 @@ public class CommentServiceImp implements CommentService {
     }
 
 
-    public Comment createCommentFromCommentDTO(CommentDTO commentDTO) {
-        return Comment.builder()
-                .message(commentDTO.getMessage())
-                .note(commentDTO.getNote())
-                .customer(customerService.createUserFromUserDTO(commentDTO.getUserRegistration()))
-                .product(productUAService.createProductFromProductUaDTO(commentDTO.getProductDTO().getProductUa()))
-                .productRating(commentDTO.getProductRating())
-                .build();
-    }
+//    public Comment createCommentFromCommentDTO(CommentRequestDTO commentRequestDTO) {
+//        return Comment.builder()
+//                .message(commentRequestDTO.getMessage())
+//                .note(commentRequestDTO.getNote())
+//                .customer(customerService.createUserFromUserDTO(commentRequestDTO.getUserRegistration()))
+//                .product(productUAService.createProductFromProductUaDTO(commentRequestDTO.getProductDTO().getProductUa()))
+//                .productRating(commentRequestDTO.getProductRating())
+//                .build();
+//    }
 
-    public CommentDTO createCommentDTOFromComment(Comment comment) {
+    public CommentRequestDTO createCommentDTOFromComment(Comment comment) {
 
         if (comment.getProduct() == null) {
-            return CommentDTO
+            return CommentRequestDTO
                     .builder()
                     .commentId(comment.getCommentId())
                     .message(comment.getMessage())
@@ -232,7 +230,7 @@ public class CommentServiceImp implements CommentService {
                     .userRegistration(customerService.createUserDTOFromUser(comment.getCustomer()))
                     .build();
         } else {
-            return CommentDTO
+            return CommentRequestDTO
                     .builder()
                     .commentId(comment.getCommentId())
                     .message(comment.getMessage())
@@ -244,13 +242,13 @@ public class CommentServiceImp implements CommentService {
         }
     }
 
-    public List<CommentDTO> convertToCommentDTOList(List<Comment> commentList) {
+    public List<CommentRequestDTO> convertToCommentDTOList(List<Comment> commentList) {
 
-        List<CommentDTO> commentDTO = commentList.stream()
+        List<CommentRequestDTO> commentRequestDTO = commentList.stream()
                 .map(this::createCommentDTOFromComment)
                 .toList();
 
-        return commentDTO;
+        return commentRequestDTO;
     }
 
     public void addProductRating(Long productId) {

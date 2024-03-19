@@ -2,6 +2,7 @@ package com.sportArea.controller;
 
 
 import com.sportArea.entity.dto.GeneralResponse;
+import com.sportArea.entity.dto.ProductDto;
 import com.sportArea.entity.dto.ProductUaDTO;
 import com.sportArea.entity.dto.logger.GeneralLogg;
 import com.sportArea.service.ProductUAService;
@@ -29,8 +30,8 @@ public class ProductUAController {
     }
 
     @GetMapping
-    public List<ProductUaDTO> findAll() {
-        List<ProductUaDTO> productList = productService.findAll();
+    public List<ProductDto> findAll() {
+        List<ProductDto> productList = productService.findAllConvertToProductDto();
 
         generalLogg.getLoggerControllerInfo("ProductUAController",
                 "findAll",
@@ -41,8 +42,8 @@ public class ProductUAController {
     }
 
     @GetMapping("/{productId}")
-    public ProductUaDTO getProductById(@PathVariable("productId") Long productId) {
-        ProductUaDTO productDTO = productService.findById(productId);
+    public ProductDto getProductById(@PathVariable("productId") Long productId) {
+        ProductDto productDTO = productService.findByIdConvertToProductDto(productId);
 
         generalLogg.getLoggerControllerInfo("ProductUAController",
                 "getProductById",
@@ -50,6 +51,20 @@ public class ProductUAController {
                 "Product with productId: " + productId);
 
         return productDTO;
+    }
+
+    @GetMapping("/search/category")
+    public List<ProductDto> searchProductsByCategory(@RequestParam("categoryId") Long categoryId,
+                                                     @RequestParam("subCategoryId") Long subCategoryId) {
+
+        List<ProductDto> productList = productService.findAllConvertToProductDto();
+
+        generalLogg.getLoggerControllerInfo("ProductUAController",
+                "searchProductsByCategory",
+                "/search/category",
+                "List of Products by categoryId: " + categoryId + ". subCategoryId: " + subCategoryId);
+
+        return productList;
     }
 
     @PostMapping
@@ -69,10 +84,10 @@ public class ProductUAController {
     }
 
     @GetMapping("/search")
-    public List<ProductUaDTO> searchProducts(@RequestParam("keyWord") String keyWord,
-                                             @RequestParam("searchLocation") String searchLocation) {
+    public List<ProductDto> searchProducts(@RequestParam("keyWord") String keyWord,
+                                           @RequestParam("searchLocation") String searchLocation) {
 
-        List<ProductUaDTO> productList = productService.searchProducts(keyWord, searchLocation);
+        List<ProductDto> productList = productService.searchProducts(keyWord, searchLocation);
 
         generalLogg.getLoggerControllerInfo("ProductUAController",
                 "searchProducts",

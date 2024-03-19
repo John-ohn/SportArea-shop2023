@@ -167,7 +167,7 @@ public class BasketServiceImp implements BasketService {
     @Override
     public BasketItem createBasketItem(Long productId, Integer productQuantity) {
 
-        ProductUA product = productUAService.findByIdInProduct(productId);
+        ProductUA product = productUAService.findByIdWithoutDTO(productId);
         BigDecimal productPrice;
         if (product.getPromotionPrice() == null || product.getPromotionPrice().equals(BigDecimal.ZERO)
                 || product.getPromotionPrice().compareTo(BigDecimal.ZERO) < 0) {

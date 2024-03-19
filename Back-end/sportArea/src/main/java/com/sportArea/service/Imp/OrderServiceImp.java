@@ -5,7 +5,6 @@ import com.sportArea.entity.Order;
 import com.sportArea.entity.OrderItem;
 import com.sportArea.entity.OrderStatus;
 import com.sportArea.entity.dto.OrderDTO;
-import com.sportArea.entity.dto.ProductUaDTO;
 import com.sportArea.entity.dto.account.*;
 import com.sportArea.exception.GeneralException;
 import com.sportArea.service.OrderService;
@@ -118,7 +117,7 @@ public class OrderServiceImp implements OrderService {
 //        }
 //    }
 
-//    @Override
+    //    @Override
     public Long numberOfOrders(Long productId) {
 //        if (productId > 0) {
 //
@@ -135,12 +134,12 @@ public class OrderServiceImp implements OrderService {
         return  null;
     }
 
-//    @Override
+    //    @Override
     public <S extends OrderDTO> boolean exists(Example<S> example) {
         return false;
     }
 
-//    @Override
+    //    @Override
     public void delete(Long orderId) {
 
         if ((orderId > 0)) {
@@ -220,12 +219,12 @@ public class OrderServiceImp implements OrderService {
 //        return orderDTOList;
 //    }
 
-    public void updateProductNumberOfOrders(Long productId) {
-        Long count = numberOfOrders(productId);
-        ProductUaDTO productUA = productUAService.findById(productId);
-        productUA.setNumberOfOrders(count);
-        productUAService.save(productUA);
-    }
+//    public void updateProductNumberOfOrders(Long productId) {
+//        Long count = numberOfOrders(productId);
+//        ProductDto product = productUAService.findById(productId);
+//        product.getProductUa().setNumberOfOrders(count);
+//        productUAService.save(product.getProductUa());
+//    }
 
     public UserOrderProductEN createENFromOrderItem (OrderItem orderItem){
         return  UserOrderProductEN.builder()
